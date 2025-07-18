@@ -1,0 +1,160 @@
+import { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
+
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const userId = localStorage.getItem("userId");
+
+  const fetchUser = async () => {
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await axios.get(`http://localhost:3000/users/${userId}`);
+      setUser(res.data);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const login = async (email, password) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:3000/users?email=${email}&password=${password}`
+      );
+      if (res.data.length === 1) {
+        const loggedInUser = res.data[0];
+        localStorage.setItem("userId", loggedInUser.id);
+        setUser(loggedInUser);
+        return { success: true, role: loggedInUser.role };
+      } else {
+        return { success: false, message: "Invalid credentials" };
+      }
+    } catch (error) {
+      return { success: false, message: "Login failed" };
+    }
+  };
+
+  const signup = async (userData) => {
+    try {
+      const res = await axios.post("http://localhost:3000/users", userData);
+      localStorage.setItem("userId", res.data.id);
+      setUser(res.data);
+      return { success: true, role: res.data.role };
+    } catch (error) {
+      console.error("Signup error:", error);
+      return { success: false, message: "Registration failed" };
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem("userId");
+    setUser(null);
+  };
+
+  const addToWishlist = async (product) => {
+    try {
+      const isAlreadyInWishlist = user?.wishlist?.some((item) => item.id === product.id);
+      if (isAlreadyInWishlist) return;
+
+      const updatedWishlist = [...(user?.wishlist || []), product];
+
+      await axios.patch(`http://localhost:3000/users/${user.id}`, {
+        wishlist: updatedWishlist,
+      });
+
+      setUser((prev) => ({ ...prev, wishlist: updatedWishlist }));
+    } catch (error) {
+      console.error("Error adding to wishlist:", error);
+    }
+  };
+
+  const removeFromWishlist = async (productId) => {
+    try {
+      const updatedWishlist = user?.wishlist?.filter((item) => item.id !== productId);
+
+      await axios.patch(`http://localhost:3000/users/${user.id}`, {
+        wishlist: updatedWishlist,
+      });
+
+      setUser((prev) => ({ ...prev, wishlist: updatedWishlist }));
+    } catch (error) {
+      console.error("Error removing from wishlist:", error);
+    }
+  };
+
+  const moveToCart = async (productId) => {
+    if (!user) return;
+
+    const product = user.wishlist.find((p) => p.id === productId);
+    if (!product) return;
+
+    const updatedWishlist = user.wishlist.filter((p) => p.id !== productId);
+    const updatedCart = [...(user.cart || []), { ...product, quantity: 1 }];
+
+    try {
+      await axios.patch(`http://localhost:3000/users/${user.id}`, {
+        wishlist: updatedWishlist,
+        cart: updatedCart,
+      });
+
+      setUser((prev) => ({
+        ...prev,
+        wishlist: updatedWishlist,
+        cart: updatedCart,
+      }));
+    } catch (error) {
+      console.error("Error moving to cart:", error);
+    }
+  };
+
+  const updateQuantity = async (productId, newQuantity) => {
+    if (!user) return;
+
+    const updatedCart = user.cart.map((item) =>
+      item.id === productId ? { ...item, quantity: newQuantity } : item
+    );
+
+    try {
+      await axios.patch(`http://localhost:3000/users/${user.id}`, {
+        cart: updatedCart,
+      });
+
+      setUser((prev) => ({ ...prev, cart: updatedCart }));
+    } catch (error) {
+      console.error("Failed to update quantity:", error);
+    }
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        signup,
+        logout,
+        loading,
+        setUser,
+        addToWishlist,
+        removeFromWishlist,
+        moveToCart,
+        updateQuantity,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => useContext(AuthContext);
