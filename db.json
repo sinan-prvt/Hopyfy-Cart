@@ -67,15 +67,70 @@
       "password": "swsw@gmail.com",
       "role": "user",
       "isBlock": false,
-      "cart": [],
+      "cart": [
+        {
+          "productId": "1010",
+          "quantity": 1
+        },
+        {
+          "id": "3030",
+          "name": "New Balance ",
+          "description": "Introduced in 1988, ",
+          "price": 12999,
+          "count": 40,
+          "category": "Men's Shoes",
+          "image": [
+            "/Images/nb1.jpg"
+          ],
+          "isActive": true,
+          "created_at": "2025-07-10T10:30:00.000Z",
+          "quantity": 1
+        },
+        {
+          "id": "p3",
+          "name": "Adidas",
+          "description": "Comfortable and stylish running shoes",
+          "price": 3999,
+          "count": 10,
+          "category": "Shoes",
+          "image": [
+            "https://via.placeholder.com/150"
+          ],
+          "isActive": true,
+          "created_at": "2025-07-10T10:30:00.000Z",
+          "quantity": 1
+        },
+        {
+          "id": "p4",
+          "name": "nike",
+          "description": "Comfortable and stylish running shoes",
+          "price": 1999,
+          "count": 30,
+          "category": "Shoes",
+          "image": [
+            "https://via.placeholder.com/150"
+          ],
+          "isActive": true,
+          "created_at": "2025-07-10T10:30:00.000Z",
+          "quantity": 1
+        },
+        {
+          "id": "p7",
+          "name": "puma",
+          "description": "Comfortable and stylish running shoes",
+          "price": 1999,
+          "count": 30,
+          "category": "Shoes",
+          "image": [
+            "https://via.placeholder.com/150"
+          ],
+          "isActive": true,
+          "created_at": "2025-07-10T10:30:00.000Z",
+          "quantity": 1
+        }
+      ],
       "order": [],
       "wishlist": [
-        {
-          "productId": "1010"
-        },
-        {
-          "productId": "p3"
-        },
         {
           "id": "3030",
           "name": "New Balance ",
@@ -175,6 +230,32 @@
     {
       "id": "p5",
       "name": "nike",
+      "description": "Comfortable and stylish running shoes",
+      "price": 1999,
+      "count": 30,
+      "category": "Shoes",
+      "image": [
+        "https://via.placeholder.com/150"
+      ],
+      "isActive": true,
+      "created_at": "2025-07-10T10:30:00.000Z"
+    },
+    {
+      "id": "p6",
+      "name": "puma",
+      "description": "Comfortable and stylish running shoes",
+      "price": 1999,
+      "count": 30,
+      "category": "Shoes",
+      "image": [
+        "https://via.placeholder.com/150"
+      ],
+      "isActive": true,
+      "created_at": "2025-07-10T10:30:00.000Z"
+    },
+    {
+      "id": "p7",
+      "name": "puma",
       "description": "Comfortable and stylish running shoes",
       "price": 1999,
       "count": 30,

@@ -6,11 +6,10 @@ import axios from "axios";
 
 
 const ProductCart = ({ product }) => {
+  
   const navigate = useNavigate();
-
-    const { user, addToWishlist, removeFromWishlist } = useAuth();
-
-      const isInWishlist = user?.wishlist?.some((item) => item.id === product.id);
+  const { user, addToWishlist, removeFromWishlist } = useAuth();
+  const isInWishlist = user?.wishlist?.some((item) => item.id === product.id);
 
   const handleWishlistToggle = (e) => {
     e.stopPropagation()
@@ -44,15 +43,15 @@ useEffect(() => {
   return (
     <>
        <div
-      className="min-w-[200px] max-w-[150px] p-2 border rounded flex-shrink-0 cursor-pointer relative"
+      className=" min-w-[250px] max-w-[150px] p-2 border rounded flex-shrink-0 cursor-pointer relative "
       onClick={() => navigate(`/product/${product.id}`)}
     >
       <img
         src={product.image[0]}
         alt={product.name}
-        className="w-full h-[120px] object-contain mb-2"
+        className="w-full h-[220px] object-contain mb-2 "
       />
-      <h3 className="text-sm font-semibold leading-tight line-clamp-2">
+      <h3 className="text-sm font-semibold leading-tight line-clamp-3">
         {product.name}
       </h3>
       <p className="text-green-600 text-xs font-medium mt-1">

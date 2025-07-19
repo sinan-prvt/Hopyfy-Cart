@@ -106,18 +106,18 @@ const ProductDetail = () => {
   if (productError) return <div className="p-8 text-red-600">{productError}</div>;
 
   return (
-    <div className="max-w-4xl mx-auto p-8">
+    <div className="max-w-5xl mx-auto p-8">
       {/* Product Info */}
       <div className="flex flex-col md:flex-row gap-6">
         <img
           src={product.image?.[0] || "/default.jpg"}
           alt={product.name}
-          className="w-full md:w-1/2 object-cover rounded-xl shadow"
+          className="w-full md:w-1/2  rounded-xl shadow"
         />
         <div className="flex flex-col gap-4">
           <h1 className="text-3xl font-bold">{product.name}</h1>
           <p className="text-lg text-gray-600">{product.description}</p>
-          <p className="text-xl font-semibold">₹{product.price}</p>
+          <p className="text-xl font-semibold">₹{product.price}</p><br/><br/>
           <button
             onClick={handleAddToCart}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl"
@@ -139,12 +139,6 @@ const ProductDetail = () => {
           Average Rating: ⭐ {averageRating}
         </h2>
 
-        <h3 className="font-semibold mt-4 mb-2">Customer Reviews:</h3>
-        {loadingReviews ? (
-          <p>Loading reviews...</p>
-        ) : reviews.length === 0 ? (
-          <p className="text-gray-500">No reviews yet.</p>
-        ) : (
           <ul className="space-y-2">
             {reviews.map((r) => (
               <li key={r.id} className="border p-3 rounded">
