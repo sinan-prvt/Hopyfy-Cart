@@ -34,17 +34,17 @@ const ProductDetail = () => {
     fetchProduct();
   }, [id]);
 
-  // Fetch reviews
+  // Fetch 5-star reviews only
   const fetchReviews = async () => {
     try {
       setLoadingReviews(true);
-      const res = await axios.get(
-        `http://localhost:3000/review?productId=${id}`
-      );
-      setReviews(res.data);
+      const res = await axios.get(`http://localhost:3000/review?productId=${id}`);
+      const fiveStarReviews = res.data.filter((r) => r.rating === 5);
+      setReviews(fiveStarReviews);
+
       const avg =
-        res.data.length > 0
-          ? res.data.reduce((sum, r) => sum + r.rating, 0) / res.data.length
+        fiveStarReviews.length > 0
+          ? fiveStarReviews.reduce((sum, r) => sum + r.rating, 0) / fiveStarReviews.length
           : 0;
       setAverageRating(avg.toFixed(1));
     } catch (err) {
@@ -112,12 +112,14 @@ const ProductDetail = () => {
         <img
           src={product.image?.[0] || "/default.jpg"}
           alt={product.name}
-          className="w-full md:w-1/2  rounded-xl shadow"
+          className="w-full md:w-1/2 rounded-xl shadow"
         />
         <div className="flex flex-col gap-4">
           <h1 className="text-3xl font-bold">{product.name}</h1>
           <p className="text-lg text-gray-600">{product.description}</p>
-          <p className="text-xl font-semibold">₹{product.price}</p><br/><br/>
+          <p className="text-xl font-semibold">₹{product.price}</p>
+          <br />
+          <br />
           <button
             onClick={handleAddToCart}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl"
@@ -136,25 +138,23 @@ const ProductDetail = () => {
       {/* Reviews Section */}
       <div className="mt-10 border-t pt-4">
         <h2 className="text-lg font-semibold mb-2">
-          Average Rating: ⭐ {averageRating}
+          Average Rating (only 5⭐): ⭐ {averageRating}
         </h2>
 
-          <ul className="space-y-2">
-            {reviews.map((r) => (
-              <li key={r.id} className="border p-3 rounded">
-                <p className="font-medium">⭐ {r.rating} / 5</p>
-                <p>{r.comment}</p>
-              </li>
-            ))}
-          </ul>
-        )}
+        <ul className="space-y-2">
+          {reviews.map((r) => (
+            <li key={r.id} className="border p-3 rounded">
+              <p className="font-medium">⭐ {r.rating} / 5</p>
+            </li>
+          ))}
+        </ul>
 
         <div className="mt-6">
-          <h3 className="font-semibold mb-2">Write a Review:</h3>
+          <h3 className="font-semibold mb-2">Rate This Product:</h3>
           {user ? (
             <ReviewForm productId={product.id} onReviewSubmit={fetchReviews} />
           ) : (
-            <p className="text-gray-600">Please log in to write a review.</p>
+            <p className="text-gray-600">Please log in to rate.</p>
           )}
         </div>
       </div>

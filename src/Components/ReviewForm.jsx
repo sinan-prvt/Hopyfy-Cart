@@ -3,65 +3,52 @@ import axios from "axios";
 import { useAuth } from "../Contexts/AuthContext";
 
 const ReviewForm = ({ productId, onReviewSubmit }) => {
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(0);
   const { user } = useAuth();
-  const [rating, setRating] = useState(5);
-  const [comment, setComment] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!user) return alert("Login to submit a review");
+    if (rating === 0) return alert("Please select a star rating");
 
-    const reviewData = {
+    const newReview = {
+      productId: parseInt(productId),
       userId: user.id,
-      productId,
       rating,
-      comment,
-      created_at: new Date().toISOString()
     };
 
-    console.log("Submitting review:", reviewData);
-
     try {
-      const res = await axios.post("http://localhost:3000/reviews", reviewData);
-      console.log("Review posted:", res.data);
-
-      setComment("");
-      setRating(5);
-      onReviewSubmit();
-    } catch (error) {
-      console.error("Error submitting review:", error);
-      alert("Failed to submit review. Check console.");
+      await axios.post("http://localhost:3000/reviews", newReview);
+      onReviewSubmit(); // refresh reviews
+      setRating(0); // reset
+      alert("Thank you for your review!");
+    } catch (err) {
+      console.error("Error submitting review", err);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-2">
-      <div>
-        <label>Rating:</label>
-        <select
-          value={rating}
-          onChange={(e) => setRating(Number(e.target.value))}
-          className="ml-2 p-1 border rounded"
-        >
-          {[5, 4, 3, 2, 1].map((r) => (
-            <option key={r} value={r}>{r} ★</option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <textarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          placeholder="Write your review..."
-          className="w-full p-2 border rounded"
-          required
-        />
+    <form onSubmit={handleSubmit}>
+      <div className="flex space-x-2 text-3xl mb-2">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            onClick={() => setRating(star)}
+            onMouseEnter={() => setHover(star)}
+            onMouseLeave={() => setHover(0)}
+            className={`cursor-pointer ${
+              star <= (hover || rating) ? "text-yellow-400" : "text-gray-400"
+            }`}
+          >
+            ★
+          </span>
+        ))}
       </div>
       <button
         type="submit"
-        className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
+        className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
       >
-        Submit Review
+        Submit Rating
       </button>
     </form>
   );

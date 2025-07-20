@@ -13,15 +13,18 @@ const Cart = () => {
       const res = await axios.get("http://localhost:3000/products");
       const allProducts = res.data;
 
-      const details = user.cart.map((item) => {
-        const product = allProducts.find(
-          (p) => p.id.toString() === item.productId.toString()
-        );
-        return {
-          ...product,
-          quantity: item.quantity,
-        };
-      });
+      const details = user?.cart
+        ?.map((item) => {
+          const product = allProducts.find(
+            (p) => p?.id?.toString() === item?.productId?.toString()
+          );
+          if (!product) return null;
+          return {
+            ...product,
+            quantity: item.quantity,
+          };
+        })
+        .filter((item) => item !== null);
 
       setCartDetails(details);
       calculateTotal(details);

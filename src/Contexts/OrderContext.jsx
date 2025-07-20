@@ -14,7 +14,7 @@ export const OrderProvider = ({ children }) => {
   const fetchOrders = async () => {
     if (userId) {
       try {
-        const res = await axios.get(`http://localhost:3000/orders?userId=${userId}`);
+        const res = await axios.get(`http://localhost:3000/order?userId=${userId}`);
         setOrders(res.data.reverse()); // Most recent first
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -29,7 +29,7 @@ export const OrderProvider = ({ children }) => {
 
   const placeOrder = async (newOrder) => {
     try {
-      const res = await axios.post("http://localhost:3000/orders", newOrder);
+      const res = await axios.post("http://localhost:3000/order", newOrder);
       setOrders((prev) => [res.data, ...prev]);
       return { success: true };
     } catch (error) {
