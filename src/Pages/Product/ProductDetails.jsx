@@ -5,19 +5,17 @@ import { useAuth } from "../../Contexts/AuthContext";
 import ReviewForm from "../../Components/ReviewForm";
 
 const ProductDetail = () => {
+
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loadingProduct, setLoadingProduct] = useState(true);
   const [productError, setProductError] = useState(null);
-
   const [reviews, setReviews] = useState([]);
   const [averageRating, setAverageRating] = useState(0);
   const [loadingReviews, setLoadingReviews] = useState(false);
-
   const { user, setUser } = useAuth();
 
-  // Fetch product
-  useEffect(() => {
+  useEffect(() => {                             //product fetch
     const fetchProduct = async () => {
       try {
         setLoadingProduct(true);
@@ -34,8 +32,7 @@ const ProductDetail = () => {
     fetchProduct();
   }, [id]);
 
-  // Fetch 5-star reviews only
-  const fetchReviews = async () => {
+  const fetchReviews = async () => {                             //review fetch
     try {
       setLoadingReviews(true);
       const res = await axios.get(`http://localhost:3000/review?productId=${id}`);
@@ -58,7 +55,8 @@ const ProductDetail = () => {
     if (product) fetchReviews();
   }, [product]);
 
-  const handleAddToCart = async () => {
+
+  const handleAddToCart = async () => {                           //Add to cart
     if (!user) return alert("Please log in first!");
 
     const existing = user.cart.find((item) => item.productId === product.id);
@@ -81,7 +79,7 @@ const ProductDetail = () => {
     }
   };
 
-  const handleAddToWishlist = async () => {
+  const handleAddToWishlist = async () => {                //Add to wishlist
     if (!user) return alert("Please log in first!");
 
     const alreadyWishlisted = user.wishlist.find(
@@ -107,7 +105,6 @@ const ProductDetail = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-8">
-      {/* Product Info */}
       <div className="flex flex-col md:flex-row gap-6">
         <img
           src={product.image?.[0] || "/default.jpg"}
@@ -120,22 +117,17 @@ const ProductDetail = () => {
           <p className="text-xl font-semibold">₹{product.price}</p>
           <br />
           <br />
-          <button
-            onClick={handleAddToCart}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl"
-          >
+
+          <button onClick={handleAddToCart} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl" >
             Add to Cart
           </button>
-          <button
-            onClick={handleAddToWishlist}
-            className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded mt-4"
-          >
+
+          <button onClick={handleAddToWishlist} className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded mt-4" >
             Add to Wishlist
           </button>
         </div>
       </div>
 
-      {/* Reviews Section */}
       <div className="mt-10 border-t pt-4">
         <h2 className="text-lg font-semibold mb-2">
           Average Rating (only 5⭐): ⭐ {averageRating}

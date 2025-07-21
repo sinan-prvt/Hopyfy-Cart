@@ -20,7 +20,6 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Error fetching user:", error);
     }
-
     setLoading(false);
   };
 
@@ -65,7 +64,9 @@ export const AuthProvider = ({ children }) => {
 
   const addToWishlist = async (product) => {
     try {
-      const isAlreadyInWishlist = user?.wishlist?.some((item) => item.id === product.id);
+      const isAlreadyInWishlist = user?.wishlist?.some(
+        (item) => item.id === product.id
+      );
       if (isAlreadyInWishlist) return;
 
       const updatedWishlist = [...(user?.wishlist || []), product];
@@ -82,7 +83,9 @@ export const AuthProvider = ({ children }) => {
 
   const removeFromWishlist = async (productId) => {
     try {
-      const updatedWishlist = user?.wishlist?.filter((item) => item.id !== productId);
+      const updatedWishlist = user?.wishlist?.filter(
+        (item) => item.id !== productId
+      );
 
       await axios.patch(`http://localhost:3000/users/${user.id}`, {
         wishlist: updatedWishlist,
@@ -94,13 +97,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const moveToCart = async (productId) => {
-    if (!user) return;
+  const moveToCart = async (product) => {
+    if (!user || !product) return;
 
-    const product = user.wishlist.find((p) => p.id === productId);
-    if (!product) return;
+    const alreadyInCart = user.cart?.some((item) => item.id === product.id);
+    if (alreadyInCart) {
+      alert("Item already in cart.");
+      return;
+    }
 
-    const updatedWishlist = user.wishlist.filter((p) => p.id !== productId);
+    const updatedWishlist = user.wishlist?.filter(
+      (item) => item.id !== product.id
+    );
     const updatedCart = [...(user.cart || []), { ...product, quantity: 1 }];
 
     try {

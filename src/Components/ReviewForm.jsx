@@ -3,24 +3,25 @@ import axios from "axios";
 import { useAuth } from "../Contexts/AuthContext";
 
 const ReviewForm = ({ productId, onReviewSubmit }) => {
+
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const { user } = useAuth();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {     // Submit
     e.preventDefault();
     if (rating === 0) return alert("Please select a star rating");
 
-    const newReview = {
-      productId: parseInt(productId),
-      userId: user.id,
-      rating,
-    };
+  const newReview = {
+    productId: parseInt(productId),
+    userId: user.id,
+    rating,
+  };
 
     try {
       await axios.post("http://localhost:3000/reviews", newReview);
-      onReviewSubmit(); // refresh reviews
-      setRating(0); // reset
+      onReviewSubmit();                 
+      setRating(0);                   
       alert("Thank you for your review!");
     } catch (err) {
       console.error("Error submitting review", err);
@@ -43,11 +44,9 @@ const ReviewForm = ({ productId, onReviewSubmit }) => {
             ★
           </span>
         ))}
+        
       </div>
-      <button
-        type="submit"
-        className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-      >
+      <button type="submit" className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700" >
         Submit Rating
       </button>
     </form>

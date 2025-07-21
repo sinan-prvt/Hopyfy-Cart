@@ -40,7 +40,7 @@ const Home = () => {
         </Link>
       </div>
 
-      {/* Product Grid */}
+
       <div className="max-w-9xl mx-auto p-5">
         <h2 className="text-2xl font-bold mb-4">Featured Products</h2>
 

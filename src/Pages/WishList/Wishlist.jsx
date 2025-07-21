@@ -35,17 +35,11 @@ const Wishlist = () => {
           <h3 className="text-lg font-semibold mt-2 line-clamp-2">{product.name}</h3>
           <p className="text-green-600 font-medium mt-1">₹{product.price}</p>
 
-          <button
-            className="absolute top-2 right-2 bg-red-100 text-red-600 px-2 py-1 rounded text-sm hover:bg-red-200"
-            onClick={() => removeFromWishlist(product.id)}
-          >
+          <button className="absolute top-2 right-2 bg-red-100 text-red-600 px-2 py-1 rounded text-sm hover:bg-red-200" onClick={() => removeFromWishlist(product.id)} >
             Remove
           </button>
 
-          <button
-            onClick={() => moveToCart(product.id)}
-            className="mt-2 w-full bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
-          >
+          <button onClick={() => moveToCart(product)} className="mt-2 w-full bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600" >
             Move to Cart
           </button>
         </div>

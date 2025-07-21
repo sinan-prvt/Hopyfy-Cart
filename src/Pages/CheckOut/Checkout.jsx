@@ -7,14 +7,12 @@ const Checkout = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
 
-  useEffect(() => {
+  useEffect(() => {                             //product details fetch for cart
     const fetchCartDetails = async () => {
       if (user?.cart?.length > 0) {
         try {
-          // Fetch all products
           const { data: allProducts } = await axios.get("http://localhost:3000/products");
 
-          // Match cart items with product details
           const detailedCart = user.cart.map((cartItem) => {
             const product = allProducts.find((p) => p.id === cartItem.productId);
             if (!product) return null;
@@ -38,11 +36,11 @@ const Checkout = () => {
         }
       }
     };
-
     fetchCartDetails();
   }, [user]);
 
-  const handlePlaceOrder = async () => {
+
+  const handlePlaceOrder = async () => {                      //save order and clear cart
     if (!user || cartItems.length === 0) return;
 
     const orderData = {
@@ -59,13 +57,9 @@ const Checkout = () => {
     };
 
     try {
-      // Save order to db.json
       await axios.post("http://localhost:3000/order", orderData);
-
-      // Clear user's cart in backend
       await axios.patch(`http://localhost:3000/users/${user.id}`, { cart: [] });
 
-      // Update user context
       setUser((prev) => ({ ...prev, cart: [] }));
 
       alert("Order placed successfully!");
@@ -100,10 +94,7 @@ const Checkout = () => {
             Total: ₹{totalAmount}
           </div>
 
-          <button
-            className="mt-6 bg-black text-white py-2 px-4 rounded hover:bg-gray-800"
-            onClick={handlePlaceOrder}
-          >
+          <button className="mt-6 bg-black text-white py-2 px-4 rounded hover:bg-gray-800" onClick={handlePlaceOrder} >
             Place Order
           </button>
         </>

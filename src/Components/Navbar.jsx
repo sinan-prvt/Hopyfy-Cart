@@ -4,37 +4,28 @@ import { Heart } from "lucide-react";
 
 
 const Navbar = () => {
-  const { user, logout } = useAuth(); // ✅ Only one useAuth call
+  const { user, logout } = useAuth(); 
   const navigate = useNavigate();
 
-    const wishlistCount = user?.wishlist?.length || 0;
+  const wishlistCount = user?.wishlist?.length || 0;    //wishlist count
 
+  const cartCount = user?.cart?.reduce((sum, item) => sum + item.quantity, 0) || 0;  //cart count
 
-  const handleLogout = () => {
+  const handleLogout = () => {                 //Logout
     logout();
     navigate("/login");
   };
-
-  // ✅ Calculate cart count safely
-  const cartCount = user?.cart?.reduce((sum, item) => sum + item.quantity, 0) || 0;
 
   return (
     <nav className="bg-gray-100 p-4 flex justify-between items-center shadow">
       <h1 className="text-xl font-bold text-gray-800">🛒 Hopyfy Cart</h1>
 
       <ul className="Nav">
-        <Link to="/" className="mx-2 text-sm text-gray-700 hover:underline">Home</Link>&nbsp;&nbsp;&nbsp;&nbsp;
-        <Link to="/product" className="mx-2 text-sm text-gray-700 hover:underline">Product</Link>&nbsp;&nbsp;&nbsp;&nbsp;
-       <Link to="/my-orders" className="mx-2 text-sm text-gray-700 hover:underline" >Orders</Link> {" "} {" "}{" "}{" "}
-        <Link to="/about" className="mx-2 text-sm text-gray-700 hover:underline">About</Link>&nbsp;&nbsp;&nbsp;&nbsp;
+        <Link to="/" className="mx-2 text-sm text-gray-700 hover:underline">Home</Link>
+        <Link to="/product" className="mx-2 text-sm text-gray-700 hover:underline">Product</Link>
+        <Link to="/my-orders" className="mx-2 text-sm text-gray-700 hover:underline" >Orders</Link>
+        <Link to="/about" className="mx-2 text-sm text-gray-700 hover:underline">About</Link>
       </ul>
-
-
-
- 
-
-
-      
 
       <div className="space-x-4 flex items-center">
 
@@ -48,8 +39,6 @@ const Navbar = () => {
         </Link>
         
 
-
-
         <Link to="/cart" className="relative">
           <span className="text-2xl">🛒</span>
           {cartCount > 0 && (
@@ -62,32 +51,22 @@ const Navbar = () => {
         {user ? (
           <>
             <span className="text-gray-600">Hi, {user.name}</span>
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-            >
+            <button onClick={handleLogout} className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
               Logout
             </button>
           </>
         ) : (
           <>
-            <button
-              onClick={() => navigate("/login")}
-              className="text-blue-600 hover:underline"
-            >
+            <button onClick={() => navigate("/login")} className="text-blue-600 hover:underline" >
               Login
             </button>
-            <button
-              onClick={() => navigate("/signup")}
-              className="text-blue-600 hover:underline"
-            >
+
+            <button onClick={() => navigate("/signup")} className="text-blue-600 hover:underline" >
               Signup
             </button>
           </>
         )}
-      </div>
-
-      
+      </div>      
     </nav>
   );
 };

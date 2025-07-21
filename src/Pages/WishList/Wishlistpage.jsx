@@ -28,16 +28,10 @@ const Wishlistpage = () => {
               <p className="text-gray-600">₹{item.price}</p>
 
               <div className="mt-2 flex gap-2">
-                <button
-                  className="bg-green-500 text-white px-3 py-1 rounded"
-                  onClick={() => moveToCart(item)}
-                >
+                <button className="bg-green-500 text-white px-3 py-1 rounded" onClick={() => moveToCart(item)} >
                   Move to Cart
                 </button>
-                <button
-                  className="bg-red-500 text-white px-3 py-1 rounded"
-                  onClick={() => removeFromWishlist(item.id)}
-                >
+                <button className="bg-red-500 text-white px-3 py-1 rounded" onClick={() => removeFromWishlist(item.id)} >
                   Remove
                 </button>
               </div>

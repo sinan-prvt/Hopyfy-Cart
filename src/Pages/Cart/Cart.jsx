@@ -4,16 +4,17 @@ import { useAuth } from "../../Contexts/AuthContext";
 import { Link } from "react-router-dom";
 
 const Cart = () => {
+
   const { user, setUser } = useAuth();
   const [cartDetails, setCartDetails] = useState([]);
   const [total, setTotal] = useState(0);
 
-  const fetchCartDetails = async () => {
+  const fetchCartDetails = async () => {                   //fetch cart details
     try {
       const res = await axios.get("http://localhost:3000/products");
       const allProducts = res.data;
 
-      const details = user?.cart
+      const details = user?.cart                       //match user cart items with product details
         ?.map((item) => {
           const product = allProducts.find(
             (p) => p?.id?.toString() === item?.productId?.toString()
@@ -33,12 +34,12 @@ const Cart = () => {
     }
   };
 
-  const calculateTotal = (cart) => {
+  const calculateTotal = (cart) => {                 //calculate total price
     const sum = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
     setTotal(sum);
   };
 
-  const handleRemove = async (productId) => {
+  const handleRemove = async (productId) => {        //remove items from cart
     try {
       const updatedCart = user.cart.filter(
         (item) => item.productId.toString() !== productId.toString()
@@ -53,7 +54,7 @@ const Cart = () => {
         cart: updatedCart,
       }));
 
-      const updatedDetails = cartDetails.filter(
+      const updatedDetails = cartDetails.filter(              
         (item) => item.id.toString() !== productId.toString()
       );
       setCartDetails(updatedDetails);
@@ -63,7 +64,7 @@ const Cart = () => {
     }
   };
 
-  const updateQuantity = async (productId, newQuantity) => {
+  const updateQuantity = async (productId, newQuantity) => {         //update item quantity
     if (newQuantity < 1) return;
 
     try {
@@ -91,7 +92,7 @@ const Cart = () => {
     }
   };
 
-  useEffect(() => {
+  useEffect(() => {                                //load cart data
     if (user && user.cart?.length > 0) {
       fetchCartDetails();
     } else {
@@ -122,27 +123,18 @@ const Cart = () => {
                   <h2 className="font-semibold">{item.name}</h2>
                   <p>₹{item.price}</p>
                   <div className="flex items-center gap-2 mt-2">
-                    <button
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="px-2 bg-gray-200 rounded"
-                      disabled={item.quantity <= 1}
-                    >
+                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="px-2 bg-gray-200 rounded" disabled={item.quantity <= 1} >
                       −
                     </button>
+
                     <span className="text-lg">{item.quantity}</span>
-                    <button
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="px-2 bg-gray-200 rounded"
-                    >
+                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="px-2 bg-gray-200 rounded" >
                       +
                     </button>
                   </div>
                 </div>
               </div>
-              <button
-                onClick={() => handleRemove(item.id)}
-                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 self-start sm:self-auto"
-              >
+              <button onClick={() => handleRemove(item.id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 self-start sm:self-auto">
                 Remove
               </button>
             </div>

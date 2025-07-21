@@ -9,9 +9,10 @@ const ProductCart = ({ product }) => {
   
   const navigate = useNavigate();
   const { user, addToWishlist, removeFromWishlist } = useAuth();
-  const isInWishlist = user?.wishlist?.some((item) => item.id === product.id);
 
-  const handleWishlistToggle = (e) => {
+  const isInWishlist = user?.wishlist?.some((item) => item.id === product.id);     //check product already in wishlist
+
+  const handleWishlistToggle = (e) => {         //wishlist toggle function
     e.stopPropagation()
     if (isInWishlist) {
       removeFromWishlist(product.id);
@@ -20,7 +21,7 @@ const ProductCart = ({ product }) => {
     }
   };
 
-  const [averageRating, setAverageRating] = useState(0);
+  const [averageRating, setAverageRating] = useState(0);         //average rating fetch
 
 useEffect(() => {
   const fetchRating = async () => {
@@ -42,7 +43,7 @@ useEffect(() => {
 
   return (
     <>
-       <div
+    <div
       className=" min-w-[250px] max-w-[150px] p-2 border rounded flex-shrink-0 cursor-pointer relative "
       onClick={() => navigate(`/product/${product.id}`)}
     >
@@ -58,26 +59,19 @@ useEffect(() => {
         From ₹{product.price}
       </p>
 
-      {/* Wishlist Button */}
-      <button
-        className="absolute top-2 right-2 text-red-500 z-10"
-        onClick={handleWishlistToggle}
-      >
+      <button className="absolute top-2 right-2 text-red-500 z-10" onClick={handleWishlistToggle} >
         {isInWishlist ? <HeartOff /> : <Heart />}
       </button>
 
       <div className="flex items-center space-x-1 mt-2">
-  {[...Array(5)].map((_, i) => (
-    <span key={i}>
-      {i < Math.round(averageRating) ? "⭐" : "☆"}
-    </span>
-  ))}
-  <span className="text-sm text-gray-600">({averageRating})</span>
-</div>
-
+          {[...Array(5)].map((_, i) => (
+        <span key={i}>
+          {i < Math.round(averageRating) ? "⭐" : "☆"}
+        </span>
+          ))}
+        <span className="text-sm text-gray-600">({averageRating})</span>
+      </div>
     </div>
-
-    
     </>
   );
 };

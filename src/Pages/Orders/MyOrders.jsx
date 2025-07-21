@@ -4,13 +4,14 @@ import { useOrder } from "../../Contexts/OrderContext";
 import axios from "axios";
 
 const MyOrders = () => {
+
   const { user, setUser } = useAuth();
   const { placeOrder } = useOrder();
 
   const [cart, setCart] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
 
-  useEffect(() => {
+  useEffect(() => {                        //load and enrich cart data
     const fetchCartProducts = async () => {
       if (user?.cart?.length > 0) {
         try {
@@ -38,7 +39,8 @@ const MyOrders = () => {
     fetchCartProducts();
   }, [user]);
 
-  const handlePlaceOrder = async () => {
+
+  const handlePlaceOrder = async () => {          //create order and clear cart
     const orderPayload = {
       userId: user.id,
       items: cart,
@@ -91,10 +93,7 @@ const MyOrders = () => {
             Total: ₹{totalAmount}
           </div>
 
-          <button
-            className="mt-6 bg-black text-white py-2 px-4 rounded hover:bg-gray-800"
-            onClick={handlePlaceOrder}
-          >
+          <button className="mt-6 bg-black text-white py-2 px-4 rounded hover:bg-gray-800" onClick={handlePlaceOrder} >
             Place Order
           </button>
         </>

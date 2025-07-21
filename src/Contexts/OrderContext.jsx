@@ -4,6 +4,7 @@ import axios from "axios";
 const OrderContext = createContext();
 
 export const OrderProvider = ({ children }) => {
+
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
 
@@ -11,11 +12,11 @@ export const OrderProvider = ({ children }) => {
   console.log("User ID from localStorage:", userId);
 
 
-  const fetchOrders = async () => {
+  const fetchOrders = async () => {                    // oders fetch
     if (userId) {
       try {
         const res = await axios.get(`http://localhost:3000/order?userId=${userId}`);
-        setOrders(res.data.reverse()); // Most recent first
+        setOrders(res.data.reverse()); 
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
@@ -27,7 +28,7 @@ export const OrderProvider = ({ children }) => {
     fetchOrders();
   }, [userId]);
 
-  const placeOrder = async (newOrder) => {
+  const placeOrder = async (newOrder) => {              //place new order
     try {
       const res = await axios.post("http://localhost:3000/order", newOrder);
       setOrders((prev) => [res.data, ...prev]);
