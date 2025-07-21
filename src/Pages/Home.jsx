@@ -106,7 +106,7 @@ const Home = () => {
         )}
       </div>
 
-      <div className="bg-gray-100 py-12 px-6 scrollbar-none">
+      <div className="bg-gray-100 py-12 px-6 ">
         <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center">
           <div>
             <img src="/Icons/fast.png" alt="Shipping" className="w-12 mx-auto mb-2 " />
