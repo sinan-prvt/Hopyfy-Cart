@@ -123,18 +123,18 @@ const Cart = () => {
                   <h2 className="font-semibold">{item.name}</h2>
                   <p>₹{item.price}</p>
                   <div className="flex items-center gap-2 mt-2">
-                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="px-2 bg-gray-200 rounded" disabled={item.quantity <= 1} >
+                    <button type="button" onClick={() => updateQuantity(item.id, item.quantity - 1)} className="px-2 bg-gray-200 rounded" disabled={item.quantity <= 1} >
                       −
                     </button>
 
                     <span className="text-lg">{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="px-2 bg-gray-200 rounded" >
+                    <button type="button" onClick={() => updateQuantity(item.id, item.quantity + 1)} className="px-2 bg-gray-200 rounded" >
                       +
                     </button>
                   </div>
                 </div>
               </div>
-              <button onClick={() => handleRemove(item.id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 self-start sm:self-auto">
+              <button type="button" onClick={() => handleRemove(item.id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 self-start sm:self-auto">
                 Remove
               </button>
             </div>

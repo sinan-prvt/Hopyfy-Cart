@@ -1,19 +1,19 @@
+// ProductCart.jsx
 import { useNavigate } from "react-router-dom";
 import { Heart, HeartOff } from "lucide-react";
 import { useAuth } from "../../Contexts/AuthContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-
 const ProductCart = ({ product }) => {
-  
   const navigate = useNavigate();
   const { user, addToWishlist, removeFromWishlist } = useAuth();
+  const isInWishlist = user?.wishlist?.some((item) => item.id === product.id);
+  const [averageRating, setAverageRating] = useState(0);
 
-  const isInWishlist = user?.wishlist?.some((item) => item.id === product.id);     //check product already in wishlist
-
-  const handleWishlistToggle = (e) => {         //wishlist toggle function
-    e.stopPropagation()
+  const handleWishlistToggle = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
     if (isInWishlist) {
       removeFromWishlist(product.id);
     } else {
@@ -21,58 +21,69 @@ const ProductCart = ({ product }) => {
     }
   };
 
-  const [averageRating, setAverageRating] = useState(0);         //average rating fetch
-
-useEffect(() => {
-  const fetchRating = async () => {
-    try {
-      const res = await axios.get(`http://localhost:3000/reviews?productId=${product.id}`);
-      const avg =
-        res.data.length > 0
-          ? res.data.reduce((sum, r) => sum + r.rating, 0) / res.data.length
-          : 0;
-      setAverageRating(avg.toFixed(1));
-    } catch (err) {
-      console.error("Failed to fetch rating");
-    }
-  };
-
-  fetchRating();
-}, [product.id]);
-
+  useEffect(() => {
+    const fetchRating = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:3000/reviews?productId=${product.id}`
+        );
+        const avg =
+          res.data.length > 0
+            ? res.data.reduce((sum, r) => sum + r.rating, 0) / res.data.length
+            : 0;
+        setAverageRating(avg.toFixed(1));
+      } catch (err) {
+        console.error("Failed to fetch rating");
+      }
+    };
+    fetchRating();
+  }, [product.id]);
 
   return (
-    <>
     <div
-      className=" min-w-[250px] max-w-[150px] p-2 border rounded flex-shrink-0 cursor-pointer relative "
+      className="w-full bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer relative"
       onClick={() => navigate(`/product/${product.id}`)}
     >
-      <img
-        src={product.image[0]}
-        alt={product.name}
-        className="w-full h-[220px] object-contain mb-2 "
-      />
-      <h3 className="text-sm font-semibold leading-tight line-clamp-3">
-        {product.name}
-      </h3>
-      <p className="text-green-600 text-xs font-medium mt-1">
-        From ₹{product.price}
-      </p>
+      <div className="relative">
+        <img
+          src={product.image[0]}
+          alt={product.name}
+          className="w-full h-56 object-contain p-4"
+        />
+        <button
+          className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md hover:bg-red-50 transition-colors"
+          onClick={handleWishlistToggle}
+        >
+          {isInWishlist ? (
+            <HeartOff className="text-red-500" size={20} />
+          ) : (
+            <Heart className="text-gray-400 hover:text-red-500" size={20} />
+          )}
+        </button>
+      </div>
 
-      <button className="absolute top-2 right-2 text-red-500 z-10" onClick={handleWishlistToggle} >
-        {isInWishlist ? <HeartOff /> : <Heart />}
-      </button>
-
-      <div className="flex items-center space-x-1 mt-2">
-          {[...Array(5)].map((_, i) => (
-        <span key={i}>
-          {i < Math.round(averageRating) ? "⭐" : "☆"}
+      <div className="p-4">
+        <span className="inline-block px-2 py-1 text-xs font-semibold text-white bg-blue-500 rounded-full mb-2">
+          {product.category}
         </span>
-          ))}
-        <span className="text-sm text-gray-600">({averageRating})</span>
+        <p className="text-sm font-semibold mb-2 text-gray-500">{product.brand}</p>
+        <h3 className="text-md font-semibold mb-1 line-clamp-2 h-12">
+          {product.name}
+        </h3>
+        <p className="text-green-600 font-bold text-lg">₹{product.price}</p>
+        
+        <div className="flex items-center mt-2">
+          <div className="flex">
+            {[...Array(5)].map((_, i) => (
+              <span key={i} className="text-yellow-400">
+                {i < Math.floor(averageRating) ? "★" : "☆"}
+              </span>
+            ))}
+          </div>
+          <span className="text-xs text-gray-500 ml-1">({averageRating})</span>
+        </div>
       </div>
     </div>
-    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import axios from "axios";
 
 const AuthContext = createContext();
@@ -8,24 +8,24 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const userId = localStorage.getItem("userId");
 
-  const fetchUser = async () => {
-    if (!userId) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const res = await axios.get(`http://localhost:3000/users/${userId}`);
-      setUser(res.data);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-    }
-    setLoading(false);
-  };
-
   useEffect(() => {
+    const fetchUser = async () => {
+      if (!userId) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const res = await axios.get(`http://localhost:3000/users/${userId}`);
+        setUser(res.data);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+      setLoading(false);
+    };
+
     fetchUser();
-  }, []);
+  }, [userId]);
 
   const login = async (email, password) => {
     try {
@@ -100,37 +100,41 @@ export const AuthProvider = ({ children }) => {
   const moveToCart = async (product) => {
     if (!user || !product) return;
 
-  const alreadyInCart = user.cart?.some((item) => item.productId === product.id);
+    const alreadyInCart = user.cart?.some(
+      (item) => item.productId === product.id
+    );
     if (alreadyInCart) {
       alert("Item already in cart.");
       return;
     }
 
-  const updatedWishlist = user.wishlist?.filter(
-    (item) => item.id !== product.id
-  );
+    const updatedWishlist = user.wishlist?.filter(
+      (item) => item.id !== product.id
+    );
 
-  const updatedCart = [...(user.cart || []), { productId: product.id, quantity: 1 }];
+    const updatedCart = [
+      ...(user.cart || []),
+      { productId: product.id, quantity: 1 },
+    ];
 
-  try {
-    await axios.patch(`http://localhost:3000/users/${user.id}`, {
-      wishlist: updatedWishlist,
-      cart: updatedCart,
-    });
+    try {
+      await axios.patch(`http://localhost:3000/users/${user.id}`, {
+        wishlist: updatedWishlist,
+        cart: updatedCart,
+      });
 
-    const res = await axios.get(`http://localhost:3000/users/${user.id}`);
-    setUser(res.data);
-  } catch (error) {
-    console.error("Error moving to cart:", error);
-  }
-};
-
+      const res = await axios.get(`http://localhost:3000/users/${user.id}`);
+      setUser(res.data);
+    } catch (error) {
+      console.error("Error moving to cart:", error);
+    }
+  };
 
   const updateQuantity = async (productId, newQuantity) => {
     if (!user) return;
 
     const updatedCart = user.cart.map((item) =>
-      item.id === productId ? { ...item, quantity: newQuantity } : item
+      item.productId === productId ? { ...item, quantity: newQuantity } : item
     );
 
     try {
@@ -144,21 +148,21 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const contextValue = useMemo(() => ({
+    user,
+    login,
+    signup,
+    logout,
+    loading,
+    setUser,
+    addToWishlist,
+    removeFromWishlist,
+    moveToCart,
+    updateQuantity,
+  }), [user, loading]);
+
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        login,
-        signup,
-        logout,
-        loading,
-        setUser,
-        addToWishlist,
-        removeFromWishlist,
-        moveToCart,
-        updateQuantity,
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
