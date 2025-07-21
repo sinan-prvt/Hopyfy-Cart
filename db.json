@@ -111,12 +111,7 @@
       "password": "sinan@gmail.com",
       "role": "user",
       "isBlock": false,
-      "cart": [
-        {
-          "productId": "p3",
-          "quantity": 1
-        }
-      ],
+      "cart": [],
       "order": [],
       "wishlist": [],
       "created_at": "2025-07-21T06:12:38.842Z"
@@ -124,46 +119,59 @@
   ],
   "products": [
     {
-      "id": "1010",
-      "name": "Nike Air Max TL 2.5",
-      "description": "Reviving a ",
-      "price": 16995,
+      "id": "P01",
+      "name": "Nike Revolution 8",
+      "description": "The Revolution 8 is an evolution of your faithful favorite. Every stride is cushioned thanks to a foam midsole and a flexible forefoot that makes your steps soft. ",
+      "price": 4295,
       "count": 30,
       "category": "Men's Shoes",
       "image": [
-        "/Images/nb1.jpg"
+        "/Images/nike1.webp"
       ],
       "isActive": true,
       "created_at": "2025-07-10T10:30:00.000Z"
     },
     {
-      "id": "3030",
+      "id": "P02",
       "name": "New Balance ",
-      "description": "Introduced in 1988, ",
-      "price": 12999,
+      "description": "The original 530 combined turn of the millennium aesthetics with the reliability of a high milage running shoe ",
+      "price": 11999,
       "count": 40,
       "category": "Men's Shoes",
       "image": [
-        "/Images/nb1.jpg"
+        "/Images/nb1.webp"
       ],
       "isActive": true,
       "created_at": "2025-07-10T10:30:00.000Z"
     },
     {
-      "id": "p3",
-      "name": "Adidas",
-      "description": "Comfortable and stylish running shoes",
-      "price": 3999,
+      "id": "P03",
+      "name": "Reebok",
+      "description": "With design language pulled from a track spike from 1961 – the R400 has DNA rooted in one of the first ever Reebok shoes.",
+      "price": 9999,
       "count": 10,
       "category": "Shoes",
       "image": [
-        "/Images/nb1.jpg"
+        "/Images/reebok1.webp"
       ],
       "isActive": true,
       "created_at": "2025-07-10T10:30:00.000Z"
     },
     {
-      "id": "p4",
+      "id": "P04",
+      "name": "Puma Palermo Vintage",
+      "description": "Straight from our archives, it's the PUMA Palermo. This classic terrace shoe debuted in the 80's and now, ",
+      "price": 6999,
+      "count": 30,
+      "category": "Shoes",
+      "image": [
+        "/Images/puma1.webp"
+      ],
+      "isActive": true,
+      "created_at": "2025-07-10T10:30:00.000Z"
+    },
+    {
+      "id": "P05",
       "name": "nike",
       "description": "Comfortable and stylish running shoes",
       "price": 1999,
@@ -176,40 +184,27 @@
       "created_at": "2025-07-10T10:30:00.000Z"
     },
     {
-      "id": "p5",
-      "name": "nike",
-      "description": "Comfortable and stylish running shoes",
-      "price": 1999,
+      "id": "P06",
+      "name": "Converse Run Star",
+      "description": "Meet the Run Star Trainer—a celebration of sports, style, and heritage. Sleek details and luxe cushioning pair well with all your favourite 'fits, day and night",
+      "price": 6499,
       "count": 30,
       "category": "Shoes",
       "image": [
-        "/Images/nb1.jpg"
+        "/Images/converse1.webp"
       ],
       "isActive": true,
       "created_at": "2025-07-10T10:30:00.000Z"
     },
     {
-      "id": "p6",
-      "name": "puma",
-      "description": "Comfortable and stylish running shoes",
-      "price": 1999,
+      "id": "P07",
+      "name": "Jordan Air 1 Zoom CMFT 2",
+      "description": "Premium suede and Jordan Brand's signature Formula 23 foam come together to give you an extra luxurious (and extra cozy) AJ1.",
+      "price": 13245,
       "count": 30,
       "category": "Shoes",
       "image": [
-        "/Images/nb1.jpg"
-      ],
-      "isActive": true,
-      "created_at": "2025-07-10T10:30:00.000Z"
-    },
-    {
-      "id": "p7",
-      "name": "puma",
-      "description": "Comfortable and stylish running shoes",
-      "price": 1999,
-      "count": 30,
-      "category": "Shoes",
-      "image": [
-        "/Images/nb1.jpg"
+        "/Images/jordan1.webp"
       ],
       "isActive": true,
       "created_at": "2025-07-10T10:30:00.000Z"
@@ -606,6 +601,29 @@
         "name": "sinan",
         "address": "abcd",
         "phone": "9400850405"
+      },
+      "payment": {
+        "method": "cod"
+      }
+    },
+    {
+      "id": "494e",
+      "userId": "2646",
+      "items": [
+        {
+          "productId": "p3",
+          "name": "Reebok",
+          "price": 9999,
+          "quantity": 1
+        }
+      ],
+      "totalAmount": 9999,
+      "orderDate": "2025-07-21T07:18:30.082Z",
+      "status": "pending",
+      "shippingDetails": {
+        "name": "s",
+        "address": "abc",
+        "phone": "8976543213"
       },
       "payment": {
         "method": "cod"

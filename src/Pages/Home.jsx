@@ -29,7 +29,7 @@ const Home = () => {
 
   return (
     <div>
-      <div className="relative h-[550px] overflow-hidden">
+      <div className="relative h-[600px] overflow-hidden">
         <video
           autoPlay
           muted
