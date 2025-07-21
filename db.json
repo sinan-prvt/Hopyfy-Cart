@@ -475,6 +475,153 @@
       "totalAmount": 16995,
       "orderDate": "2025-07-21T04:14:23.078Z",
       "status": "pending"
+    },
+    {
+      "id": "fd1a",
+      "userId": "bd21",
+      "items": [
+        {
+          "productId": "p4",
+          "name": "nike",
+          "price": 1999,
+          "quantity": 1
+        },
+        {
+          "productId": "p3",
+          "name": "Adidas",
+          "price": 3999,
+          "quantity": 1
+        }
+      ],
+      "totalAmount": 5998,
+      "orderDate": "2025-07-21T04:38:17.803Z",
+      "status": "pending"
+    },
+    {
+      "id": "ab68",
+      "userId": "bd21",
+      "items": [
+        {
+          "productId": "1010",
+          "name": "Nike Air Max TL 2.5",
+          "price": 16995,
+          "quantity": 1
+        },
+        {
+          "productId": "3030",
+          "name": "New Balance ",
+          "price": 12999,
+          "quantity": 1
+        },
+        {
+          "productId": "p7",
+          "name": "puma",
+          "price": 1999,
+          "quantity": 2
+        }
+      ],
+      "totalAmount": 33992,
+      "orderDate": "2025-07-21T05:48:01.919Z",
+      "status": "pending"
+    },
+    {
+      "id": "5e50",
+      "userId": "bd21",
+      "items": [
+        {
+          "productId": "1010",
+          "name": "Nike Air Max TL 2.5",
+          "price": 16995,
+          "quantity": 1
+        },
+        {
+          "productId": "3030",
+          "name": "New Balance ",
+          "price": 12999,
+          "quantity": 1
+        }
+      ],
+      "totalAmount": 29994,
+      "orderDate": "2025-07-21T05:51:42.511Z",
+      "status": "pending"
+    },
+    {
+      "id": "7568",
+      "userId": "bd21",
+      "items": [
+        {
+          "productId": "p3",
+          "name": "Adidas",
+          "price": 3999,
+          "quantity": 1
+        },
+        {
+          "productId": "3030",
+          "name": "New Balance ",
+          "price": 12999,
+          "quantity": 1
+        }
+      ],
+      "totalAmount": 16998,
+      "orderDate": "2025-07-21T05:54:12.359Z",
+      "status": "pending"
+    },
+    {
+      "id": "3a46",
+      "userId": "bd21",
+      "items": [
+        {
+          "productId": "3030",
+          "name": "New Balance ",
+          "price": 12999,
+          "quantity": 1
+        }
+      ],
+      "totalAmount": 12999,
+      "orderDate": "2025-07-21T05:56:38.951Z",
+      "status": "pending"
+    },
+    {
+      "id": "1b73",
+      "userId": "bd21",
+      "items": [
+        {
+          "productId": "3030",
+          "name": "New Balance ",
+          "price": 12999,
+          "quantity": 1
+        }
+      ],
+      "totalAmount": 12999,
+      "orderDate": "2025-07-21T05:58:41.401Z",
+      "status": "paid",
+      "payment": {
+        "method": "card",
+        "cardLast4": "3276"
+      }
+    },
+    {
+      "id": "0843",
+      "userId": "bd21",
+      "items": [
+        {
+          "productId": "3030",
+          "name": "New Balance ",
+          "price": 12999,
+          "quantity": 1
+        }
+      ],
+      "totalAmount": 12999,
+      "orderDate": "2025-07-21T06:05:36.341Z",
+      "status": "pending",
+      "shippingDetails": {
+        "name": "sinan",
+        "address": "fsdfsdfsd",
+        "phone": "3242342342"
+      },
+      "payment": {
+        "method": "cod"
+      }
     }
   ],
   "reviews": [

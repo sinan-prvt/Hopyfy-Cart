@@ -17,7 +17,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-gray-100 p-4 flex justify-between items-center shadow">
+    <nav className="bg-gray-300 p-4 flex justify-between items-center shadow">
       <h1 className="text-xl font-bold text-gray-800">🛒 Hopyfy Cart</h1>
 
       <ul className="Nav">
@@ -51,7 +51,7 @@ const Navbar = () => {
         {user ? (
           <>
             <span className="text-gray-600">Hi, {user.name}</span>
-            <button onClick={handleLogout} className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+            <button onClick={handleLogout} className="bg-red-600 text-white px-4 py-3 rounded hover:bg-red-700">
               Logout
             </button>
           </>

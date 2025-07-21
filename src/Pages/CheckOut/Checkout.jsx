@@ -7,7 +7,15 @@ const Checkout = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
 
-  useEffect(() => {                             //product details fetch for cart
+  const [name, setName] = useState("");                         // User input fields
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [paymentMode, setPaymentMode] = useState(""); 
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [cvv, setCvv] = useState("");
+
+  useEffect(() => {
     const fetchCartDetails = async () => {
       if (user?.cart?.length > 0) {
         try {
@@ -39,9 +47,38 @@ const Checkout = () => {
     fetchCartDetails();
   }, [user]);
 
+  const validateFields = () => {
+    if (!name || !address || !phone || !paymentMode) {
+      alert("Please fill all required fields.");
+      return false;
+    }
 
-  const handlePlaceOrder = async () => {                      //save order and clear cart
+    if (!/^\d{10}$/.test(phone)) {
+      alert("Phone number must be 10 digits.");
+      return false;
+    }
+
+    if (paymentMode === "card") {
+      if (!/^\d{16}$/.test(cardNumber)) {
+        alert("Card number must be 16 digits.");
+        return false;
+      }
+      if (!/^\d{2}\/\d{2}$/.test(expiry)) {
+        alert("Expiry must be in MM/YY format.");
+        return false;
+      }
+      if (!/^\d{3}$/.test(cvv)) {
+        alert("CVV must be 3 digits.");
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const handlePlaceOrder = async () => {
     if (!user || cartItems.length === 0) return;
+    if (!validateFields()) return;
 
     const orderData = {
       userId: user.id,
@@ -53,7 +90,18 @@ const Checkout = () => {
       })),
       totalAmount,
       orderDate: new Date().toISOString(),
-      status: "pending",
+      status: paymentMode === "cod" ? "pending" : "paid",
+      shippingDetails: {
+        name,
+        address,
+        phone,
+      },
+      payment: {
+        method: paymentMode,
+        ...(paymentMode === "card" && {
+          cardLast4: cardNumber.slice(-4),
+        }),
+      },
     };
 
     try {
@@ -94,8 +142,95 @@ const Checkout = () => {
             Total: ₹{totalAmount}
           </div>
 
-          <button className="mt-6 bg-black text-white py-2 px-4 rounded hover:bg-gray-800" onClick={handlePlaceOrder} >
-            Place Order
+          <div className="mt-6 space-y-4">
+            <h2 className="text-lg font-semibold">Shipping Information</h2>
+
+            <input
+              type="text"
+              placeholder="Full Name"
+              className="w-full border p-2"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+
+            <textarea
+              placeholder="Address"
+              className="w-full border p-2"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+
+            <input
+              type="text"
+              placeholder="Phone Number"
+              className="w-full border p-2"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              maxLength={10}
+            />
+
+            <h2 className="text-lg font-semibold">Payment Method</h2>
+
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="payment"
+                  value="card"
+                  checked={paymentMode === "card"}
+                  onChange={(e) => setPaymentMode(e.target.value)}
+                />
+                Card
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="payment"
+                  value="cod"
+                  checked={paymentMode === "cod"}
+                  onChange={(e) => setPaymentMode(e.target.value)}
+                />
+                Cash on Delivery
+              </label>
+            </div>
+
+            {paymentMode === "card" && (
+              <div className="space-y-2 mt-2">
+                <input
+                  type="text"
+                  placeholder="Card Number"
+                  className="w-full border p-2"
+                  value={cardNumber}
+                  onChange={(e) => setCardNumber(e.target.value)}
+                  maxLength={16}
+                />
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="MM/YY"
+                    className="w-1/2 border p-2"
+                    value={expiry}
+                    onChange={(e) => setExpiry(e.target.value)}
+                    maxLength={5}
+                  />
+                  <input
+                    type="text"
+                    placeholder="CVV"
+                    className="w-1/2 border p-2"
+                    value={cvv}
+                    onChange={(e) => setCvv(e.target.value)}
+                    maxLength={3}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          <button
+            className="w-full mt-6 bg-black text-white py-2 px-4 rounded hover:bg-gray-800"
+            onClick={handlePlaceOrder}
+          >
+            Confirm & Place Order
           </button>
         </>
       )}
