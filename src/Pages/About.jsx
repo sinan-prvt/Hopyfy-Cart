@@ -4,7 +4,7 @@ const About = () => {
       <div className="max-w-5xl mx-auto bg-white shadow-2xl rounded-xl p-10 flex flex-col md:flex-row items-center gap-10">
         <div className="flex-1">
           <img
-            src="/Images/nike1.webp"
+            src="/Images/about.jpg"
             alt="About Hopyfy"
             className="rounded-xl w-full object-cover"
           />

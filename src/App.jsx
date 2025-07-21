@@ -12,7 +12,11 @@ import Checkout from './Pages/CheckOut/Checkout';
 import MyOrders from './Pages/Orders/MyOrders';
 import  Home  from './Pages/Home';
 import About from './Pages/About';
-import Contact from './Services/Contact';
+import Contact from './Pages/Services/Contact';
+import Faq from './Pages/Services/Faq';
+import Shipping from './Pages/Services/Shipping';
+import Returns from './Pages/Services/Returns';
+import PrivacyPolicy from './Pages/Services/PrivacyPolicy';
 
 function App() {
   return (
@@ -32,6 +36,10 @@ function App() {
               <Route path="/my-orders" element={<MyOrders />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/faq" element={<Faq />} />
+              <Route path="/shipping" element={<Shipping />} />
+              <Route path="/returns" element={<Returns />} />
+              <Route path="/privacypolicy" element={<PrivacyPolicy />} />
             </Routes>
     </>
   );
