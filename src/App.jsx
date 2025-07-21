@@ -12,6 +12,7 @@ import Checkout from './Pages/CheckOut/Checkout';
 import MyOrders from './Pages/Orders/MyOrders';
 import  Home  from './Pages/Home';
 import About from './Pages/About';
+import Contact from './Services/Contact';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/my-orders" element={<MyOrders />} />
               <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
             </Routes>
     </>
   );

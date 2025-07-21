@@ -67,110 +67,9 @@
       "password": "swsw@gmail.com",
       "role": "user",
       "isBlock": false,
-      "cart": [
-        {
-          "productId": "1010",
-          "quantity": 1
-        },
-        {
-          "id": "3030",
-          "name": "New Balance ",
-          "description": "Introduced in 1988, ",
-          "price": 12999,
-          "count": 40,
-          "category": "Men's Shoes",
-          "image": [
-            "/Images/nb1.jpg"
-          ],
-          "isActive": true,
-          "created_at": "2025-07-10T10:30:00.000Z",
-          "quantity": 1
-        },
-        {
-          "id": "p3",
-          "name": "Adidas",
-          "description": "Comfortable and stylish running shoes",
-          "price": 3999,
-          "count": 10,
-          "category": "Shoes",
-          "image": [
-            "https://via.placeholder.com/150"
-          ],
-          "isActive": true,
-          "created_at": "2025-07-10T10:30:00.000Z",
-          "quantity": 1
-        },
-        {
-          "id": "p4",
-          "name": "nike",
-          "description": "Comfortable and stylish running shoes",
-          "price": 1999,
-          "count": 30,
-          "category": "Shoes",
-          "image": [
-            "https://via.placeholder.com/150"
-          ],
-          "isActive": true,
-          "created_at": "2025-07-10T10:30:00.000Z",
-          "quantity": 1
-        },
-        {
-          "id": "p7",
-          "name": "puma",
-          "description": "Comfortable and stylish running shoes",
-          "price": 1999,
-          "count": 30,
-          "category": "Shoes",
-          "image": [
-            "https://via.placeholder.com/150"
-          ],
-          "isActive": true,
-          "created_at": "2025-07-10T10:30:00.000Z",
-          "quantity": 1
-        }
-      ],
+      "cart": [],
       "order": [],
-      "wishlist": [
-        {
-          "id": "3030",
-          "name": "New Balance ",
-          "description": "Introduced in 1988, ",
-          "price": 12999,
-          "count": 40,
-          "category": "Men's Shoes",
-          "image": [
-            "/Images/nb1.jpg"
-          ],
-          "isActive": true,
-          "created_at": "2025-07-10T10:30:00.000Z"
-        },
-        {
-          "id": "p3",
-          "name": "Adidas",
-          "description": "Comfortable and stylish running shoes",
-          "price": 3999,
-          "count": 10,
-          "category": "Shoes",
-          "image": [
-            "https://via.placeholder.com/150"
-          ],
-          "isActive": true,
-          "created_at": "2025-07-10T10:30:00.000Z"
-        },
-        {
-          "id": "p4",
-          "name": "nike",
-          "description": "Comfortable and stylish running shoes",
-          "price": 1999,
-          "count": 30,
-          "category": "Shoes",
-          "image": [
-            "https://via.placeholder.com/150"
-          ],
-          "isActive": true,
-          "created_at": "2025-07-10T10:30:00.000Z"
-        }
-      ],
+      "wishlist": [],
       "created_at": "2025-07-17T08:34:46.983Z"
     },
     {
@@ -192,10 +91,35 @@
       "password": "sinn@gmail.com",
       "role": "user",
       "isBlock": false,
-      "cart": [],
+      "cart": [
+        {
+          "productId": "p3",
+          "quantity": 1
+        },
+        {
+          "quantity": 1
+        }
+      ],
       "order": [],
       "wishlist": [],
       "created_at": "2025-07-21T04:15:30.067Z"
+    },
+    {
+      "id": "2646",
+      "name": "sinan",
+      "email": "sinan@gmail.com",
+      "password": "sinan@gmail.com",
+      "role": "user",
+      "isBlock": false,
+      "cart": [
+        {
+          "productId": "p3",
+          "quantity": 1
+        }
+      ],
+      "order": [],
+      "wishlist": [],
+      "created_at": "2025-07-21T06:12:38.842Z"
     }
   ],
   "products": [
@@ -622,6 +546,70 @@
       "payment": {
         "method": "cod"
       }
+    },
+    {
+      "id": "72c0",
+      "userId": "bd21",
+      "items": [
+        {
+          "productId": "3030",
+          "name": "New Balance ",
+          "price": 12999,
+          "quantity": 2
+        },
+        {
+          "productId": "p3",
+          "name": "Adidas",
+          "price": 3999,
+          "quantity": 1
+        }
+      ],
+      "totalAmount": 29997,
+      "orderDate": "2025-07-21T06:09:01.315Z",
+      "status": "pending",
+      "shippingDetails": {
+        "name": "s",
+        "address": "s",
+        "phone": "3233333333"
+      },
+      "payment": {
+        "method": "cod"
+      }
+    },
+    {
+      "id": "719f",
+      "userId": "2646",
+      "items": [
+        {
+          "productId": "3030",
+          "name": "New Balance ",
+          "price": 12999,
+          "quantity": 1
+        },
+        {
+          "productId": "p4",
+          "name": "nike",
+          "price": 1999,
+          "quantity": 1
+        },
+        {
+          "productId": "1010",
+          "name": "Nike Air Max TL 2.5",
+          "price": 16995,
+          "quantity": 1
+        }
+      ],
+      "totalAmount": 31993,
+      "orderDate": "2025-07-21T06:13:29.081Z",
+      "status": "pending",
+      "shippingDetails": {
+        "name": "sinan",
+        "address": "abcd",
+        "phone": "9400850405"
+      },
+      "payment": {
+        "method": "cod"
+      }
     }
   ],
   "reviews": [
@@ -642,28 +630,10 @@
       "created_at": "2025-07-18T18:34:49.549Z"
     },
     {
-      "id": "4373",
-      "productId": 3030,
-      "userId": "2deb",
-      "rating": 2
-    },
-    {
-      "id": "f298",
-      "productId": 1010,
-      "userId": "2deb",
-      "rating": 5
-    },
-    {
-      "id": "b107",
-      "productId": 3030,
-      "userId": "2deb",
-      "rating": 3
-    },
-    {
-      "id": "d2c2",
+      "id": "6da3",
       "productId": null,
-      "userId": "bd21",
-      "rating": 5
+      "userId": "2646",
+      "rating": 3
     }
   ]
 }
