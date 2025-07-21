@@ -109,8 +109,8 @@ const Home = () => {
       <div className="bg-gray-100 py-12 px-6 scrollbar-none">
         <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center">
           <div>
-            <img src="/Icons/fast.png" alt="Shipping" className="w-12 mx-auto mb-2" />
-            <h4 className="font-semibold">Fast Delivery</h4>
+            <img src="/Icons/fast.png" alt="Shipping" className="w-12 mx-auto mb-2 " />
+            <h4 className="font-semibold ">Fast Delivery</h4>
             <p className="text-sm text-gray-600">Get your products within 2–4 days.</p>
           </div>
           <div>

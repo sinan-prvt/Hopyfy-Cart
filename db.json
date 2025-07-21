@@ -655,6 +655,35 @@
         "method": "card",
         "cardLast4": "2456"
       }
+    },
+    {
+      "id": "ed38",
+      "userId": "f137",
+      "items": [
+        {
+          "productId": "P02",
+          "name": "New Balance ",
+          "price": 11999,
+          "quantity": 1
+        },
+        {
+          "productId": "P04",
+          "name": "Puma Palermo Vintage",
+          "price": 6999,
+          "quantity": 1
+        }
+      ],
+      "totalAmount": 18998,
+      "orderDate": "2025-07-21T09:49:10.742Z",
+      "status": "pending",
+      "shippingDetails": {
+        "name": "sinan",
+        "address": "abcd",
+        "phone": "1111111234"
+      },
+      "payment": {
+        "method": "cod"
+      }
     }
   ],
   "reviews": [
