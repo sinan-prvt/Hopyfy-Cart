@@ -100,32 +100,31 @@ export const AuthProvider = ({ children }) => {
   const moveToCart = async (product) => {
     if (!user || !product) return;
 
-    const alreadyInCart = user.cart?.some((item) => item.id === product.id);
+  const alreadyInCart = user.cart?.some((item) => item.productId === product.id);
     if (alreadyInCart) {
       alert("Item already in cart.");
       return;
     }
 
-    const updatedWishlist = user.wishlist?.filter(
-      (item) => item.id !== product.id
-    );
-    const updatedCart = [...(user.cart || []), { ...product, quantity: 1 }];
+  const updatedWishlist = user.wishlist?.filter(
+    (item) => item.id !== product.id
+  );
 
-    try {
-      await axios.patch(`http://localhost:3000/users/${user.id}`, {
-        wishlist: updatedWishlist,
-        cart: updatedCart,
-      });
+  const updatedCart = [...(user.cart || []), { productId: product.id, quantity: 1 }];
 
-      setUser((prev) => ({
-        ...prev,
-        wishlist: updatedWishlist,
-        cart: updatedCart,
-      }));
-    } catch (error) {
-      console.error("Error moving to cart:", error);
-    }
-  };
+  try {
+    await axios.patch(`http://localhost:3000/users/${user.id}`, {
+      wishlist: updatedWishlist,
+      cart: updatedCart,
+    });
+
+    const res = await axios.get(`http://localhost:3000/users/${user.id}`);
+    setUser(res.data);
+  } catch (error) {
+    console.error("Error moving to cart:", error);
+  }
+};
+
 
   const updateQuantity = async (productId, newQuantity) => {
     if (!user) return;
