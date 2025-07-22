@@ -111,7 +111,7 @@ const Checkout = () => {
       setUser((prev) => ({ ...prev, cart: [] }));
 
       alert("Order placed successfully!");
-      window.location.href = "/orders";
+      window.location.href = "/my-orders";
     } catch (err) {
       console.error("Order placement failed:", err);
       alert("Failed to place order.");

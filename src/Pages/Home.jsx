@@ -58,10 +58,19 @@ const Home = () => {
           <h1 className="text-4xl md:text-6xl font-bold mb-4">Welcome to Hopyfy Cart</h1>
           <p className="text-lg md:text-xl mb-8 max-w-2xl">Find your next favorite product at unbeatable prices!</p>
           <Link to="/product">
-            <button className="bg-white text-black px-8 py-3 rounded-full hover:bg-gray-300 font-medium text-lg transition-all duration-300 hover:scale-105">
-              Shop Now
-            </button>
-          </Link>
+  <button className="group relative w-48 h-12 overflow-hidden rounded-full text-white font-bold uppercase tracking-wider">
+    <span className="absolute left-0 top-0 h-12 w-12 rounded-full bg-gray-900 shadow-md transition-all duration-500 ease-out group-hover:w-full group-hover:shadow-lg group-active:scale-90"></span>
+    
+    <span className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-0.5 bg-white transition-all duration-500 ease-out group-hover:translate-x-36 group-active:translate-x-[150px]">
+      <span className="absolute top-[-6px] right-[2px] w-2.5 h-2.5 border-t-2 border-r-2 border-white rotate-45"></span>
+    </span>
+
+    <span className="relative z-10 transition-all duration-500 ease-out group-hover:text-white group-hover:-translate-x-7 group-active:text-gray-300">
+      Shop Now
+    </span>
+  </button>
+</Link>
+
         </div>
       </div>
 

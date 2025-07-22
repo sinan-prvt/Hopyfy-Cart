@@ -174,8 +174,20 @@
       "brand": "Adidas",
       "description": "Dingyun Zhang Samba Iconic shoes blend timeless style with lasting function. Born as 1950s indoor football trainers, they’ve evolved into cultural icons. With a smooth leather upper, reinforced toe, and grippy rubber sole, they’re ready for the streets or the dance floor. Step into 70 years of legacy—and make it your own.",
       "price": 22499,
+      "originalPrice": 24999,
+      "discountPercentage": "10",
       "count": 30,
+      "sizes": [
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
       "category": "Men",
+      "shoeType": "Lifestyle Sneakers",
+      "color": "Black/White",
+      "material": "Leather",
+      "weight": "0.95kg",
       "image": [
         "/Images/adidas1.webp",
         "/Images/Adzs1.webp",
@@ -195,7 +207,18 @@
       "description": "The Revolution 8 upgrades your go-to runner with softer strides and cooler runs. A breathable mesh upper keeps you comfortable, while the foam midsole with rocker geometry provides smooth, cushioned support every step of the way.",
       "price": 4295,
       "count": 30,
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
       "category": "Men",
+      "shoeType": "Lifestyle Sneakers",
+      "color": "Black/White",
+      "material": "Leather",
+      "weight": "0.96",
       "image": [
         "/Images/nike1.webp",
         "/Images/Nr1.webp",
@@ -209,24 +232,80 @@
     },
     {
       "id": "P03",
-      "name": "New Balance ",
-      "description": "The original 530 combined turn of the millennium aesthetics with the reliability of a high milage running shoe ",
-      "price": 1999,
+      "name": "Air Force 1",
+      "brand": "Nike",
+      "description": "Big Kids' Nike Air Force 1 Iconic style meets legendary comfort with durable leather, lightweight Air cushioning, and a grippy rubber sole—perfect for everyday streetwea",
+      "price": 5995,
+      "sizes": [
+        "4",
+        "5",
+        "6"
+      ],
       "count": 40,
-      "category": "Men",
+      "category": "kids",
+      "shoeType": "Lifestyle Sneakers",
+      "color": "Black/White",
+      "material": "Leather",
+      "weight": "0.96",
       "image": [
-        "/Images/nb1.webp"
+        "/Images/naf3.webp",
+        "/Images/naf1.webp",
+        "/Images/naf2.webp",
+        "/Images/naf4.webp",
+        "/Images/naf5.jpg",
+        "/Images/naf6.jpg"
       ],
       "isActive": true,
       "created_at": "2025-07-10T10:30:00.000Z"
     },
     {
       "id": "P04",
+      "name": "New Balance 530",
+      "brand": "New Balance",
+      "description": "The 530 blends Y2K running style with modern everyday wear. Featuring a segmented ABZORB midsole and mesh-synthetic upper with bold curves, it delivers comfort and a standout, tech-inspired look.",
+      "price": 19999,
+      "count": 40,
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
+      "category": "Men",
+      "shoeType": "Lifestyle Sneakers",
+      "color": "Black/White",
+      "material": "Leather",
+      "weight": "0.96",
+      "image": [
+        "/Images/nb1.webp",
+        "/Images/nb5301.webp",
+        "/Images/nb5302.webp",
+        "/Images/nb5303.webp",
+        "/Images/nb5304.webp",
+        "/Images/nb5305.webp"
+      ],
+      "isActive": true,
+      "created_at": "2025-07-10T10:30:00.000Z"
+    },
+    {
+      "id": "P05",
       "name": "Reebok",
       "description": "With design language pulled from a track spike from 1961 – the R400 has DNA rooted in one of the first ever Reebok shoes.",
       "price": 9999,
       "count": 10,
-      "category": "Shoes",
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
+      "category": "Men",
+      "shoeType": "Lifestyle Sneakers",
+      "color": "Black/White",
+      "material": "Leather",
+      "weight": "0.96",
       "image": [
         "/Images/reebok1.webp"
       ],
@@ -234,12 +313,23 @@
       "created_at": "2025-07-10T10:30:00.000Z"
     },
     {
-      "id": "P05",
+      "id": "P06",
       "name": "Puma Palermo Vintage",
       "description": "Straight from our archives, it's the PUMA Palermo. This classic terrace shoe debuted in the 80's and now, ",
       "price": 6999,
       "count": 30,
-      "category": "Shoes",
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
+      "category": "Women",
+      "shoeType": "Lifestyle Sneakers",
+      "color": "Black/White",
+      "material": "Leather",
+      "weight": "0.96",
       "image": [
         "/Images/puma1.webp"
       ],
@@ -247,12 +337,23 @@
       "created_at": "2025-07-10T10:30:00.000Z"
     },
     {
-      "id": "P06",
+      "id": "P07",
       "name": "nike",
       "description": "Comfortable and stylish running shoes",
       "price": 1999,
       "count": 30,
-      "category": "Shoes",
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
+      "category": "Men",
+      "shoeType": "Lifestyle Sneakers",
+      "color": "Black/White",
+      "material": "Leather",
+      "weight": "0.96",
       "image": [
         "/Images/nb1.jpg"
       ],
@@ -260,12 +361,23 @@
       "created_at": "2025-07-10T10:30:00.000Z"
     },
     {
-      "id": "P07",
+      "id": "P08",
       "name": "Converse Run Star",
       "description": "Meet the Run Star Trainer—a celebration of sports, style, and heritage. Sleek details and luxe cushioning pair well with all your favourite 'fits, day and night",
       "price": 6499,
       "count": 30,
-      "category": "Shoes",
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
+      "category": "Women",
+      "shoeType": "Lifestyle Sneakers",
+      "color": "Black/White",
+      "material": "Leather",
+      "weight": "0.96",
       "image": [
         "/Images/converse1.webp"
       ],
@@ -273,12 +385,23 @@
       "created_at": "2025-07-10T10:30:00.000Z"
     },
     {
-      "id": "P08",
+      "id": "P09",
       "name": "Jordan Air 1 Zoom CMFT 2",
       "description": "Premium suede and Jordan Brand's signature Formula 23 foam come together to give you an extra luxurious (and extra cozy) AJ1.",
       "price": 3245,
       "count": 30,
-      "category": "Shoes",
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
+      "category": "Men",
+      "shoeType": "Lifestyle Sneakers",
+      "color": "Black/White",
+      "material": "Leather",
+      "weight": "0.96",
       "image": [
         "/Images/jordan1.webp"
       ],
@@ -286,12 +409,23 @@
       "created_at": "2025-07-10T10:30:00.000Z"
     },
     {
-      "id": "P09",
+      "id": "P10",
       "name": "New Balance 327",
       "description": "As recreational running established widespread popularity in the 1970s, the benchmark for running footwear shifted from mere existence to performance. While the era’s designs would be considered simple by today’s standards, the decade stands out as the moment when running shoes truly came into their own. The 327 sheds new light on the ‘70s as a time of innovation by boldly reshaping classic design elements with a thoroughly contemporary outlook. With an angular reworking of the tried-and-true wedge silhouette, outsize, asymmetrically applied ‘N’ branding, and wraparound, trail-inspired lug outsole, the 327 provides nothing less than a complete reimagination of our running heritage.",
       "price": 9999,
       "count": 30,
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
       "category": "Women",
+      "shoeType": "Lifestyle Sneakers",
+      "color": "Black/White",
+      "material": "Leather",
+      "weight": "0.96",
       "image": [
         "/Images/nb2.webp"
       ],
@@ -299,12 +433,24 @@
       "created_at": "2025-07-10T10:30:00.000Z"
     },
     {
-      "id": "P10",
+      "id": "P11",
       "name": "Converse Chuck Taylor All Star Lugged Heel Mary Jane Platform",
       "description": "20th century fashion gets a modern refresh in the all-new Lugged Heel Mary Jane Platform. Buckled straps adjust for the perfect fit, while a bold, lugged platform takes your look to the next level.",
       "price": 9999,
       "count": 30,
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
       "category": "Women",
+      "Color": "Black/White",
+      "shoeType": "Lifestyle Sneakers",
+      "color": "Black/White",
+      "material": "Leather",
+      "weight": "0.96",
       "image": [
         "/Images/nb2.webp"
       ],
@@ -910,6 +1056,64 @@
       "payment": {
         "method": "cod"
       }
+    },
+    {
+      "id": "daad",
+      "userId": "5240",
+      "items": [
+        {
+          "productId": "P05",
+          "name": "Reebok",
+          "price": 9999,
+          "quantity": 1
+        },
+        {
+          "productId": "P03",
+          "name": "Air Force 1",
+          "price": 5995,
+          "quantity": 1
+        }
+      ],
+      "totalAmount": 15994,
+      "orderDate": "2025-07-22T10:45:53.909Z",
+      "status": "pending",
+      "shippingDetails": {
+        "name": "wqeqw",
+        "address": "weqwd",
+        "phone": "2144356543"
+      },
+      "payment": {
+        "method": "cod"
+      }
+    },
+    {
+      "id": "5eb6",
+      "userId": "5240",
+      "items": [
+        {
+          "productId": "P03",
+          "name": "Air Force 1",
+          "price": 5995,
+          "quantity": 1
+        },
+        {
+          "productId": "P02",
+          "name": "Nike Revolution 8",
+          "price": 4295,
+          "quantity": 1
+        }
+      ],
+      "totalAmount": 10290,
+      "orderDate": "2025-07-22T10:47:13.431Z",
+      "status": "pending",
+      "shippingDetails": {
+        "name": "Mohamed Sinan",
+        "address": "Puthupparamba",
+        "phone": "1235642313"
+      },
+      "payment": {
+        "method": "cod"
+      }
     }
   ],
   "reviews": [
@@ -1096,6 +1300,195 @@
       "productId": null,
       "userId": "5240",
       "rating": 4
+    },
+    {
+      "id": "5d93",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "93fd",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "6498",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "ba01",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "a224",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "010c",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "3b39",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "f487",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "abe9",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "a497",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "3ce9",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "9ee3",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "2cc9",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "05c3",
+      "productId": null,
+      "userId": "5240",
+      "rating": 3
+    },
+    {
+      "id": "d771",
+      "productId": null,
+      "userId": "5240",
+      "rating": 3
+    },
+    {
+      "id": "3cbf",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "f3e4",
+      "productId": null,
+      "userId": "5240",
+      "rating": 3
+    },
+    {
+      "id": "dd08",
+      "productId": null,
+      "userId": "5240",
+      "rating": 2
+    },
+    {
+      "id": "6e18",
+      "productId": null,
+      "userId": "5240",
+      "rating": 5
+    },
+    {
+      "id": "0ebc",
+      "productId": null,
+      "userId": "5240",
+      "rating": 5
+    },
+    {
+      "id": "1299",
+      "productId": null,
+      "userId": "5240",
+      "rating": 3
+    },
+    {
+      "id": "5370",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "61ed",
+      "productId": null,
+      "userId": "5240",
+      "rating": 3
+    },
+    {
+      "id": "fd41",
+      "productId": null,
+      "userId": "5240",
+      "rating": 5
+    },
+    {
+      "id": "a9b4",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "59f4",
+      "productId": null,
+      "userId": "5240",
+      "rating": 1
+    },
+    {
+      "id": "cd06",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "9b07",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "deb2"
+    },
+    {
+      "id": "d9be",
+      "productId": null,
+      "userId": "5240",
+      "rating": 5
+    },
+    {
+      "id": "880a",
+      "productId": null,
+      "userId": "5240",
+      "rating": 4
+    },
+    {
+      "id": "538b",
+      "productId": null,
+      "userId": "5240",
+      "rating": 3
     }
   ]
 }

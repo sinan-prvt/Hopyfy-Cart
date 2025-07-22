@@ -27,18 +27,26 @@ const ProductCart = ({ product }) => {
         const res = await axios.get(
           `http://localhost:3000/reviews?productId=${product.id}`
         );
-        const avg =
-          res.data.length > 0
-            ? res.data.reduce((sum, r) => sum + r.rating, 0) / res.data.length
-            : 0;
-        setAverageRating(avg.toFixed(1));
+        
+        if (res.data.length === 0) {
+          setAverageRating(0);
+          return;
+        }
+        
+        const total = res.data.reduce((sum, r) => sum + r.rating, 0);
+        const avg = total / res.data.length;
+        setAverageRating(avg);
       } catch (err) {
         console.error("Failed to fetch rating");
+        setAverageRating(0);
       }
     };
     fetchRating();
   }, [product.id]);
 
+  // Convert rating to display value (1 decimal place)
+  const displayRating = averageRating.toFixed(1);
+  
   return (
     <div
       className="w-full bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer relative"
@@ -80,7 +88,7 @@ const ProductCart = ({ product }) => {
               </span>
             ))}
           </div>
-          <span className="text-xs text-gray-500 ml-1">({averageRating})</span>
+          <span className="text-xs text-gray-500 ml-1">({displayRating})</span>
         </div>
       </div>
     </div>
