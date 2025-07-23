@@ -28,7 +28,7 @@ const Home = () => {
       try {
         const { data } = await axios.get("http://localhost:3000/products");
         const filtered = data.filter(p => p.isActive !== false);
-        setProducts(filtered.slice(0, 6));
+        setProducts(filtered.slice(0, 4));
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
