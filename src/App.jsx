@@ -8,8 +8,8 @@ import ProductDetails from './Pages/Product/ProductDetails';
 import Cart from './Pages/Cart/Cart';
 import Wishlistpage from './Pages/WishList/Wishlistpage';
 import Wishlist from './Pages/WishList/Wishlist';
-import Checkout from './Pages/CheckOut/Checkout';
 import MyOrders from './Pages/Orders/MyOrders';
+import Checkout from './Pages/Checkout/Checkout';
 import  Home  from './Pages/Home';
 import About from './Pages/About';
 import Contact from './Pages/Services/Contact';
@@ -17,6 +17,9 @@ import Faq from './Pages/Services/Faq';
 import Shipping from './Pages/Services/Shipping';
 import Returns from './Pages/Services/Returns';
 import PrivacyPolicy from './Pages/Services/PrivacyPolicy';
+import TermsAndConditions from './Pages/Services/TermsAndConditions';
+import ForgotPassword from './Pages/Services/ForgotPassword';
+import SubscribePage from './Pages/Services/SubscribePage';
 
 function App() {
   return (
@@ -40,6 +43,9 @@ function App() {
               <Route path="/shipping" element={<Shipping />} />
               <Route path="/returns" element={<Returns />} />
               <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+              <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/subscribe-page" element={<SubscribePage />} />
             </Routes>
     </>
   );
