@@ -1,4 +1,3 @@
-// ProductList.jsx
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import ProductCart from "./ProductCart";
@@ -9,7 +8,7 @@ function ProductList() {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [priceRange, setPriceRange] = useState([0, 10000]);
+  const [priceRange, setPriceRange] = useState([0, 99999]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState("default");
 
@@ -18,7 +17,6 @@ function ProductList() {
       const res = await axios.get("http://localhost:3000/products?isActive=true");
       setProducts(res.data);
       
-      // Extract unique categories
       const uniqueCategories = [
         "All",
         ...new Set(res.data.map((p) => p.category)),
@@ -29,11 +27,9 @@ function ProductList() {
     }
   };
 
-  // Memoized filtered and sorted products
   const processedProducts = useMemo(() => {
     let result = [...products];
     
-    // Search filter
     if (searchTerm) {
       const term = searchTerm.toLowerCase().trim();
       result = result.filter(p => 
@@ -43,17 +39,14 @@ function ProductList() {
       );
     }
     
-    // Category filter
     if (selectedCategory !== "All") {
       result = result.filter(p => p.category === selectedCategory);
     }
     
-    // Price range filter
     result = result.filter(p => 
       p.price >= priceRange[0] && p.price <= priceRange[1]
     );
     
-    // Sorting
     if (sortOption === "price_asc") {
       result.sort((a, b) => a.price - b.price);
     } else if (sortOption === "price_desc") {
@@ -79,10 +72,8 @@ function ProductList() {
         <p className="text-gray-600">Discover our premium collection</p>
       </div>
 
-      {/* Filters Section */}
       <div className="bg-white rounded-xl shadow-md p-6 mb-8">
         <div className="flex flex-col gap-6">
-          {/* Search Bar */}
           <div>
             <h3 className="font-semibold mb-2">Search Products</h3>
             <input
@@ -95,7 +86,6 @@ function ProductList() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Category Filter */}
             <div>
               <h3 className="font-semibold mb-2">Category</h3>
               <div className="flex flex-wrap gap-2">
@@ -115,7 +105,6 @@ function ProductList() {
               </div>
             </div>
 
-            {/* Price Filter */}
             <div>
               <h3 className="font-semibold mb-2">
                 Price Range: ₹{priceRange[0]} - ₹{priceRange[1]}
@@ -136,7 +125,6 @@ function ProductList() {
               </div>
             </div>
 
-            {/* Sort Options */}
             <div>
               <h3 className="font-semibold mb-2">Sort By</h3>
               <select
@@ -153,7 +141,7 @@ function ProductList() {
         </div>
       </div>
 
-      {/* Products Grid */}
+      {/* Updated to show 4 products per row on large screens */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product) => (

@@ -24,9 +24,9 @@ const Login = () => {
     >
       <motion.div 
         whileHover={{ y: -5 }}
-        className="w-full max-w-md bg-white rounded-2xl shadow-lg overflow-hidden"
+        className="w-full max-w-md bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100"
       >
-        <div className="bg-gradient-to-r from-green-500 to-blue-600 p-6 text-white">
+        <div className="bg-gradient-to-r from-green-500 to-blue-600 p-6 text-white text-center">
           <motion.h2 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -39,7 +39,7 @@ const Login = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="mt-2"
+            className="mt-2 opacity-90"
           >
             Sign in to access your account
           </motion.p>
@@ -54,7 +54,12 @@ const Login = () => {
             setIsSubmitting(false);
             
             if (res.success) {
-              navigate("/");
+              // Redirect based on user role
+              if (res.user && res.user.role === 'admin') {
+                navigate("/admin/dashboard");
+              } else {
+                navigate("/");
+              }
             } else {
               alert(res.message);
             }
@@ -70,9 +75,17 @@ const Login = () => {
                   name="email" 
                   type="email" 
                   placeholder="your@email.com" 
-                  className={`w-full px-4 py-3 rounded-lg border ${touched.email && errors.email ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                  className={`w-full px-4 py-3 rounded-lg border ${
+                    touched.email && errors.email 
+                      ? 'border-red-500 ring-1 ring-red-500' 
+                      : 'border-gray-300'
+                  } focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                 />
-                <ErrorMessage name="email" component="div" className="text-red-600 text-sm mt-1" />
+                <ErrorMessage 
+                  name="email" 
+                  component="div" 
+                  className="text-red-600 text-sm mt-1 font-medium" 
+                />
               </div>
 
               <div>
@@ -83,9 +96,17 @@ const Login = () => {
                   name="password" 
                   type="password" 
                   placeholder="••••••••" 
-                  className={`w-full px-4 py-3 rounded-lg border ${touched.password && errors.password ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                  className={`w-full px-4 py-3 rounded-lg border ${
+                    touched.password && errors.password 
+                      ? 'border-red-500 ring-1 ring-red-500' 
+                      : 'border-gray-300'
+                  } focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                 />
-                <ErrorMessage name="password" component="div" className="text-red-600 text-sm mt-1" />
+                <ErrorMessage 
+                  name="password" 
+                  component="div" 
+                  className="text-red-600 text-sm mt-1 font-medium" 
+                />
               </div>
 
               <div className="flex items-center justify-between">
@@ -104,7 +125,7 @@ const Login = () => {
                 <button 
                   type="button"
                   onClick={() => navigate("/forgot-password")}
-                  className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                  className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors"
                 >
                   Forgot password?
                 </button>
@@ -114,7 +135,7 @@ const Login = () => {
                 type="submit" 
                 whileTap={{ scale: 0.98 }}
                 whileHover={{ scale: 1.02 }}
-                className="w-full bg-gradient-to-r from-green-500 to-blue-600 text-white py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
+                className="w-full bg-gradient-to-r from-green-500 to-blue-600 text-white py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-70"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
@@ -125,11 +146,18 @@ const Login = () => {
                     </svg>
                     Signing in...
                   </span>
-                ) : "Sign In"}
+                ) : (
+                  <span className="flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                    </svg>
+                    Sign In
+                  </span>
+                )}
               </motion.button>
 
 
-              <div className="text-center text-sm text-gray-600">
+              <div className="text-center text-sm text-gray-600 pt-4 border-t border-gray-200">
                 Don't have an account?{" "}
                 <button 
                   onClick={() => navigate("/signup")} 

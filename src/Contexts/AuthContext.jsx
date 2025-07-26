@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, [userId]);
 
+  // ✅ UPDATED login function
   const login = async (email, password) => {
     try {
       const res = await axios.get(
@@ -36,7 +37,7 @@ export const AuthProvider = ({ children }) => {
         const loggedInUser = res.data[0];
         localStorage.setItem("userId", loggedInUser.id);
         setUser(loggedInUser);
-        return { success: true, role: loggedInUser.role };
+        return { success: true, user: loggedInUser }; // ✅ return user object
       } else {
         return { success: false, message: "Invalid credentials" };
       }
@@ -50,7 +51,7 @@ export const AuthProvider = ({ children }) => {
       const res = await axios.post("http://localhost:3000/users", userData);
       localStorage.setItem("userId", res.data.id);
       setUser(res.data);
-      return { success: true, role: res.data.role };
+      return { success: true, user: res.data };
     } catch (error) {
       console.error("Signup error:", error);
       return { success: false, message: "Registration failed" };
@@ -148,18 +149,21 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const contextValue = useMemo(() => ({
-    user,
-    login,
-    signup,
-    logout,
-    loading,
-    setUser,
-    addToWishlist,
-    removeFromWishlist,
-    moveToCart,
-    updateQuantity,
-  }), [user, loading]);
+  const contextValue = useMemo(
+    () => ({
+      user,
+      login,
+      signup,
+      logout,
+      loading,
+      setUser,
+      addToWishlist,
+      removeFromWishlist,
+      moveToCart,
+      updateQuantity,
+    }),
+    [user, loading]
+  );
 
   return (
     <AuthContext.Provider value={contextValue}>

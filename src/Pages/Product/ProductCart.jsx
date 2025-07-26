@@ -1,123 +1,191 @@
-// ProductCart.jsx
-import { useNavigate } from "react-router-dom";
-import { Heart, HeartOff } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { ShoppingCart, Star, Heart } from "lucide-react";
 import { useAuth } from "../../Contexts/AuthContext";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import Toast from "../../Components/Toast"; // Make sure to create this component
 
 const ProductCart = ({ product }) => {
-  const navigate = useNavigate();
-  const { user, addToWishlist, removeFromWishlist } = useAuth();
-  const isInWishlist = user?.wishlist?.some((item) => item.id === product.id);
-  const [averageRating, setAverageRating] = useState(0);
-  const [reviewCount, setReviewCount] = useState(0);
-
-  const handleWishlistToggle = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    if (isInWishlist) {
-      removeFromWishlist(product.id);
-    } else {
-      addToWishlist(product);
-    }
-  };
-
-  useEffect(() => {
-    const fetchRating = async () => {
-      try {
-        const res = await axios.get(
-          `http://localhost:3000/reviews?productId=${product.id}`
-        );
-        
-        if (res.data && res.data.length > 0) {
-          const validReviews = res.data.filter(review => typeof review.rating === 'number');
-          if (validReviews.length > 0) {
-            const total = validReviews.reduce((sum, r) => sum + r.rating, 0);
-            const avg = total / validReviews.length;
-            setAverageRating(avg);
-            setReviewCount(validReviews.length);
-            return;
-          }
-        }
-        setAverageRating(0);
-        setReviewCount(0);
-      } catch (err) {
-        console.error("Failed to fetch rating", err);
-        setAverageRating(0);
-        setReviewCount(0);
-      }
-    };
+  const { user, addToCart, addToWishlist } = useAuth();
+  const [isHovered, setIsHovered] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: "", type: "" });
+  
+  const getImageUrl = (image) => {
+    if (!image) return null;
     
-    if (product.id) {
-      fetchRating();
-    }
-  }, [product.id]);
-
-  // Convert rating to display value
-  const displayRating = averageRating > 0 ? averageRating.toFixed(1) : "0.0";
-  
-  // Render stars based on rating
-  const renderStars = () => {
-    return [...Array(5)].map((_, i) => {
-      let starClass = "text-gray-300"; // Default to empty star
+    if (Array.isArray(image)) {
+      if (image.length === 0) return null;
+      const firstImage = image[0];
       
-      if (averageRating >= i + 1) {
-        starClass = "text-yellow-400"; // Full star
-      } else if (averageRating > i) {
-        starClass = "text-yellow-400"; // Half star (we'll use full for simplicity)
+      if (typeof firstImage === 'object' && firstImage.url) {
+        return firstImage.url;
       }
-      
-      return (
-        <span key={i} className={starClass}>
-          {averageRating > i && averageRating < i + 1 ? "★" : "★"}
-        </span>
-      );
-    });
+      return firstImage;
+    }
+    
+    if (typeof image === 'object' && image.url) {
+      return image.url;
+    }
+    
+    if (typeof image === 'string') {
+      return image;
+    }
+    
+    return null;
   };
-  
-  return (
-    <div
-      className="w-full bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer relative"
-      onClick={() => navigate(`/product/${product.id}`)}
-    >
-      <div className="relative">
-        <img
-          src={product.image?.[0] || "https://via.placeholder.com/300"}
-          alt={product.name || "Product"}
-          className="w-full h-56 object-contain p-4 bg-gray-50"
-        />
-        <button
-          className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md hover:bg-red-50 transition-colors"
-          onClick={handleWishlistToggle}
-        >
-          {isInWishlist ? (
-            <HeartOff className="text-red-500" size={20} />
-          ) : (
-            <Heart className="text-gray-400 hover:text-red-500" size={20} />
-          )}
-        </button>
-      </div>
 
-      <div className="p-4">
-        <span className="inline-block px-2 py-1 text-xs font-semibold text-white bg-blue-500 rounded-full mb-2">
-          {product.category || "Uncategorized"}
-        </span>
-        <p className="text-sm font-semibold mb-2 text-gray-500">{product.brand || "No Brand"}</p>
-        <h3 className="text-md font-semibold mb-1 line-clamp-2 h-12">
-          {product.name || "Product Name"}
-        </h3>
-        <p className="text-green-600 font-bold text-lg">₹{product.price || "0"}</p>
-        
-        <div className="flex items-center mt-2">
-          <div className="flex">
-            {renderStars()}
+  // Check if product is in wishlist
+  useEffect(() => {
+    if (user && user.wishlist) {
+      const inWishlist = user.wishlist.some(item => item.id === product.id);
+      setIsWishlisted(inWishlist);
+    }
+  }, [user, product.id]);
+
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    if (addToCart) {
+      addToCart(product);
+      showToast("Added to cart!", "success");
+    } else {
+      showToast("Failed to add to cart", "error");
+      console.error("addToCart function is not implemented in AuthContext");
+    }
+  };
+
+  const handleWishlist = (e) => {
+    e.preventDefault();
+    if (addToWishlist) {
+      const newWishlistStatus = !isWishlisted;
+      addToWishlist(product);
+      setIsWishlisted(newWishlistStatus);
+      
+      showToast(
+        newWishlistStatus ? "Added to wishlist!" : "Removed from wishlist",
+        "success"
+      );
+    } else {
+      showToast("Failed to update wishlist", "error");
+      console.error("addToWishlist function is not implemented in AuthContext");
+    }
+  };
+
+  const showToast = (message, type) => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
+  };
+
+  const imageUrl = getImageUrl(product.image);
+
+  return (
+    <motion.div 
+      className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col relative"
+      whileHover={{ y: -5 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      {/* Toast notification */}
+      {toast.show && (
+        <Toast 
+          message={toast.message} 
+          type={toast.type} 
+          onClose={() => setToast({ show: false, message: "", type: "" })} 
+        />
+      )}
+
+      {/* Wishlist button */}
+      <button
+        onClick={handleWishlist}
+        className="absolute top-3 right-3 z-10 bg-white rounded-full p-2 shadow-md hover:bg-red-50 transition-colors"
+        aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+      >
+        <Heart 
+          size={18} 
+          className={isWishlisted ? "text-red-500 fill-current" : "text-gray-500"} 
+        />
+      </button>
+
+      <Link to={`/product/${product.id}`} className="flex-grow">
+        <div 
+          className="relative overflow-hidden"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {imageUrl ? (
+            <motion.img
+              src={imageUrl}
+              alt={product.name}
+              className="w-full h-48 object-cover"
+              animate={{ 
+                scale: isHovered ? 1.05 : 1,
+                transition: { duration: 0.3 } 
+              }}
+              onError={(e) => {
+                e.target.classList.add('hidden');
+                e.target.nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+          ) : null}
+          <div 
+            className={`bg-gray-200 border-2 border-dashed rounded-xl w-full h-48 ${imageUrl ? 'hidden' : ''}`}
+          />
+          
+          {product.stock === 0 && (
+            <div className="absolute inset-0 bg-gray-800 bg-opacity-60 flex items-center justify-center">
+              <span className="text-white font-bold text-sm bg-red-500 px-2 py-1 rounded">
+                Out of Stock
+              </span>
+            </div>
+          )}
+        </div>
+      </Link>
+      
+      <div className="p-4 flex flex-col flex-grow">
+        <div className="flex justify-between items-start mb-2">
+          <div className="w-4/5">
+            <Link to={`/product/${product.id}`}>
+              <h3 className="font-semibold text-gray-800 hover:text-blue-600 line-clamp-2 text-sm mb-1">
+                {product.name}
+              </h3>
+            </Link>
+            <p className="text-xs text-gray-500 truncate">{product.brand}</p>
           </div>
-          <span className="text-xs text-gray-500 ml-1">
-            ({displayRating} {reviewCount > 0 ? `• ${reviewCount} reviews` : ''})
-          </span>
+          <div className="flex items-center gap-1 bg-yellow-100 text-yellow-800 px-1.5 py-1 rounded text-xs">
+            <Star size={12} fill="currentColor" />
+            <span>{product.rating || 4.5}</span>
+          </div>
+        </div>
+        
+        <div className="mt-auto">
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-base font-bold text-gray-900">₹{product.price.toLocaleString()}</p>
+              {product.originalPrice && product.originalPrice > product.price && (
+                <p className="text-xs text-gray-500 line-through">
+                  ₹{product.originalPrice.toLocaleString()}
+                </p>
+              )}
+            </div>
+            
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleAddToCart}
+              disabled={product.stock === 0}
+              className={`flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs ${
+                product.stock === 0
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
+              }`}
+            >
+              <ShoppingCart size={14} />
+              <span>Add</span>
+            </motion.button>
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

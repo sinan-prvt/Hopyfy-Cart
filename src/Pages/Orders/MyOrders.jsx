@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../Contexts/AuthContext";
 import { useOrder } from "../../Contexts/OrderContext";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, ShoppingCart, Loader, CheckCircle, Clock, XCircle } from "lucide-react";
@@ -8,6 +9,7 @@ import { ShoppingBag, ShoppingCart, Loader, CheckCircle, Clock, XCircle } from "
 const MyOrders = () => {
   const { user, setUser } = useAuth();
   const { placeOrder } = useOrder();
+  const navigate = useNavigate();
   
   const [cart, setCart] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -106,6 +108,9 @@ const MyOrders = () => {
         setUser((prev) => ({ ...prev, cart: [] }));
         setCart([]);
         setTotalAmount(0);
+        
+        // Redirect to checkout page after placing order
+        navigate("/checkout", { state: { orderId: result.orderId } });
       } catch (err) {
         console.error("Failed to clear cart:", err);
       }
@@ -120,6 +125,16 @@ const MyOrders = () => {
         icon: <Clock size={16} />, 
         color: "bg-yellow-100 text-yellow-800" 
       },
+      processing: { 
+        text: "Processing", 
+        icon: <Loader size={16} className="animate-spin" />, 
+        color: "bg-blue-100 text-blue-800" 
+      },
+      shipped: { 
+        text: "Shipped", 
+        icon: <ShoppingCart size={16} />, 
+        color: "bg-indigo-100 text-indigo-800" 
+      },
       delivered: { 
         text: "Delivered", 
         icon: <CheckCircle size={16} />, 
@@ -129,6 +144,11 @@ const MyOrders = () => {
         text: "Cancelled", 
         icon: <XCircle size={16} />, 
         color: "bg-red-100 text-red-800" 
+      },
+      refunded: { 
+        text: "Refunded", 
+        icon: <CheckCircle size={16} className="text-green-500" />, 
+        color: "bg-gray-100 text-gray-700" 
       }
     };
     
@@ -170,10 +190,12 @@ const MyOrders = () => {
         
         {cart.length === 0 ? (
           <div className="text-center py-10">
-            <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mx-auto mb-4" />
+            <div className="flex justify-center mb-4">
+              <div className="text-6xl mb-4">🛒</div>
+            </div>
             <p className="text-gray-600">Your cart is empty</p>
             <button 
-              onClick={() => window.location.href = "/products"}
+              onClick={() => window.location.href = "/product"}
               className="mt-4 bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Browse Products
@@ -199,10 +221,13 @@ const MyOrders = () => {
                             src={imageUrl} 
                             alt={item.name}
                             className="absolute inset-0 w-full h-full object-cover rounded-lg border border-gray-200"
-                            onError={(e) => e.target.classList.add('hidden')}
+                            onError={(e) => {
+                              e.target.classList.add('hidden');
+                              e.target.nextElementSibling?.classList.remove('hidden');
+                            }}
                           />
                         ) : null}
-                        <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-full" />
+                        <div className={`bg-gray-200 border-2 border-dashed border-gray-400 rounded-xl w-full h-full ${imageUrl ? 'hidden' : ''}`} />
                       </div>
                       <div>
                         <p className="font-semibold text-gray-900">{item.name}</p>
@@ -249,7 +274,9 @@ const MyOrders = () => {
         
         {previousOrders.length === 0 ? (
           <div className="text-center py-10">
-            <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mx-auto mb-4" />
+            <div className="flex justify-center mb-4">
+              <div className="bg-gray-200 border-2 border-dashed border-gray-400 rounded-xl w-16 h-16" />
+            </div>
             <p className="text-gray-600">You haven't placed any orders yet</p>
           </div>
         ) : (
@@ -288,15 +315,20 @@ const MyOrders = () => {
                             <li key={i} className="flex justify-between">
                               <div className="flex items-center gap-3">
                                 <div className="relative w-12 h-12">
+                                  {/* Fixed image rendering */}
                                   {imageUrl ? (
                                     <img 
                                       src={imageUrl} 
                                       alt={item.name}
                                       className="absolute inset-0 w-full h-full object-cover rounded-lg border border-gray-200"
-                                      onError={(e) => e.target.classList.add('hidden')}
+                                      onError={(e) => {
+                                        e.target.classList.add('hidden');
+                                        e.target.nextElementSibling?.classList.remove('hidden');
+                                      }}
                                     />
                                   ) : null}
-                                  <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-full" />
+                                  {/* Fixed placeholder with correct classes */}
+                                  <div className={`bg-gray-200 border-2 border-dashed border-gray-400 rounded-xl w-full h-full ${imageUrl ? 'hidden' : ''}`} />
                                 </div>
                                 <span className="text-gray-700">{item.name}</span>
                               </div>
