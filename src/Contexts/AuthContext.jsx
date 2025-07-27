@@ -27,7 +27,6 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, [userId]);
 
-  // ✅ UPDATED login function
   const login = async (email, password) => {
     try {
       const res = await axios.get(
@@ -37,7 +36,7 @@ export const AuthProvider = ({ children }) => {
         const loggedInUser = res.data[0];
         localStorage.setItem("userId", loggedInUser.id);
         setUser(loggedInUser);
-        return { success: true, user: loggedInUser }; // ✅ return user object
+        return { success: true, user: loggedInUser }; 
       } else {
         return { success: false, message: "Invalid credentials" };
       }

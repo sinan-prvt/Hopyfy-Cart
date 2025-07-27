@@ -3,14 +3,12 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ShoppingCart, Star, Heart } from "lucide-react";
 import { useAuth } from "../../Contexts/AuthContext";
-import Toast from "../../Components/Toast"; // Make sure to create this component
 
-const ProductCart = ({ product }) => {
-  const { user, addToCart, addToWishlist } = useAuth();
+const ProductCart = ({ product, onShowToast }) => {
+  const { user, addToCart, addToWishlist, removeFromWishlist } = useAuth();
   const [isHovered, setIsHovered] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const [toast, setToast] = useState({ show: false, message: "", type: "" });
-  
+
   const getImageUrl = (image) => {
     if (!image) return null;
     
@@ -35,45 +33,50 @@ const ProductCart = ({ product }) => {
     return null;
   };
 
-  // Check if product is in wishlist
   useEffect(() => {
     if (user && user.wishlist) {
       const inWishlist = user.wishlist.some(item => item.id === product.id);
       setIsWishlisted(inWishlist);
+    } else {
+      setIsWishlisted(false);
     }
   }, [user, product.id]);
 
-  const handleAddToCart = (e) => {
+  const handleAddToCart = async (e) => {
     e.preventDefault();
-    if (addToCart) {
-      addToCart(product);
-      showToast("Added to cart!", "success");
-    } else {
-      showToast("Failed to add to cart", "error");
-      console.error("addToCart function is not implemented in AuthContext");
+    try {
+      if (addToCart) {
+        await addToCart(product);
+        if (onShowToast) onShowToast("Added to cart!", "success");
+      } else {
+        if (onShowToast) onShowToast("Failed to add to cart", "error");
+        console.error("addToCart function is not implemented in AuthContext");
+      }
+    } catch (error) {
+      if (onShowToast) onShowToast("Failed to add to cart", "error");
+      console.error("Error adding to cart:", error);
     }
   };
 
-  const handleWishlist = (e) => {
+  const handleWishlist = async (e) => {
     e.preventDefault();
-    if (addToWishlist) {
-      const newWishlistStatus = !isWishlisted;
-      addToWishlist(product);
-      setIsWishlisted(newWishlistStatus);
-      
-      showToast(
-        newWishlistStatus ? "Added to wishlist!" : "Removed from wishlist",
-        "success"
-      );
-    } else {
-      showToast("Failed to update wishlist", "error");
-      console.error("addToWishlist function is not implemented in AuthContext");
+    try {
+      if (isWishlisted && removeFromWishlist) {
+        await removeFromWishlist(product.id);
+        setIsWishlisted(false);
+        if (onShowToast) onShowToast("Removed from wishlist", "success");
+      } else if (addToWishlist) {
+        await addToWishlist(product);
+        setIsWishlisted(true);
+        if (onShowToast) onShowToast("Added to wishlist!", "success");
+      } else {
+        if (onShowToast) onShowToast("Failed to update wishlist", "error");
+        console.error("Wishlist functions not implemented in AuthContext");
+      }
+    } catch (error) {
+      if (onShowToast) onShowToast("Failed to update wishlist", "error");
+      console.error("Error updating wishlist:", error);
     }
-  };
-
-  const showToast = (message, type) => {
-    setToast({ show: true, message, type });
-    setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
   };
 
   const imageUrl = getImageUrl(product.image);
@@ -85,16 +88,6 @@ const ProductCart = ({ product }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
-      {/* Toast notification */}
-      {toast.show && (
-        <Toast 
-          message={toast.message} 
-          type={toast.type} 
-          onClose={() => setToast({ show: false, message: "", type: "" })} 
-        />
-      )}
-
-      {/* Wishlist button */}
       <button
         onClick={handleWishlist}
         className="absolute top-3 right-3 z-10 bg-white rounded-full p-2 shadow-md hover:bg-red-50 transition-colors"

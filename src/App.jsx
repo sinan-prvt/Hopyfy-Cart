@@ -20,8 +20,6 @@ import PrivacyPolicy from './Pages/Services/PrivacyPolicy';
 import TermsAndConditions from './Pages/Services/TermsAndConditions';
 import ForgotPassword from './Pages/Services/ForgotPassword';
 import SubscribePage from './Pages/Services/SubscribePage';
-
-// Admin
 import AdminRoute from './Routes/AdminRoute';
 import AdminDashboard from './Pages/Admin/AdminDashboard';
 import AdminAllOrders from './Pages/Admin/AdminAllOrders';
@@ -38,11 +36,8 @@ function App() {
 
   return (
     <>
-      {/* ✅ Show Navbar only on user routes */}
       {!isAdminRoute && <Navbar />}
-
       <Routes>
-        {/* User Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
@@ -65,7 +60,6 @@ function App() {
         <Route path="/subscribe-page" element={<SubscribePage />} />
         <Route path="/toast" element={<Toast />} />
 
-        {/* Admin Routes under AdminLayout */}
         <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
           <Route path="dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
           <Route path="orders" element={<AdminRoute><AdminAllOrders /></AdminRoute>} />

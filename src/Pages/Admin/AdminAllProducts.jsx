@@ -32,7 +32,6 @@ const AdminAllProducts = () => {
 
     try {
       await axios.delete(`http://localhost:3000/products/${id}`);
-      // Optimistic UI update
       setProducts(products.filter(product => product.id !== id));
     } catch (err) {
       console.error("Failed to delete product", err);
@@ -46,7 +45,6 @@ const AdminAllProducts = () => {
         isActive: !currentStatus
       });
       
-      // Optimistic UI update
       setProducts(products.map(product => 
         product.id === id ? { ...product, isActive: res.data.isActive } : product
       ));
@@ -60,7 +58,6 @@ const AdminAllProducts = () => {
     fetchProducts();
   }, []);
 
-  // Filter products based on search and status
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           product.category.toLowerCase().includes(searchTerm.toLowerCase());
@@ -70,16 +67,13 @@ const AdminAllProducts = () => {
     return matchesSearch && matchesStatus;
   });
 
-  // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
-  // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Render loading state
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -88,7 +82,6 @@ const AdminAllProducts = () => {
     );
   }
 
-  // Render error state
   if (error) {
     return (
       <div className="max-w-6xl mx-auto p-6">
@@ -127,7 +120,6 @@ const AdminAllProducts = () => {
         </button>
       </div>
 
-      {/* Filters and Search */}
       <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -173,7 +165,6 @@ const AdminAllProducts = () => {
         </div>
       </div>
 
-      {/* Products Table */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full">
@@ -270,7 +261,6 @@ const AdminAllProducts = () => {
           </table>
         </div>
         
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="bg-white px-6 py-3 flex items-center justify-between border-t border-gray-200">
             <div className="text-sm text-gray-700">

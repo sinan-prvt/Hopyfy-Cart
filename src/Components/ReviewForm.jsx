@@ -8,7 +8,7 @@ const ReviewForm = ({ productId, onReviewSubmit }) => {
   const [hover, setHover] = useState(0);
   const { user } = useAuth();
 
-  const handleSubmit = async (e) => {     // Submit
+  const handleSubmit = async (e) => {    
     e.preventDefault();
     if (rating === 0) return alert("Please select a star rating");
 

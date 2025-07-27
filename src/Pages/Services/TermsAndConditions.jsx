@@ -12,7 +12,6 @@ const TermsAndConditions = () => {
       className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8"
     >
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <motion.div 
           initial={{ y: -20 }}
           animate={{ y: 0 }}
@@ -30,13 +29,11 @@ const TermsAndConditions = () => {
           </div>
         </motion.div>
 
-        {/* Main Content */}
         <motion.div
           initial={{ scale: 0.98 }}
           animate={{ scale: 1 }}
           className="bg-white rounded-xl shadow-lg overflow-hidden"
         >
-          {/* Hero Section */}
           <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-white">
             <motion.h1 
               initial={{ opacity: 0 }}
@@ -56,10 +53,8 @@ const TermsAndConditions = () => {
             </motion.p>
           </div>
 
-          {/* Terms Content */}
           <div className="p-8">
             <div className="prose prose-blue max-w-none">
-              {/* Introduction */}
               <motion.section 
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -80,7 +75,6 @@ const TermsAndConditions = () => {
                 </div>
               </motion.section>
 
-              {/* Intellectual Property */}
               <motion.section 
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -104,7 +98,6 @@ const TermsAndConditions = () => {
                 </div>
               </motion.section>
 
-              {/* User Responsibilities */}
               <motion.section 
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -127,7 +120,6 @@ const TermsAndConditions = () => {
                 </div>
               </motion.section>
 
-              {/* Privacy Policy */}
               <motion.section 
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -151,7 +143,6 @@ const TermsAndConditions = () => {
                 </div>
               </motion.section>
 
-              {/* Limitation of Liability */}
               <motion.section 
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -175,7 +166,6 @@ const TermsAndConditions = () => {
                 </div>
               </motion.section>
 
-              {/* Changes to Terms */}
               <motion.section 
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -199,7 +189,6 @@ const TermsAndConditions = () => {
                 </div>
               </motion.section>
 
-              {/* Governing Law */}
               <motion.section 
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -221,7 +210,6 @@ const TermsAndConditions = () => {
               </motion.section>
             </div>
 
-            {/* Acceptance Button */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

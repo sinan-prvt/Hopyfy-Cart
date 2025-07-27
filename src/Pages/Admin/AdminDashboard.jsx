@@ -59,7 +59,7 @@ const AdminDashboard = () => {
         const [usersRes, productsRes, ordersRes] = await Promise.all([
           axios.get(`${API_BASE}/users`),
           axios.get(`${API_BASE}/products`),
-          axios.get(`${API_BASE}/order`), // Fixed endpoint to /order
+          axios.get(`${API_BASE}/order`),
         ]);
 
         const totalRevenue = ordersRes.data.reduce((sum, order) => sum + order.totalAmount, 0);
@@ -106,7 +106,6 @@ const AdminDashboard = () => {
 
         const productSales = {};
         ordersRes.data.forEach(order => {
-          // Handle missing items array
           const items = order.items || [];
           items.forEach(item => {  
             const product = productsRes.data.find(p => p.id === item.productId);
@@ -140,7 +139,7 @@ const AdminDashboard = () => {
         }, {});
 
         const userActivityData = usersRes.data
-          .filter(user => !user.isAdmin) // Exclude admin users
+          .filter(user => !user.isAdmin) 
           .map(user => ({
             ...user,
             lastLogin: user.lastLogin || null

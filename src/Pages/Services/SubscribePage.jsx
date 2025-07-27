@@ -16,11 +16,9 @@ const SubscribePage = () => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
       setIsSubscribed(true);
-      // Here you would typically send the email to your backend
     }, 1500);
   };
 
@@ -33,7 +31,6 @@ const SubscribePage = () => {
       className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
     >
       <div className="w-full max-w-md space-y-8">
-        {/* Header */}
         <motion.div
           initial={{ y: -20 }}
           animate={{ y: 0 }}
@@ -68,7 +65,6 @@ const SubscribePage = () => {
           </motion.p>
         </motion.div>
 
-        {/* Main Content */}
         <motion.div
           initial={{ scale: 0.95 }}
           animate={{ scale: 1 }}

@@ -54,7 +54,6 @@ const Login = () => {
             setIsSubmitting(false);
             
             if (res.success) {
-              // Redirect based on user role
               if (res.user && res.user.role === 'admin') {
                 navigate("/admin/dashboard");
               } else {

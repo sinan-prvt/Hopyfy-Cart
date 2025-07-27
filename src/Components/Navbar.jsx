@@ -11,7 +11,6 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
-  // Scroll effect for navbar
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -21,7 +20,6 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu when route changes
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location]);
@@ -34,7 +32,6 @@ const Navbar = () => {
     navigate("/login");
   };
 
-  // Animation variants
   const logoVariants = {
     hover: { scale: 1.05, rotate: -5, transition: { duration: 0.3 } },
     tap: { scale: 0.95 }
@@ -56,19 +53,16 @@ const Navbar = () => {
     }
   };
 
-  // Navbar background based on scroll state
   const navBackground = isScrolled 
     ? "bg-gray/90 backdrop-blur-md shadow-md"
     : "bg-gradient-to-r from-blue-600 to-purple-600";
 
-  // Text color based on scroll state
   const textColor = isScrolled ? "text-gray-800" : "text-white";
   const hoverColor = isScrolled ? "hover:text-blue-600" : "hover:text-yellow-200";
 
   return (
     <>
       <nav className={`${navBackground} p-4 flex justify-between items-center sticky top-0 z-50 transition-all duration-300`}>
-        {/* Logo */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -89,10 +83,8 @@ const Navbar = () => {
           </motion.div>
         </motion.div>
 
-        {/* Desktop Navigation */}
         <ul className="hidden md:flex space-x-6">
           {['Home', 'Product', 'My Orders', 'About'].map((item) => {
-            // Set path for each nav item
             const path = item === 'Home' ? '/' : `/${item.toLowerCase().replace(' ', '-')}`;
             
             return (
@@ -118,9 +110,7 @@ const Navbar = () => {
           })}
         </ul>
 
-        {/* User Actions */}
         <div className="flex items-center space-x-4">
-          {/* Wishlist */}
           <motion.div 
             variants={iconVariants}
             whileHover="hover"
@@ -142,7 +132,6 @@ const Navbar = () => {
             </Link>
           </motion.div>
 
-          {/* Cart */}
           <motion.div 
             variants={iconVariants}
             whileHover="hover"
@@ -164,7 +153,6 @@ const Navbar = () => {
             </Link>
           </motion.div>
 
-          {/* Mobile Menu Button */}
           <motion.button
             className="md:hidden ml-2"
             whileTap={{ scale: 0.9 }}
@@ -177,7 +165,6 @@ const Navbar = () => {
             )}
           </motion.button>
 
-          {/* User Section */}
           {user ? (
             <motion.div 
               className="hidden md:flex items-center space-x-4"
@@ -226,7 +213,6 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -238,7 +224,6 @@ const Navbar = () => {
           >
             <div className="p-4 space-y-4">
               {['Home', 'Product', 'My Orders', 'About'].map((item) => {
-                // Set path for each mobile nav item
                 const path = item === 'Home' ? '/' : `/${item.toLowerCase().replace(' ', '-')}`;
                 
                 return (

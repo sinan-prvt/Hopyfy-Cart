@@ -1,58 +1,15 @@
+// src/layouts/AdminLayout.jsx
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { FiLogOut, FiHome, FiPackage, FiShoppingCart, FiUsers, FiSettings } from "react-icons/fi";
 import { useEffect, useState } from "react";
+import { useAuth } from "../Contexts/AuthContext";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [pageTitle, setPageTitle] = useState("Dashboard");
-  const [userInfo, setUserInfo] = useState({
-    name: "Loading...",
-    email: "loading@example.com"
-  });
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Fetch admin user data from db.json
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch('http://localhost:3000/users');
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch user data');
-        }
-        
-        const data = await response.json();
-        
-        // Find the admin user
-        const adminUser = data.find(user => 
-          user.role === "admin" && user.email === "admin@gmail.com"
-        );
-        
-        if (adminUser) {
-          setUserInfo({
-            name: adminUser.name,
-            email: adminUser.email
-          });
-        } else {
-          throw new Error('Admin user not found');
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        setUserInfo({
-          name: "Admin User",
-          email: "admin@example.com"
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  // Update page title based on current route
+  const { user: authUser, logout: globalLogout } = useAuth();
+  
   useEffect(() => {
     const path = location.pathname;
     const titles = {
@@ -62,7 +19,6 @@ const AdminLayout = () => {
       "/admin/users": "Users"
     };
     
-    // Fallback to last part of path if not found
     setPageTitle(
       titles[path] || 
       path.split("/").pop().charAt(0).toUpperCase() + path.split("/").pop().slice(1)
@@ -70,7 +26,7 @@ const AdminLayout = () => {
   }, [location]);
 
   const handleLogout = () => {
-    console.log("Admin logged out");
+    globalLogout();
     navigate("/login");
   };
 
@@ -83,7 +39,6 @@ const AdminLayout = () => {
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
-      {/* Sidebar */}
       <aside className="w-64 bg-white shadow-lg flex flex-col">
         <div className="p-6">
           <div className="flex items-center mb-8">
@@ -116,18 +71,17 @@ const AdminLayout = () => {
           </nav>
         </div>
         
-        {/* Logout section */}
         <div className="mt-auto p-6 pt-4 border-t border-gray-200 bg-gray-50">
           <div className="flex items-center mb-3">
             <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-medium text-sm mr-3">
-              {isLoading ? "..." : userInfo.name.charAt(0)}
+              {authUser?.name?.charAt(0) || 'A'}
             </div>
             <div>
               <p className="text-sm font-medium text-gray-800 truncate max-w-[130px]">
-                {isLoading ? "Loading..." : userInfo.name}
+                {authUser?.name || 'Admin User'}
               </p>
               <p className="text-xs text-gray-500 truncate max-w-[130px]">
-                {isLoading ? "loading@example.com" : userInfo.email}
+                {authUser?.email || 'admin@example.com'}
               </p>
             </div>
           </div>
@@ -142,7 +96,6 @@ const AdminLayout = () => {
         </div>
       </aside>
 
-      {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-screen">
         <header className="bg-white shadow-sm z-10">
           <div className="flex justify-between items-center py-4 px-6">
@@ -153,7 +106,7 @@ const AdminLayout = () => {
               <div className="relative">
                 <div className="w-3 h-3 bg-green-500 rounded-full absolute top-0 right-0 border-2 border-white"></div>
                 <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-medium">
-                  {isLoading ? "..." : userInfo.name.charAt(0)}
+                  {authUser?.name?.charAt(0) || 'A'}
                 </div>
               </div>
             </div>

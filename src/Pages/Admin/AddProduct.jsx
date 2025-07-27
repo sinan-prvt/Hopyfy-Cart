@@ -36,13 +36,7 @@ const AddProduct = () => {
         ...values,
         created_at: new Date().toISOString(),
       };
-
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // In a real app, you would use:
-      // await axios.post("http://localhost:3000/products", product);
-      
       resetForm();
       navigate("/admin/products");
     } catch (error) {
@@ -54,14 +48,9 @@ const AddProduct = () => {
   };
 
   const categories = [
-    "Electronics",
-    "Clothing",
-    "Home & Kitchen",
-    "Books",
-    "Beauty",
-    "Sports",
-    "Toys",
-    "Other"
+    "Men",
+    "Women",
+    "Kids"
   ];
 
   return (
@@ -98,7 +87,6 @@ const AddProduct = () => {
             {({ values, setFieldValue, errors, touched }) => (
               <Form className="p-6 md:p-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {/* Left Column */}
                   <div className="space-y-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -170,7 +158,6 @@ const AddProduct = () => {
                     </div>
                   </div>
                   
-                  {/* Right Column */}
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       <div>
@@ -314,7 +301,6 @@ const AddProduct = () => {
                   </div>
                 </div>
                 
-                {/* Image Preview */}
                 <div className="mt-8 pt-8 border-t border-gray-200">
                   <h3 className="text-lg font-medium text-gray-700 mb-4">Image Previews</h3>
                   <div className="flex flex-wrap gap-4">
@@ -362,7 +348,6 @@ const AddProduct = () => {
                   </div>
                 </div>
                 
-                {/* Submit Area */}
                 <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-200">
                   {submitError && (
                     <div className="p-3 bg-red-50 text-red-700 rounded-lg flex items-center">

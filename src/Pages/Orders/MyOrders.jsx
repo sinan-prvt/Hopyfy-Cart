@@ -17,28 +17,23 @@ const MyOrders = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
-  // Enhanced helper function to handle different image formats
   const getImageUrl = (image) => {
     if (!image) return null;
     
-    // Handle array format (either array of strings or array of objects)
     if (Array.isArray(image)) {
       if (image.length === 0) return null;
       const firstImage = image[0];
       
-      // If array contains image objects with 'url' property
       if (typeof firstImage === 'object' && firstImage.url) {
         return firstImage.url;
       }
-      return firstImage; // Array of strings
+      return firstImage;
     }
     
-    // Handle single image object
     if (typeof image === 'object' && image.url) {
       return image.url;
     }
     
-    // Handle string format
     if (typeof image === 'string') {
       return image;
     }
@@ -50,7 +45,6 @@ const MyOrders = () => {
     const fetchData = async () => {
       setIsLoading(true);
       
-      // Fetch cart products
       if (user?.cart?.length > 0) {
         try {
           const { data: allProducts } = await axios.get("http://localhost:3000/products");
@@ -70,7 +64,6 @@ const MyOrders = () => {
         }
       }
 
-      // Fetch user orders
       if (user?.id) {
         try {
           const { data } = await axios.get(`http://localhost:3000/order?userId=${user.id}`);
@@ -92,7 +85,6 @@ const MyOrders = () => {
       userId: user.id,
       items: cart.map(item => ({
         ...item,
-        // Ensure we store the image structure correctly
         image: item.image ? (Array.isArray(item.image) ? item.image : [item.image]) : []
       })),
       totalAmount,
@@ -109,7 +101,6 @@ const MyOrders = () => {
         setCart([]);
         setTotalAmount(0);
         
-        // Redirect to checkout page after placing order
         navigate("/checkout", { state: { orderId: result.orderId } });
       } catch (err) {
         console.error("Failed to clear cart:", err);
@@ -177,7 +168,6 @@ const MyOrders = () => {
         <h1 className="text-3xl font-bold text-gray-800">My Orders</h1>
       </div>
 
-      {/* Current Cart Section */}
       <motion.section 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -268,7 +258,6 @@ const MyOrders = () => {
         )}
       </motion.section>
 
-      {/* Previous Orders Section */}
       <section className="bg-white rounded-xl shadow-md p-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-6">Order History</h2>
         
@@ -308,14 +297,12 @@ const MyOrders = () => {
                     <div className="p-6">
                       <ul className="space-y-3 mb-4">
                         {order.items.map((item, i) => {
-                          // Extract image URL from item
                           const imageUrl = getImageUrl(item.image);
                           
                           return (
                             <li key={i} className="flex justify-between">
                               <div className="flex items-center gap-3">
                                 <div className="relative w-12 h-12">
-                                  {/* Fixed image rendering */}
                                   {imageUrl ? (
                                     <img 
                                       src={imageUrl} 
@@ -327,7 +314,6 @@ const MyOrders = () => {
                                       }}
                                     />
                                   ) : null}
-                                  {/* Fixed placeholder with correct classes */}
                                   <div className={`bg-gray-200 border-2 border-dashed border-gray-400 rounded-xl w-full h-full ${imageUrl ? 'hidden' : ''}`} />
                                 </div>
                                 <span className="text-gray-700">{item.name}</span>

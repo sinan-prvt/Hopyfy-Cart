@@ -44,7 +44,6 @@ const About = () => {
         </div>
       </div>
 
-      {/* Mission & Values Section */}
       <div className="max-w-7xl mx-auto mt-16">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-indigo-900 mb-4">Our Core Values</h2>
@@ -86,7 +85,6 @@ const About = () => {
         </div>
       </div>
 
-      {/* Community Section */}
       <div className="max-w-7xl mx-auto mt-20">
   <div className="bg-white rounded-3xl shadow-xl p-12 text-center">
     <h2 className="text-3xl font-bold text-indigo-900 mb-4">Join Our Community</h2>

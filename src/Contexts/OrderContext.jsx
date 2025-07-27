@@ -12,7 +12,7 @@ export const OrderProvider = ({ children }) => {
   console.log("User ID from localStorage:", userId);
 
 
-  const fetchOrders = async () => {                    // oders fetch
+  const fetchOrders = async () => {                  
     if (userId) {
       try {
         const res = await axios.get(`http://localhost:3000/order?userId=${userId}`);
@@ -28,7 +28,7 @@ export const OrderProvider = ({ children }) => {
     fetchOrders();
   }, [userId]);
 
-  const placeOrder = async (newOrder) => {              //place new order
+  const placeOrder = async (newOrder) => {             
     try {
       const res = await axios.post("http://localhost:3000/order", newOrder);
       setOrders((prev) => [res.data, ...prev]);

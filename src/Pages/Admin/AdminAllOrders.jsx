@@ -21,7 +21,6 @@ const AdminAllOrders = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [expandedOrderId, setExpandedOrderId] = useState(null);
 
-  // Status configuration with icons and colors
   const statusConfig = {
     pending: { 
       text: "Pending", 
@@ -72,7 +71,6 @@ const AdminAllOrders = () => {
       const ordersWithUserDetails = ordersRes.data.map(order => {
         const user = usersRes.data.find(u => u.id === order.userId);
         
-        // Map "paid" status to "processing" for consistency
         const status = order.status === "paid" ? "processing" : order.status;
         
         return {

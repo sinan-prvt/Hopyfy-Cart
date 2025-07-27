@@ -10,7 +10,6 @@ const Checkout = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
-  // User input fields
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
@@ -145,7 +144,6 @@ const Checkout = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Order Summary */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-xl shadow-md p-6 mb-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">Order Summary</h2>
@@ -195,7 +193,6 @@ const Checkout = () => {
             )}
           </div>
 
-          {/* Shipping Information */}
           <div className="bg-white rounded-xl shadow-md p-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">Shipping Information</h2>
             
@@ -243,7 +240,6 @@ const Checkout = () => {
           </div>
         </div>
 
-        {/* Payment Section */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-xl shadow-md p-6 sticky top-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">Payment Method</h2>
@@ -302,7 +298,6 @@ const Checkout = () => {
                 </motion.button>
               </div>
               
-              {/* Card Payment Form */}
               {paymentMode === "card" && (
                 <motion.div 
                   initial={{ opacity: 0, height: 0 }}
@@ -319,7 +314,6 @@ const Checkout = () => {
                       className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       value={cardNumber}
                       onChange={(e) => {
-                        // Format card number with spaces every 4 digits
                         const value = e.target.value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
                         setCardNumber(value);
                       }}
@@ -338,7 +332,6 @@ const Checkout = () => {
                         className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         value={expiry}
                         onChange={(e) => {
-                          // Auto-insert slash after 2 characters
                           let value = e.target.value;
                           if (value.length === 2 && !value.includes('/')) {
                             value = value + '/';
@@ -366,7 +359,6 @@ const Checkout = () => {
                 </motion.div>
               )}
               
-              {/* UPI Payment Form */}
               {paymentMode === "upi" && (
                 <motion.div 
                   initial={{ opacity: 0, height: 0 }}
@@ -397,7 +389,6 @@ const Checkout = () => {
                 </motion.div>
               )}
               
-              {/* COD Notice */}
               {paymentMode === "cod" && (
                 <motion.div 
                   initial={{ opacity: 0, height: 0 }}
@@ -411,7 +402,6 @@ const Checkout = () => {
               )}
             </div>
             
-            {/* Order Summary */}
             <div className="border-t border-gray-200 pt-4">
               <div className="flex justify-between mb-2">
                 <span className="text-gray-600">Subtotal</span>
@@ -428,7 +418,6 @@ const Checkout = () => {
               </div>
             </div>
             
-            {/* Place Order Button */}
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

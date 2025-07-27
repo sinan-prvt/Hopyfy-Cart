@@ -10,7 +10,7 @@ const AdminAllUsers = () => {
   const [usersPerPage] = useState(8);
   const [sortConfig, setSortConfig] = useState({
     key: "role",
-    direction: "descending", // Show admins first by default
+    direction: "descending",
   });
   const [showConfirmation, setShowConfirmation] = useState({
     show: false,
@@ -20,7 +20,6 @@ const AdminAllUsers = () => {
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   
-  // Add User Form State
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
@@ -28,7 +27,6 @@ const AdminAllUsers = () => {
     password: ""
   });
 
-  // Fetch users from API
   const fetchUsers = async () => {
     try {
       setLoading(true);
@@ -43,7 +41,6 @@ const AdminAllUsers = () => {
     }
   };
 
-  // Toggle user block status
   const toggleBlockUser = async (userId, isBlocked) => {
     try {
       await axios.patch(`http://localhost:3000/users/${userId}`, {
@@ -58,7 +55,6 @@ const AdminAllUsers = () => {
     }
   };
 
-  // Request sort by column
   const requestSort = (key) => {
     let direction = "ascending";
     if (sortConfig.key === key && sortConfig.direction === "ascending") {
@@ -67,16 +63,13 @@ const AdminAllUsers = () => {
     setSortConfig({ key, direction });
   };
 
-  // Apply sorting to users with admin priority
   const getSortedUsers = () => {
     const sortableUsers = [...users];
     
     return sortableUsers.sort((a, b) => {
-      // Always show admins first
       if (a.role === "admin" && b.role !== "admin") return -1;
       if (b.role === "admin" && a.role !== "admin") return 1;
       
-      // Primary sort
       if (a[sortConfig.key] < b[sortConfig.key]) {
         return sortConfig.direction === "ascending" ? -1 : 1;
       }
@@ -84,12 +77,10 @@ const AdminAllUsers = () => {
         return sortConfig.direction === "ascending" ? 1 : -1;
       }
       
-      // Secondary sort by ID when primary values are equal
       return a.id - b.id;
     });
   };
 
-  // Apply search filter
   const getFilteredUsers = () => {
     const sortedUsers = getSortedUsers();
     if (!searchTerm) return sortedUsers;
@@ -102,7 +93,6 @@ const AdminAllUsers = () => {
     );
   };
 
-  // Handle input changes for Add User form
   const handleNewUserChange = (e) => {
     const { name, value } = e.target;
     setNewUser(prev => ({
@@ -111,7 +101,6 @@ const AdminAllUsers = () => {
     }));
   };
 
-  // Submit Add User form
   const submitNewUser = async () => {
     try {
       setLoading(true);
@@ -132,12 +121,10 @@ const AdminAllUsers = () => {
     }
   };
 
-  // Handle edit button click
   const handleEditClick = (user) => {
     setEditingUser({ ...user });
   };
 
-  // Handle edit form changes
   const handleEditChange = (e) => {
     const { name, value } = e.target;
     setEditingUser(prev => ({
@@ -146,7 +133,6 @@ const AdminAllUsers = () => {
     }));
   };
 
-  // Submit Edit User form
   const submitEditUser = async () => {
     try {
       setLoading(true);
@@ -161,29 +147,24 @@ const AdminAllUsers = () => {
     }
   };
 
-  // Pagination
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = getFilteredUsers().slice(indexOfFirstUser, indexOfLastUser);
   const totalPages = Math.ceil(getFilteredUsers().length / usersPerPage);
 
-  // Pagination controls
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const nextPage = () => currentPage < totalPages && setCurrentPage(currentPage + 1);
   const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
-  // Initial data fetch
   useEffect(() => {
     fetchUsers();
   }, []);
 
-  // Format date
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  // Calculate relative time (e.g., "2 days ago")
   const formatRelativeTime = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -195,7 +176,6 @@ const AdminAllUsers = () => {
     return `${diffDays} days ago`;
   };
 
-  // Render loading state
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -205,7 +185,6 @@ const AdminAllUsers = () => {
     );
   }
 
-  // Render error state
   if (error) {
     return (
       <div className="max-w-6xl mx-auto p-6">
@@ -225,7 +204,6 @@ const AdminAllUsers = () => {
 
   return (
     <div className="min-h-screen text-gray-800">
-      {/* Main Content */}
       <div className="max-w-6xl mx-auto p-6">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -245,7 +223,6 @@ const AdminAllUsers = () => {
           </button>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
             <div className="flex justify-between items-center">
@@ -304,7 +281,6 @@ const AdminAllUsers = () => {
           </div>
         </div>
 
-        {/* Search and Filters */}
         <div className="mb-6">
           <div className="relative">
             <input
@@ -320,7 +296,6 @@ const AdminAllUsers = () => {
           </div>
         </div>
 
-        {/* Users Table */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full">
@@ -488,7 +463,6 @@ const AdminAllUsers = () => {
             </table>
           </div>
 
-          {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex flex-col md:flex-row items-center justify-between px-6 py-4 border-t border-gray-200">
               <div className="text-sm text-gray-500 mb-4 md:mb-0">
@@ -530,7 +504,6 @@ const AdminAllUsers = () => {
         </div>
       </div>
 
-      {/* Add User Modal */}
       {showAddUserModal && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl border border-gray-200 p-6 w-full max-w-md shadow-xl">
@@ -605,7 +578,6 @@ const AdminAllUsers = () => {
         </div>
       )}
 
-      {/* Edit User Modal */}
       {editingUser && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl border border-gray-200 p-6 w-full max-w-md shadow-xl">
@@ -683,7 +655,6 @@ const AdminAllUsers = () => {
         </div>
       )}
 
-      {/* Confirmation Modal */}
       {showConfirmation.show && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl border border-gray-200 p-6 w-full max-w-md shadow-xl">

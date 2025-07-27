@@ -49,7 +49,6 @@ const Home = () => {
 
   return (
     <div className="overflow-hidden">
-      {/* Hero Section */}
       <div className="relative h-[600px] overflow-hidden">
         <video
           autoPlay
@@ -79,7 +78,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Brand Showcase 1 - Nike */}
       <div className="relative h-[500px] overflow-hidden my-16">
         <div className="absolute inset-0 bg-cover bg-center" style={{ 
           backgroundImage: `url('/Images/ad1.jpg')`,
@@ -103,7 +101,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Featured Products */}
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold">Featured Products</h2>
@@ -182,7 +179,6 @@ const Home = () => {
         )}
       </div>
 
-      {/* Brand Showcase 2 - Adidas */}
       <div className="relative h-[500px] overflow-hidden my-16">
         <div className="absolute inset-0 bg-cover bg-center" style={{ 
           backgroundImage: `url('/Images/ad2.jpg')`,
@@ -206,7 +202,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Services Section */}
       <div className="bg-gray-100 py-16 px-6 ">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
@@ -250,7 +245,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Newsletter */}
       <div className="bg-black text-white py-16 px-6 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/20 to-purple-900/20 z-0"></div>
         <div className="container max-w-4xl mx-auto relative z-10">
