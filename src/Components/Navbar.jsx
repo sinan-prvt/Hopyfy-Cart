@@ -54,7 +54,7 @@ const Navbar = () => {
   };
 
   const navBackground = isScrolled 
-    ? "bg-gray/90 backdrop-blur-md shadow-md"
+    ? "bg-gray/300 backdrop-blur-md shadow-md"
     : "bg-gradient-to-r from-blue-600 to-purple-600";
 
   const textColor = isScrolled ? "text-gray-800" : "text-white";
