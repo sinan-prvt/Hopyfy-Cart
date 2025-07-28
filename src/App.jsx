@@ -9,7 +9,6 @@ import Cart from './Pages/Cart/Cart';
 import Wishlistpage from './Pages/WishList/Wishlistpage';
 import Wishlist from './Pages/WishList/Wishlist';
 import MyOrders from './Pages/Orders/MyOrders';
-import Checkout from './Pages/Checkout/Checkout';
 import Home from './Pages/Home';
 import About from './Pages/About';
 import Contact from './Pages/Services/Contact';
@@ -29,6 +28,7 @@ import EditProduct from './Pages/Admin/EditProduct';
 import AdminLayout from './Layout/AdminLayout';
 import AddProduct from "./Pages/Admin/AddProduct";
 import Toast from "./Components/Toast";
+import Checkout from './Pages/Checkout/Checkout';
 
 function App() {
   const location = useLocation();
