@@ -28,7 +28,7 @@ import EditProduct from './Pages/Admin/EditProduct';
 import AdminLayout from './Layout/AdminLayout';
 import AddProduct from "./Pages/Admin/AddProduct";
 import Toast from "./Components/Toast";
-import Checkout from './Pages/Checkout/Checkout';
+import Checkout from './Pages/Checkouts/Checkout';
 
 function App() {
   const location = useLocation();
