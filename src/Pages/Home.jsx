@@ -61,7 +61,7 @@ const Home = () => {
       id: 1,
       name: "Alex Johnson",
       role: "Fashion Enthusiast",
-      content: "The quality of products at Hopyfy Cart is unmatched. Fast shipping and excellent customer service!",
+      content: "The quality of products at Hopyfy Cart is unmatched. Fast shipping and excellent customer service! ",
       rating: 5
     },
     {
