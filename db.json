@@ -72,15 +72,6 @@
         {
           "productId": "P03",
           "quantity": 1
-        },
-        {
-          "productId": "P02",
-          "quantity": 1
-        },
-        {
-          "productId": "P03",
-          "quantity": 2,
-          "size": "4"
         }
       ],
       "order": [],
@@ -129,112 +120,6 @@
           "weight": "0.96",
           "image": [
             "/Images/puma1.webp"
-          ],
-          "isActive": true,
-          "created_at": "2025-07-10T10:30:00.000Z"
-        },
-        {
-          "id": "P02",
-          "name": "Nike Revolution 8",
-          "brand": "Nike",
-          "description": "The Revolution 8 upgrades your go-to runner with softer strides and cooler runs. A breathable mesh upper keeps you comfortable, while the foam midsole with rocker geometry provides smooth, cushioned support every step of the way.",
-          "price": 4295,
-          "count": 30,
-          "sizes": [
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"
-          ],
-          "category": "Men",
-          "shoeType": "Lifestyle Sneakers",
-          "color": "Black/White",
-          "material": "Leather",
-          "weight": "0.96",
-          "image": [
-            "/Images/nike1.webp",
-            "/Images/Nr1.webp",
-            "/Images/Nr2.webp",
-            "/Images/Nr3.jpg",
-            "/Images/Nr4.webp",
-            "/Images/Nr5.webp"
-          ],
-          "isActive": true,
-          "created_at": "2025-07-10T10:30:00.000Z"
-        },
-        {
-          "id": "P03",
-          "name": "Air Force 1",
-          "brand": "Nike",
-          "description": "Big Kids' Nike Air Force 1 Iconic style meets legendary comfort with durable leather, lightweight Air cushioning, and a grippy rubber sole—perfect for everyday streetwea",
-          "price": 5995,
-          "sizes": [
-            "4",
-            "5",
-            "6"
-          ],
-          "count": 40,
-          "category": "kids",
-          "shoeType": "Lifestyle Sneakers",
-          "color": "Black/White",
-          "material": "Leather",
-          "weight": "0.96",
-          "image": [
-            "/Images/naf3.webp",
-            "/Images/naf1.webp",
-            "/Images/naf2.webp",
-            "/Images/naf4.webp",
-            "/Images/naf5.jpg",
-            "/Images/naf6.jpg"
-          ],
-          "isActive": true,
-          "created_at": "2025-07-10T10:30:00.000Z"
-        },
-        {
-          "id": "P08",
-          "name": "Converse Run Star",
-          "description": "Meet the Run Star Trainer—a celebration of sports, style, and heritage. Sleek details and luxe cushioning pair well with all your favourite 'fits, day and night",
-          "price": 6499,
-          "count": 30,
-          "sizes": [
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"
-          ],
-          "category": "Women",
-          "shoeType": "Lifestyle Sneakers",
-          "color": "Black/White",
-          "material": "Leather",
-          "weight": "0.96",
-          "image": [
-            "/Images/converse1.webp"
-          ],
-          "isActive": true,
-          "created_at": "2025-07-10T10:30:00.000Z"
-        },
-        {
-          "id": "P09",
-          "name": "Jordan Air 1 Zoom CMFT 2",
-          "description": "Premium suede and Jordan Brand's signature Formula 23 foam come together to give you an extra luxurious (and extra cozy) AJ1.",
-          "price": 3245,
-          "count": 30,
-          "sizes": [
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"
-          ],
-          "category": "Men",
-          "shoeType": "Lifestyle Sneakers",
-          "color": "Black/White",
-          "material": "Leather",
-          "weight": "0.96",
-          "image": [
-            "/Images/jordan1.webp"
           ],
           "isActive": true,
           "created_at": "2025-07-10T10:30:00.000Z"
@@ -564,7 +449,10 @@
         "/Images/Adzs6.jpg"
       ],
       "isActive": true,
-      "created_at": "2025-07-10T10:30:00.000Z"
+      "created_at": "2025-07-10T10:30:00.000Z",
+      "images": [
+        ""
+      ]
     },
     {
       "id": "P02",
@@ -2004,7 +1892,7 @@
         }
       ],
       "totalAmount": 6999,
-      "status": "pending",
+      "status": "delivered",
       "orderDate": "2025-07-26T15:55:25.855Z"
     }
   ],

@@ -1,16 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { 
-  Clock, 
-  Loader, 
-  ShoppingCart, 
-  CheckCircle, 
-  XCircle,
-  Search,
-  ChevronDown,
-  ChevronUp,
-  Filter
-} from "lucide-react";
+import { Clock, Loader, ShoppingCart, CheckCircle, XCircle, Search, ChevronDown, ChevronUp, Filter } from "lucide-react";
 
 const AdminAllOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -387,7 +377,7 @@ const AdminAllOrders = () => {
                                     <span className="text-gray-500">Shipping Address:</span> {order.shippingAddress || "Not provided"}
                                   </div>
                                   <div>
-                                    <span className="text-gray-500">Payment Method:</span> {order.paymentMethod || "Unknown"}
+                                    <span className="text-gray-500">Payment Method:</span> {order.paymentMode || "Unknown"}
                                   </div>
                                 </div>
                               </div>

@@ -5,7 +5,7 @@ import { ShoppingCart, Star, Heart } from "lucide-react";
 import { useAuth } from "../../Contexts/AuthContext";
 
 const ProductCart = ({ product, onShowToast }) => {
-  const { user, addToCart, addToWishlist, removeFromWishlist } = useAuth();
+  const { user, moveToCart, addToWishlist, removeFromWishlist } = useAuth();
   const [isHovered, setIsHovered] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
 
@@ -45,8 +45,8 @@ const ProductCart = ({ product, onShowToast }) => {
   const handleAddToCart = async (e) => {
     e.preventDefault();
     try {
-      if (addToCart) {
-        await addToCart(product);
+      if (moveToCart) {
+        await moveToCart(product);
         if (onShowToast) onShowToast("Added to cart!", "success");
       } else {
         if (onShowToast) onShowToast("Failed to add to cart", "error");

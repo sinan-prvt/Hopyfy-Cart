@@ -1,4 +1,3 @@
-// src/layouts/AdminLayout.jsx
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { FiLogOut, FiHome, FiPackage, FiShoppingCart, FiUsers, FiSettings } from "react-icons/fi";
 import { useEffect, useState } from "react";

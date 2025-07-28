@@ -2,32 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Bar, Line, Pie } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler } from "chart.js";
 import { FiUsers, FiShoppingBag, FiDollarSign, FiPackage, FiTrendingUp } from "react-icons/fi";
 import { format, subDays, isAfter } from "date-fns";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register( CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler );
 
 const AdminDashboard = () => {
   const [metrics, setMetrics] = useState({
@@ -232,6 +211,12 @@ const AdminDashboard = () => {
         borderWidth: 2,
         tension: 0.3,
         fill: true,
+        pointBackgroundColor: "rgba(99, 102, 241, 1)",
+        pointBorderColor: "#fff",
+        pointHoverBackgroundColor: "#fff",
+        pointHoverBorderColor: "rgba(99, 102, 241, 1)",
+        pointRadius: 4,
+        pointHoverRadius: 6,
       },
     ],
   }), [monthlyRevenue]);
@@ -295,14 +280,41 @@ const AdminDashboard = () => {
       tooltip: {
         callbacks: {
           label: (context) => `₹${context.parsed.y.toLocaleString()}`
-        }
+        },
+        backgroundColor: 'rgba(30, 41, 59, 0.9)',
+        titleFont: { size: 14 },
+        bodyFont: { size: 13 },
+        padding: 10,
+        displayColors: false,
+        borderColor: 'rgba(99, 102, 241, 0.5)',
+        borderWidth: 1,
       }
+    },
+    interaction: {
+      intersect: false,
+      mode: 'index',
     },
     scales: {
       y: {
         beginAtZero: true,
         ticks: {
-          callback: (value) => `₹${value.toLocaleString()}`
+          callback: (value) => `₹${value.toLocaleString()}`,
+          font: {
+            size: 11,
+          }
+        },
+        grid: {
+          color: 'rgba(0, 0, 0, 0.03)',
+        }
+      },
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          font: {
+            size: 11,
+          }
         }
       }
     }
@@ -456,7 +468,7 @@ const AdminDashboard = () => {
         <MetricCard 
           title="Total Orders" 
           value={metrics.totalOrders} 
-          icon={<FiShoppingBag size={20} />} 
+          icon={<FiShoppingBag size={17} />} 
           color="purple"
           subtext="All time orders"
         />
@@ -464,7 +476,7 @@ const AdminDashboard = () => {
         <MetricCard 
           title="Total Revenue" 
           value={`₹${metrics.totalRevenue.toLocaleString()}`} 
-          icon={<FiDollarSign size={20} />} 
+          icon={<FiDollarSign size={12} />} 
           color="amber"
         />
         
@@ -472,14 +484,19 @@ const AdminDashboard = () => {
           title="Avg Order Value" 
           value={`₹${metrics.avgOrderValue.toLocaleString()}`} 
           icon={<FiTrendingUp size={15} />} 
-          color="teal"
           subtext="Per order average"
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <div className="lg:col-span-2 bg-white p-5 rounded-xl shadow-sm border">
-          <h3 className="text-lg font-semibold mb-4 text-gray-700">Monthly Revenue</h3>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-gray-700">Monthly Revenue</h3>
+            <div className="flex items-center text-sm bg-gray-50 px-3 py-1 rounded-lg">
+              <div className="w-3 h-3 rounded-full bg-indigo-500 mr-2"></div>
+              <span className="text-gray-600">Current Year</span>
+            </div>
+          </div>
           <div className="h-72">
             <Line data={revenueData} options={revenueChartOptions} />
           </div>

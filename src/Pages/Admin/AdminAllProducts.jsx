@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AdminAllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -21,23 +23,62 @@ const AdminAllProducts = () => {
     } catch (err) {
       console.error("Failed to fetch products", err);
       setError("Failed to load products. Please try again later.");
+      toast.error("Failed to load products. Please try again later.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    const confirm = window.confirm("Are you sure you want to delete this product?");
-    if (!confirm) return;
-
-    try {
-      await axios.delete(`http://localhost:3000/products/${id}`);
-      setProducts(products.filter(product => product.id !== id));
-    } catch (err) {
-      console.error("Failed to delete product", err);
-      alert("Failed to delete product. Please try again.");
+  toast.info(
+    <div className="p-4">
+      <div className="text-lg font-medium mb-3">Confirm Deletion</div>
+      <p className="mb-4">Are you sure you want to delete this product?</p>
+      <div className="flex justify-end space-x-3">
+        <button
+          className="px-4 py-2 bg-green-200 text-gray-800 rounded hover:bg-gray-300"
+          onClick={() => toast.dismiss()}
+        >
+          Cancel
+        </button>
+        <button
+          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          onClick={async () => {
+            toast.dismiss();
+            try {
+              await axios.delete(`http://localhost:3000/products/${id}`);
+              setProducts(products.filter(product => product.id !== id));
+              toast.success("Product deleted successfully!", {
+                position: "top-right",
+                autoClose: 2000,
+              });
+            } catch (err) {
+              console.error("Failed to delete product", err);
+              toast.error("Failed to delete product. Please try again.", {
+                position: "top-right",
+                autoClose: 3000,
+              });
+            }
+          }}
+        >
+          Delete
+        </button>
+      </div>
+    </div>,
+    {
+      position: "top-center",
+      autoClose: false,
+      closeButton: false,
+      draggable: false,
+      closeOnClick: false,
+      className: "w-full max-w-md",
+      bodyClassName: "p-0"
     }
-  };
+  );
+};
 
   const toggleStatus = async (id, currentStatus) => {
     try {
@@ -48,9 +89,18 @@ const AdminAllProducts = () => {
       setProducts(products.map(product => 
         product.id === id ? { ...product, isActive: res.data.isActive } : product
       ));
+      
+      toast.success(`Product marked as ${!currentStatus ? 'Active' : 'Inactive'}!`, {
+        position: "top-right",
+        autoClose: 2000,
+      });
     } catch (err) {
       console.error("Failed to update product status", err);
-      alert("Failed to update status. Please try again.");
+      
+      toast.error("Failed to update status. Please try again.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   };
 
@@ -82,25 +132,10 @@ const AdminAllProducts = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="max-w-6xl mx-auto p-6">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-          <strong className="font-bold">Error! </strong>
-          <span className="block sm:inline">{error}</span>
-          <button 
-            onClick={fetchProducts} 
-            className="ml-4 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6">
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
+      
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Products Management</h1>
@@ -156,6 +191,10 @@ const AdminAllProducts = () => {
               onClick={() => {
                 setSearchTerm("");
                 setStatusFilter("all");
+                toast.info("Filters cleared", {
+                  position: "top-right",
+                  autoClose: 1500,
+                });
               }}
               className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
             >
@@ -270,7 +309,12 @@ const AdminAllProducts = () => {
             </div>
             <div className="flex space-x-2">
               <button
-                onClick={() => currentPage > 1 && paginate(currentPage - 1)}
+                onClick={() => {
+                  if (currentPage > 1) {
+                    paginate(currentPage - 1);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
                 disabled={currentPage === 1}
                 className={`px-3 py-1 rounded-md ${
                   currentPage === 1
@@ -284,7 +328,10 @@ const AdminAllProducts = () => {
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
                 <button
                   key={number}
-                  onClick={() => paginate(number)}
+                  onClick={() => {
+                    paginate(number);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                   className={`px-3 py-1 rounded-md ${
                     currentPage === number
                       ? 'bg-blue-500 text-white'
@@ -296,7 +343,12 @@ const AdminAllProducts = () => {
               ))}
               
               <button
-                onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
+                onClick={() => {
+                  if (currentPage < totalPages) {
+                    paginate(currentPage + 1);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
                 disabled={currentPage === totalPages}
                 className={`px-3 py-1 rounded-md ${
                   currentPage === totalPages
