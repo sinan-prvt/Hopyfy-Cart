@@ -57,27 +57,27 @@ const hoverColor = "hover:text-blue-600";
   return (
     <>
       <nav
-  className={`${navBackground} ${navShadow} py-2 px-4 flex justify-between items-center sticky top-0 z-50 transition-all duration-300`}
->
-  <motion.div
-    initial={{ opacity: 0, x: -20 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.5 }}
-    className="flex items-center space-x-2 cursor-pointer"
-    onClick={() => navigate("/")}
-  >
-    <motion.div
-      variants={logoVariants}
-      whileHover="hover"
-      whileTap="tap"
-    >
-      <img
-        src="./logo.png"
-        alt="Logo"
-        className="w-20" // smaller logo
-      />
-    </motion.div>
-  </motion.div>
+        className={`${navBackground} ${navShadow} py-2 px-4 flex justify-between items-center sticky top-0 z-50 transition-all duration-300`}
+      >
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex items-center space-x-2 cursor-pointer"
+        onClick={() => navigate("/")}
+      >
+        <motion.div
+          variants={logoVariants}
+          whileHover="hover"
+          whileTap="tap"
+        >
+          <img
+            src="./logo.png"
+            alt="Logo"
+            className="w-20"
+          />
+        </motion.div>
+      </motion.div>
 
 
         <ul className="hidden md:flex space-x-6">

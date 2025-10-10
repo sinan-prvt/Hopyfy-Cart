@@ -81,52 +81,46 @@ const Home = () => {
   ];
 
   return (
-<div className="overflow-hidden bg-white">
-  <div className="relative h-[90vh] overflow-hidden">
-    {/* Video Background */}
-    <div className="absolute inset-0 z-0">
-      <video 
-        autoPlay 
-        loop 
-        muted 
-        playsInline 
-        className="w-full h-full object-cover"
-      >
-        <source src="/Videos/shoe.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-      {/* Overlay for readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/70 z-10"></div>
-    </div>
+    <div className="overflow-hidden bg-white">
+      <div className="relative h-[90vh] overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline 
+            className="w-full h-full object-cover"
+          >
+            <source src="/Videos/shoe.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/70 z-10"></div>
+        </div>
 
-    {/* Hero Content */}
-    <div className="relative z-20 h-full flex flex-col justify-center items-center text-center px-4">
-      <div className="max-w-3xl">
-        {/* Main Heading */}
-        <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 leading-tight text-transparent bg-clip-text bg-white drop-shadow-lg font-serif">
-          Elevate Your <span className="text-white">Style</span>
-        </h1>
+        <div className="relative z-20 h-full flex flex-col justify-center items-center text-center px-4">
+          <div className="max-w-3xl">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 leading-tight text-transparent bg-clip-text bg-white drop-shadow-lg font-serif">
+              Elevate Your <span className="text-white">Style</span>
+            </h1>
 
-        {/* Subheading */}
-        <p className="text-lg md:text-xl lg:text-2xl mb-8 text-gray-200 max-w-2xl mx-auto font-light tracking-wide drop-shadow-md">
-          Premium footwear crafted for elegance and comfort in every step
-        </p>
+            <p className="text-lg md:text-xl lg:text-2xl mb-8 text-gray-200 max-w-2xl mx-auto font-light tracking-wide drop-shadow-md">
+              Premium footwear crafted for elegance and comfort in every step
+            </p>
 
-        {/* Button */}
-        <Link to="/product">
-          <button className="group relative w-48 h-12 overflow-hidden rounded-full text-white font-bold uppercase tracking-wider shadow-lg">
-            <span className="absolute left-0 top-0 h-12 w-12 rounded-full bg-blue-600 shadow-md transition-all duration-500 ease-out group-hover:w-full group-hover:shadow-xl group-active:scale-95"></span>
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-0.5 bg-white transition-all duration-500 ease-out group-hover:translate-x-36 group-active:translate-x-[150px]">
-              <span className="absolute top-[-6px] right-[2px] w-2.5 h-2.5 border-t-2 border-r-2 border-white rotate-45"></span>
-            </span>
-            <span className="relative z-10 transition-all duration-500 ease-out group-hover:text-white group-hover:-translate-x-7 group-active:text-gray-300">
-              Shop Now
-            </span>
-          </button>
-        </Link>
+            <Link to="/product">
+              <button className="group relative w-48 h-12 overflow-hidden rounded-full text-white font-bold uppercase tracking-wider shadow-lg">
+                <span className="absolute left-0 top-0 h-12 w-12 rounded-full bg-blue-600 shadow-md transition-all duration-500 ease-out group-hover:w-full group-hover:shadow-xl group-active:scale-95"></span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-0.5 bg-white transition-all duration-500 ease-out group-hover:translate-x-36 group-active:translate-x-[150px]">
+                  <span className="absolute top-[-6px] right-[2px] w-2.5 h-2.5 border-t-2 border-r-2 border-white rotate-45"></span>
+                </span>
+                <span className="relative z-10 transition-all duration-500 ease-out group-hover:text-white group-hover:-translate-x-7 group-active:text-gray-300">
+                  Shop Now
+                </span>
+              </button>
+            </Link>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
 
       <div className="py-12 bg-gray-50">

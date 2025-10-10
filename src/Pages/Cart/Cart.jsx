@@ -125,8 +125,28 @@ const Cart = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+      <div className="flex flex-col items-center justify-center text-center p-10">
+        <motion.img
+          src="/Images/error.webp" 
+          alt="Loading Illustration"
+          className="w-90 mb-6 mt-8"
+          animate={{
+            y: [0, -12, 0],
+          }}
+          transition={{
+            duration: 3.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.h2
+          className="text-xl font-medium text-gray-700"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          Please log in to view your Cart
+        </motion.h2>
       </div>
     );
   }
@@ -149,10 +169,28 @@ const Cart = () => {
           animate={{ opacity: 1 }}
           className="text-center py-12"
         >
-          <div className="text-6xl mb-4">🛒</div>
-          <h2 className="text-2xl font-semibold text-gray-700 mb-2">
-            Your cart is empty
-          </h2>
+          <div className="flex flex-col items-center justify-center text-center p-10">
+          <motion.img
+            src="/Images/emptycart.png"
+            alt="Empty Wishlist Illustration"
+            className="w-40 mb-6"
+            animate={{
+              y: [0, -12, 0], 
+            }}
+            transition={{
+              duration: 3.8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          <motion.h2
+            className="text-2xl font-semibold text-gray-800 mb-2"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            Oops! Your Cart is empty
+          </motion.h2>
           <p className="text-gray-500 mb-6">
             Looks like you haven't added anything to your cart yet
           </p>
@@ -162,6 +200,7 @@ const Cart = () => {
           >
             Browse Products
           </Link>
+        </div>
         </motion.div>
       ) : (
         <div className="space-y-6">

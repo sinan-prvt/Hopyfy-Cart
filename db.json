@@ -438,70 +438,7 @@
       "isBlock": false,
       "cart": [],
       "order": [],
-      "wishlist": [
-        {
-          "id": "P03",
-          "name": "Air Force 1",
-          "brand": "Nike",
-          "description": "Big Kids' Nike Air Force 1 Iconic style meets legendary comfort with durable leather, lightweight Air cushioning, and a grippy rubber sole—perfect for everyday streetwea",
-          "price": 5995,
-          "count": 40,
-          "originalPrice": 6999,
-          "discountPercentage": "20",
-          "sizes": [
-            "4",
-            "5",
-            "6"
-          ],
-          "category": "kids",
-          "shoeType": "Lifestyle Sneakers",
-          "color": "Black/White",
-          "material": "Leather",
-          "weight": "0.96",
-          "image": [
-            "/Images/naf3.webp",
-            "/Images/naf1.webp",
-            "/Images/naf2.webp",
-            "/Images/naf4.webp",
-            "/Images/naf5.jpg",
-            "/Images/naf6.jpg"
-          ],
-          "isActive": true,
-          "created_at": "2025-07-10T10:30:00.000Z"
-        },
-        {
-          "id": "P02",
-          "name": "Nike Revolution 8",
-          "brand": "Nike",
-          "description": "The Revolution 8 upgrades your go-to runner with softer strides and cooler runs. A breathable mesh upper keeps you comfortable, while the foam midsole with rocker geometry provides smooth, cushioned support every step of the way.",
-          "price": 4295,
-          "originalPrice": 4999,
-          "discountPercentage": "30",
-          "count": 30,
-          "sizes": [
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"
-          ],
-          "category": "Men",
-          "shoeType": "Lifestyle Sneakers",
-          "color": "Black/White",
-          "material": "Leather",
-          "weight": "0.96",
-          "image": [
-            "/Images/nike1.webp",
-            "/Images/Nr1.webp",
-            "/Images/Nr2.webp",
-            "/Images/Nr3.jpg",
-            "/Images/Nr4.webp",
-            "/Images/Nr5.webp"
-          ],
-          "isActive": true,
-          "created_at": "2025-07-10T10:30:00.000Z"
-        }
-      ],
+      "wishlist": [],
       "created_at": "2025-07-28T05:40:39.547Z"
     },
     {

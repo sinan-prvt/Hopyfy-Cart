@@ -179,17 +179,28 @@ const MyOrders = () => {
         </div>
         
         {cart.length === 0 ? (
-          <div className="text-center py-10">
-            <div className="flex justify-center mb-4">
-              <div className="text-6xl mb-4">🛒</div>
-            </div>
-            <p className="text-gray-600">Your cart is empty</p>
-            <button 
-              onClick={() => window.location.href = "/product"}
-              className="mt-4 bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition-colors"
+          <div className="flex flex-col items-center justify-center text-center p-10">
+          <motion.img
+              src="/Images/emptycart.png"
+              alt="Empty Wishlist Illustration"
+              className="w-40 mb-6"
+              animate={{
+                y: [0, -15, 0],
+              }}
+              transition={{
+                duration: 3.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            <motion.h2
+              className="text-xl font-medium text-gray-700"
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
             >
-              Browse Products
-            </button>
+              Your Cart is Empty
+            </motion.h2>
           </div>
         ) : (
           <>
@@ -262,16 +273,25 @@ const MyOrders = () => {
         <h2 className="text-xl font-semibold text-gray-800 mb-6">Order History</h2>
         
         {previousOrders.length === 0 ? (
-          <div className="text-center py-10">
-            <div className="flex justify-center mb-4">
-              <div className="bg-gray-200 border-2 border-dashed border-gray-400 rounded-xl w-16 h-16" />
-            </div>
-            <p className="text-gray-600">You haven't placed any orders yet</p>
+          <div className="flex flex-col items-center justify-center text-center p-10">
+          <motion.img
+              src="/Images/noorder.png"
+              alt="No Order Illustration"
+              className="w-40 mb-6"
+            />
+            <motion.h2
+              className="text-1xl font-medium text-gray-700"
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              You haven't placed any orders yet
+            </motion.h2>
           </div>
         ) : (
           <div className="space-y-6">
             <AnimatePresence>
-              {previousOrders
+              {previousOrders 
                 .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate))
                 .map((order, idx) => (
                   <motion.div
