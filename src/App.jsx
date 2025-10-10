@@ -29,6 +29,8 @@ import AdminLayout from './Layout/AdminLayout';
 import AddProduct from "./Pages/Admin/AddProduct";
 import Toast from "./Components/Toast";
 import Checkout from './Pages/Checkouts/Checkout';
+import TermsOfService from "./Pages/Services/TermOfServices";
+import CookiesPolicy from "./Pages/Services/CookiesPolicy";
 
 function App() {
   const location = useLocation();
@@ -59,6 +61,8 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/subscribe-page" element={<SubscribePage />} />
         <Route path="/toast" element={<Toast />} />
+        <Route path="/terms-of-services" element={<TermsOfService />} />
+        <Route path="/cookies-policy" element={<CookiesPolicy />} />
 
         <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
           <Route path="dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />

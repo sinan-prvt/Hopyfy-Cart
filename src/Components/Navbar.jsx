@@ -15,7 +15,6 @@ const Navbar = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -45,48 +44,45 @@ const Navbar = () => {
   const countVariants = {
     pulse: {
       scale: [1, 1.2, 1],
-      transition: { 
-        duration: 0.5,
-        repeat: Infinity,
-        repeatDelay: 3
-      }
+      transition: { duration: 0.5, repeat: Infinity, repeatDelay: 3 }
     }
   };
 
-  const navBackground = isScrolled 
-    ? "bg-gray/300 backdrop-blur-md shadow-md"
-    : "bg-gradient-to-r from-blue-600 to-purple-600";
+const navBackground = "backdrop-blur-md"; 
+const navShadow = isScrolled ? "shadow-md" : "shadow-sm";
+const textColor = "text-gray-900";
+const hoverColor = "hover:text-blue-600";
 
-  const textColor = isScrolled ? "text-gray-800" : "text-white";
-  const hoverColor = isScrolled ? "hover:text-blue-600" : "hover:text-yellow-200";
 
   return (
     <>
-      <nav className={`${navBackground} p-4 flex justify-between items-center sticky top-0 z-50 transition-all duration-300`}>
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex items-center space-x-2 cursor-pointer"
-          onClick={() => navigate("/")}  
-        >
-          <motion.div 
-            variants={logoVariants}
-            whileHover="hover"
-            whileTap="tap"
-          >
-            <img 
-              src="./logo.png" 
-              alt="Logo"
-              className="w-20"
-            />
-          </motion.div>
-        </motion.div>
+      <nav
+  className={`${navBackground} ${navShadow} py-2 px-4 flex justify-between items-center sticky top-0 z-50 transition-all duration-300`}
+>
+  <motion.div
+    initial={{ opacity: 0, x: -20 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.5 }}
+    className="flex items-center space-x-2 cursor-pointer"
+    onClick={() => navigate("/")}
+  >
+    <motion.div
+      variants={logoVariants}
+      whileHover="hover"
+      whileTap="tap"
+    >
+      <img
+        src="./logo.png"
+        alt="Logo"
+        className="w-20" // smaller logo
+      />
+    </motion.div>
+  </motion.div>
+
 
         <ul className="hidden md:flex space-x-6">
           {['Home', 'Product', 'My Orders', 'About'].map((item) => {
             const path = item === 'Home' ? '/' : `/${item.toLowerCase().replace(' ', '-')}`;
-            
             return (
               <motion.li 
                 key={item}
@@ -100,7 +96,7 @@ const Navbar = () => {
                   {item}
                   {location.pathname === path && (
                     <motion.div 
-                      className="absolute bottom-0 left-0 w-full h-0.5 bg-current"
+                      className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600"
                       layoutId="navbar-underline"
                     />
                   )}
@@ -121,7 +117,7 @@ const Navbar = () => {
               <Heart className={`${textColor} transition-colors duration-200`} size={24} />
               {wishlistCount > 0 && (
                 <motion.span 
-                  className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full"
+                  className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs px-1.5 py-0.5 rounded-full"
                   variants={countVariants}
                   animate="pulse"
                   initial={false}
@@ -142,7 +138,7 @@ const Navbar = () => {
               <ShoppingCart className={`${textColor} transition-colors duration-200`} size={24} />
               {cartCount > 0 && (
                 <motion.span 
-                  className="absolute -top-2 -right-2 bg-yellow-400 text-gray-800 text-xs px-1.5 py-0.5 rounded-full font-bold"
+                  className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs px-1.5 py-0.5 rounded-full font-bold"
                   variants={countVariants}
                   animate="pulse"
                   initial={false}
@@ -177,10 +173,7 @@ const Navbar = () => {
               </span>
               <motion.button 
                 onClick={handleLogout}
-                className={`${isScrolled 
-                  ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                  : 'bg-white text-blue-600 hover:bg-gray-100'} 
-                  px-4 py-2 rounded-full font-medium transition-colors duration-200 shadow`}
+                className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-full font-medium shadow"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -191,7 +184,7 @@ const Navbar = () => {
             <div className="hidden md:flex space-x-3">
               <motion.button 
                 onClick={() => navigate("/login")}
-                className={`${textColor} ${hoverColor} font-medium px-3 py-1`}
+                className="text-gray-800 border border-gray-300 hover:border-blue-600 hover:text-blue-600 px-4 py-0.5 rounded-full font-medium"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -199,10 +192,7 @@ const Navbar = () => {
               </motion.button>
               <motion.button 
                 onClick={() => navigate("/signup")}
-                className={`${isScrolled 
-                  ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                  : 'bg-yellow-400 text-blue-800 hover:bg-yellow-300'} 
-                  px-4 py-2 rounded-full font-bold transition-colors duration-200 shadow`}
+                className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-1 rounded-full font-bold shadow"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -220,12 +210,11 @@ const Navbar = () => {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-white shadow-lg overflow-hidden"
+            className="md:hidden bg-gray-50 shadow-lg overflow-hidden"
           >
             <div className="p-4 space-y-4">
               {['Home', 'Product', 'My Orders', 'About'].map((item) => {
                 const path = item === 'Home' ? '/' : `/${item.toLowerCase().replace(' ', '-')}`;
-                
                 return (
                   <motion.div
                     key={item}
@@ -260,13 +249,13 @@ const Navbar = () => {
                   <div className="flex flex-col space-y-3">
                     <button 
                       onClick={() => navigate("/login")}
-                      className="w-full text-gray-800 font-medium px-4 py-2 border border-gray-300 rounded-full"
+                      className="w-full text-gray-800 font-medium px-4 py-2 border border-gray-300 rounded-full hover:border-blue-600 hover:text-blue-600"
                     >
                       Login
                     </button>
                     <button 
                       onClick={() => navigate("/signup")}
-                      className="w-full bg-blue-600 text-white px-4 py-2 rounded-full font-bold"
+                      className="w-full bg-blue-600 text-white px-4 py-2 rounded-full font-bold hover:bg-blue-700"
                     >
                       Sign Up
                     </button>

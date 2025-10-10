@@ -1,5 +1,7 @@
 @import "tailwindcss";
-
+ body {
+  background-color: rgb(238, 250, 239);
+ }
 
 .toggle-checkbox {
   width: 40px;

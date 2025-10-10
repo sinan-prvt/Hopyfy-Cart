@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="bg-gradient-to-r from-gray-900 to-gray-800 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-9 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
         <div className="space-y-5">
           <div className="flex items-center">
             <div className="bg-gradient-to-r from-blue-200 to-purple-300 w-10 h-10 rounded-lg flex items-center justify-center mr-3">
               <img src={"./logo.png"} ></img>
             </div>
-            <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">Hopyfy Cart</h2>
+            <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r bg-white ">Hopyfy Cart</h2>
           </div>
           <p className="text-gray-300 text-sm leading-relaxed">
             Your go-to shop for trending products and best prices. We deliver happiness right to your doorstep with fast shipping and excellent customer service.
@@ -102,7 +102,7 @@ const Footer = () => {
                   placeholder="Your email" 
                   className="bg-gray-700 text-white px-4 py-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm"
                 />
-                <button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 px-4 py-2 rounded-r-lg text-sm font-medium transition-all duration-300">
+                <button className="bg-gradient-to-r bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-r-lg text-sm font-medium transition-all duration-300">
                   Subscribe
                 </button>
               </div>
@@ -117,9 +117,9 @@ const Footer = () => {
             © {new Date().getFullYear()} Hopyfy Cart. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Terms of Service</a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Privacy Policy</a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Cookie Policy</a>
+            <a href="/terms-of-services" className="text-gray-400 hover:text-white transition-colors text-sm">Terms of Service</a>
+            <a href="/privacypolicy" className="text-gray-400 hover:text-white transition-colors text-sm">Privacy Policy</a>
+            <a href="/cookies-policy" className="text-gray-400 hover:text-white transition-colors text-sm">Cookie Policy</a>
           </div>
         </div>
       </div>

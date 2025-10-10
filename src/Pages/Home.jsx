@@ -81,44 +81,53 @@ const Home = () => {
   ];
 
   return (
-    <div className="overflow-hidden bg-white">
-      <div className="relative h-[90vh] overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/80 z-10"></div>
-          <video 
-            autoPlay 
-            loop 
-            muted 
-            playsInline 
-            className="w-full h-full object-cover"
-          >
-            <source src="/Videos/Shoe.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
-        
-        <div className="relative z-20 h-full flex flex-col justify-center items-center text-center px-4">
-          <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white drop-shadow-lg">
-              Elevate Your Style
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-2xl mx-auto">
-              Premium footwear for every occasion
-            </p>
-             <Link to="/product">
-            <button className="group relative w-48 h-12 overflow-hidden rounded-full text-white font-bold uppercase tracking-wider">
-              <span className="absolute left-0 top-0 h-12 w-12 rounded-full bg-gray-900 shadow-md transition-all duration-500 ease-out group-hover:w-full group-hover:shadow-lg group-active:scale-90"></span>
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-0.5 bg-white transition-all duration-500 ease-out group-hover:translate-x-36 group-active:translate-x-[150px]">
-                <span className="absolute top-[-6px] right-[2px] w-2.5 h-2.5 border-t-2 border-r-2 border-white rotate-45"></span>
-              </span>
-              <span className="relative z-10 transition-all duration-500 ease-out group-hover:text-white group-hover:-translate-x-7 group-active:text-gray-300">
-                Shop Now
-              </span>
-            </button>
-          </Link>
-          </div>
-        </div>
+<div className="overflow-hidden bg-white">
+  <div className="relative h-[90vh] overflow-hidden">
+    {/* Video Background */}
+    <div className="absolute inset-0 z-0">
+      <video 
+        autoPlay 
+        loop 
+        muted 
+        playsInline 
+        className="w-full h-full object-cover"
+      >
+        <source src="/Videos/shoe.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      {/* Overlay for readability */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/70 z-10"></div>
+    </div>
+
+    {/* Hero Content */}
+    <div className="relative z-20 h-full flex flex-col justify-center items-center text-center px-4">
+      <div className="max-w-3xl">
+        {/* Main Heading */}
+        <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 leading-tight text-transparent bg-clip-text bg-white drop-shadow-lg font-serif">
+          Elevate Your <span className="text-white">Style</span>
+        </h1>
+
+        {/* Subheading */}
+        <p className="text-lg md:text-xl lg:text-2xl mb-8 text-gray-200 max-w-2xl mx-auto font-light tracking-wide drop-shadow-md">
+          Premium footwear crafted for elegance and comfort in every step
+        </p>
+
+        {/* Button */}
+        <Link to="/product">
+          <button className="group relative w-48 h-12 overflow-hidden rounded-full text-white font-bold uppercase tracking-wider shadow-lg">
+            <span className="absolute left-0 top-0 h-12 w-12 rounded-full bg-blue-600 shadow-md transition-all duration-500 ease-out group-hover:w-full group-hover:shadow-xl group-active:scale-95"></span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-0.5 bg-white transition-all duration-500 ease-out group-hover:translate-x-36 group-active:translate-x-[150px]">
+              <span className="absolute top-[-6px] right-[2px] w-2.5 h-2.5 border-t-2 border-r-2 border-white rotate-45"></span>
+            </span>
+            <span className="relative z-10 transition-all duration-500 ease-out group-hover:text-white group-hover:-translate-x-7 group-active:text-gray-300">
+              Shop Now
+            </span>
+          </button>
+        </Link>
       </div>
+    </div>
+  </div>
+
 
       <div className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">
@@ -211,7 +220,7 @@ const Home = () => {
                     </div>
                   </Link>
                   
-                  <button className="mt-4 w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all flex items-center justify-center gap-2">
+                  <button className="mt-4 w-full py-3 bg-gradient-to-r bg-blue-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all flex items-center justify-center gap-2">
                     <ShoppingCart size={18} />
                     Add to Cart
                   </button>
@@ -227,7 +236,7 @@ const Home = () => {
           <div className="relative h-[400px] md:h-[500px]">
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30 z-10"></div>
             <img
-              src="/Images/ad1.jpg"
+              src="/Images/air.jpg"
               alt="Nike promotion"
               className="w-full h-full object-cover"
             />
@@ -324,34 +333,34 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-blue-900 to-purple-900 text-white py-20 px-6 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/Images/texture.png')] opacity-10 z-0"></div>
-        <div className="container max-w-4xl mx-auto relative z-10">
-          <h2 className="text-3xl font-bold mb-4">Join the Hopyfy Community</h2>
-          <p className="mb-8 text-blue-100 max-w-2xl mx-auto">
-            Subscribe to get updates on new arrivals, exclusive discounts, and special promotions.
-          </p>
-          <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row justify-center gap-3 max-w-xl mx-auto">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="px-5 py-3 rounded-lg w-full text-white bg-white/10 border border-white/20 focus:border-white focus:outline-none focus:ring-2 focus:ring-white/30 placeholder:text-white/70"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <button 
-              type="submit"
-              className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-indigo-700 whitespace-nowrap transition-all shadow-lg"
-            >
-              Subscribe
-            </button>
-          </form>
-          <p className="text-blue-200 text-sm mt-4">
-            By subscribing, you agree to our Privacy Policy and consent to receive updates.
-          </p>
-        </div>
+      <div className="bg-gray-100 py-20 px-6 text-center relative overflow-hidden">
+      <div className="absolute inset-0 bg-[url('/Images/texture.png')] opacity-5 z-0"></div>
+      <div className="container max-w-4xl mx-auto relative z-10">
+        <h2 className="text-3xl font-bold mb-4 text-gray-900">Join the Hopyfy Community</h2>
+        <p className="mb-8 text-gray-600 max-w-2xl mx-auto">
+          Subscribe to get updates on new arrivals, exclusive discounts, and special promotions.
+        </p>
+        <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row justify-center gap-3 max-w-xl mx-auto">
+          <input
+            type="email"
+            placeholder="Enter your email"
+            className="px-5 py-3 rounded-lg w-full text-gray-900 bg-blue-200 border border-gray-300 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200 placeholder:text-gray-500"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <button 
+            type="submit"
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 whitespace-nowrap transition-all shadow-md"
+          >
+            Subscribe
+          </button>
+        </form>
+        <p className="text-gray-500 text-sm mt-4">
+          By subscribing, you agree to our Privacy Policy and consent to receive updates.
+        </p>
       </div>
+    </div>
 
       <Footer />
     </div>
