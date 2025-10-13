@@ -214,7 +214,7 @@ const Home = () => {
                     </div>
                   </Link>
                   
-                  <button className="mt-4 w-full py-3 bg-gradient-to-r bg-blue-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all flex items-center justify-center gap-2">
+                  <button className="mt-4 w-full py-3 bg-gradient-to-r bg-blue-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-all flex items-center justify-center gap-2">
                     <ShoppingCart size={18} />
                     Add to Cart
                   </button>
