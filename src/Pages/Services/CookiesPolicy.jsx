@@ -4,7 +4,6 @@ const CookiesPolicy = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-6">
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-8 md:p-12">
-        {/* Title */}
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-6">
           Cookies Policy
         </h1>
@@ -12,12 +11,10 @@ const CookiesPolicy = () => {
           <strong>Last Updated:</strong> October 10, 2025
         </p>
 
-        {/* Intro */}
         <p className="text-gray-700 leading-relaxed mb-8">
           Welcome to <strong>Hopyfy Cart</strong>! This Cookies Policy explains how we use cookies and similar technologies on our website to enhance your browsing experience. By using our platform, you consent to the use of cookies as described below. Please read this policy carefully.
         </p>
 
-        {/* Section Component Rendered Below */}
         <Section title="1. What Are Cookies?">
           Cookies are small text files stored on your device when you visit our website. They help us improve functionality, analyze usage, and provide personalized content.
         </Section>

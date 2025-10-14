@@ -297,7 +297,7 @@ const Cart = () => {
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                to="/products"
+                to="/product"
                 className="flex-1 text-center px-6 py-3 border border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition-colors"
               >
                 Continue Shopping

@@ -131,7 +131,7 @@ const SubscribePage = () => {
                 <FiCheck className="h-8 w-8 text-green-600" />
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Welcome Aboard!
+                Welcome To Our Community!
               </h3>
               <p className="text-sm text-gray-500 mb-6">
                 We've sent a confirmation email to <span className="font-medium">{email}</span>.
@@ -145,13 +145,12 @@ const SubscribePage = () => {
                   >
                     Try again
                   </button>
-                  {' '}or check your spam folder.
+                  {' '}
                 </p>
               </div>
             </motion.div>
           )}
 
-          {/* Additional Info */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

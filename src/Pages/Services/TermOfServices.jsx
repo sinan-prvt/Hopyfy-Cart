@@ -4,7 +4,6 @@ const TermsOfService = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-6">
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-8 md:p-12">
-        {/* Title */}
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-6">
           Terms of Service
         </h1>
@@ -12,14 +11,12 @@ const TermsOfService = () => {
           <strong>Last Updated:</strong> October 10, 2025
         </p>
 
-        {/* Intro */}
         <p className="text-gray-700 leading-relaxed mb-8">
           Welcome to <strong>Hopyfy Cart</strong>! By accessing or purchasing from our
           website, you agree to the following Terms of Service. Please read them
           carefully before using our platform.
         </p>
 
-        {/* Section Component Rendered Below */}
         <Section title="1. General Information">
           Hopyfy Cart (“we”, “us”, “our”) is an online store selling premium
           products. By using our services, you confirm that you are at least 18
