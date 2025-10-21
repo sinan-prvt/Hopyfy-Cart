@@ -1,6 +1,6 @@
 import { useNavigate, Link } from 'react-router-dom';
 import { useEffect, useState, useRef } from "react";
-import axios from "axios";
+import api from "../api";
 import { useAuth } from '../Contexts/AuthContext';
 import Footer from './Footer';
 import { ChevronLeft, ChevronRight, ArrowRight, Star, Heart, ShoppingCart, Truck, Shield, Headphones, RefreshCw } from 'lucide-react'; 
@@ -34,8 +34,18 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const { data } = await axios.get("http://localhost:3000/products");
-        const filtered = data.filter(p => p.isActive !== false);
+        const { data } = await api.get("products/");
+        const normalized = (data || []).map((p) => ({
+          id: p.id,
+          name: p.name,
+          price: p.price,
+          originalPrice: p.original_price,
+          discountPercentage: p.discount_percentage,
+          image: p.images,
+          category: p.category?.name || "",
+          isActive: p.is_active !== false,
+        }));
+        const filtered = normalized.filter((p) => p.isActive !== false);
         setProducts(filtered.slice(0, 8));
       } catch (error) {
         console.error("Error fetching products:", error);

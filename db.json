@@ -436,9 +436,55 @@
       "password": "demo@gmail.com",
       "role": "user",
       "isBlock": false,
-      "cart": [],
+      "cart": [
+        {
+          "productId": "P03",
+          "quantity": 1
+        },
+        {
+          "productId": "P04",
+          "quantity": 1
+        },
+        {
+          "productId": "P01",
+          "quantity": 1
+        }
+      ],
       "order": [],
-      "wishlist": [],
+      "wishlist": [
+        {
+          "id": "P02",
+          "name": "Nike Revolution 8",
+          "brand": "Nike",
+          "description": "The Revolution 8 upgrades your go-to runner with softer strides and cooler runs. A breathable mesh upper keeps you comfortable, while the foam midsole with rocker geometry provides smooth, cushioned support every step of the way.",
+          "price": 4295,
+          "originalPrice": 4999,
+          "discountPercentage": "30",
+          "count": 30,
+          "sizes": [
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "category": "Men",
+          "shoeType": "Lifestyle Sneakers",
+          "color": "Black/White",
+          "material": "Leather",
+          "weight": "0.96",
+          "image": [
+            "/Images/nike1.webp",
+            "/Images/Nr1.webp",
+            "/Images/Nr2.webp",
+            "/Images/Nr3.jpg",
+            "/Images/Nr4.webp",
+            "/Images/Nr5.webp"
+          ],
+          "isActive": true,
+          "created_at": "2025-07-10T10:30:00.000Z"
+        }
+      ],
       "created_at": "2025-07-28T05:40:39.547Z"
     },
     {
@@ -628,14 +674,14 @@
       "color": "Black/White",
       "material": "Leather",
       "weight": "0.96",
-      "image": [
-        "/Images/naf3.webp",
-        "/Images/naf1.webp",
-        "/Images/naf2.webp",
-        "/Images/naf4.webp",
-        "/Images/naf5.jpg",
-        "/Images/naf6.jpg"
-      ],
+        "image": [
+          "/Images/naf3.webp",
+          "/Images/naf1.webp",
+          "/Images/naf2.webp",
+          "/Images/naf4.webp",
+          "/Images/naf5.jpg",
+          "/Images/naf6.jpg"
+        ],
       "isActive": true,
       "created_at": "2025-07-10T10:30:00.000Z"
     },
@@ -2399,6 +2445,29 @@
       "totalAmount": 21499,
       "status": "pending",
       "orderDate": "2025-10-14T06:01:11.912Z"
+    },
+    {
+      "id": "6bc8",
+      "userId": "fc23",
+      "items": [
+        {
+          "productId": "P02",
+          "name": "Nike Revolution 8",
+          "price": 4295,
+          "quantity": 1
+        }
+      ],
+      "totalAmount": 4295,
+      "orderDate": "2025-10-14T08:39:35.535Z",
+      "status": "delivered",
+      "shippingDetails": {
+        "name": "Mohamed Sinan",
+        "address": "Puthupparamba",
+        "phone": "2134567867"
+      },
+      "payment": {
+        "method": "cod"
+      }
     }
   ],
   "reviews": [
@@ -2816,6 +2885,60 @@
       "productId": null,
       "userId": "fc23",
       "rating": 3
+    },
+    {
+      "id": "28da",
+      "productId": null,
+      "userId": "34ff62df-1ccf-4ac9-83b9-7fc6fdf97157",
+      "rating": 4
+    },
+    {
+      "id": "d8eb",
+      "productId": null,
+      "userId": "34ff62df-1ccf-4ac9-83b9-7fc6fdf97157",
+      "rating": 3
+    },
+    {
+      "id": "30bf",
+      "productId": null,
+      "userId": "34ff62df-1ccf-4ac9-83b9-7fc6fdf97157",
+      "rating": 3
+    },
+    {
+      "id": "b74c",
+      "productId": null,
+      "userId": "34ff62df-1ccf-4ac9-83b9-7fc6fdf97157",
+      "rating": 3
+    },
+    {
+      "id": "d595",
+      "productId": null,
+      "userId": "34ff62df-1ccf-4ac9-83b9-7fc6fdf97157",
+      "rating": 3
+    },
+    {
+      "id": "b490",
+      "productId": null,
+      "userId": "34ff62df-1ccf-4ac9-83b9-7fc6fdf97157",
+      "rating": 2
+    },
+    {
+      "id": "2051",
+      "productId": null,
+      "userId": "34ff62df-1ccf-4ac9-83b9-7fc6fdf97157",
+      "rating": 2
+    },
+    {
+      "id": "8769",
+      "productId": null,
+      "userId": "34ff62df-1ccf-4ac9-83b9-7fc6fdf97157",
+      "rating": 4
+    },
+    {
+      "id": "dc8c",
+      "productId": null,
+      "userId": "34ff62df-1ccf-4ac9-83b9-7fc6fdf97157",
+      "rating": 4
     }
   ]
 }

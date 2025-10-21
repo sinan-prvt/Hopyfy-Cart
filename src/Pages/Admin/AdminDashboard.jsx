@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Bar, Line, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler } from "chart.js";
 import { FiUsers, FiShoppingBag, FiDollarSign, FiPackage, FiTrendingUp, FiActivity, FiBox, FiShoppingCart } from "react-icons/fi";
 import { format, subDays, isAfter } from "date-fns";
+import api from "../../api";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler);
 
@@ -17,195 +17,160 @@ const AdminDashboard = () => {
     newCustomers: 0,
     avgOrderValue: 0,
   });
-
   const [recentOrders, setRecentOrders] = useState([]);
-  const [monthlyRevenue, setMonthlyRevenue] = useState([]);
+  const [monthlyRevenue, setMonthlyRevenue] = useState(Array(12).fill(0));
   const [productDistribution, setProductDistribution] = useState([]);
   const [orderStatusData, setOrderStatusData] = useState([]);
   const [userActivity, setUserActivity] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
-  const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
         setError(null);
-        
+
         const [usersRes, productsRes, ordersRes] = await Promise.all([
-          axios.get(`${API_BASE}/users`),
-          axios.get(`${API_BASE}/products`),
-          axios.get(`${API_BASE}/order`),
+          api.get("/admin/users/"),
+          api.get("/admin/products/"),
+          api.get("/admin/orders/"),
         ]);
 
-        const totalRevenue = ordersRes.data.reduce((sum, order) => sum + order.totalAmount, 0);
-        const avgOrderValue = ordersRes.data.length > 0 
-          ? totalRevenue / ordersRes.data.length 
-          : 0;
-        
-        const thirtyDaysAgo = subDays(new Date(), 30);
-        const newCustomers = usersRes.data.filter(
-          user => user.created_at && isAfter(new Date(user.created_at), thirtyDaysAgo)
-        ).length;
+        const users = usersRes.data || [];
+        const products = productsRes.data || [];
+        const orders = ordersRes.data || [];
+
+        // ---------------- Metrics ----------------
+        const totalRevenue = orders.reduce((sum, o) => sum + Number(o.total_amount || 0), 0);
+        const avgOrderValue = orders.length ? totalRevenue / orders.length : 0;
+        const newCustomers = users.filter(user => user.created_at && isAfter(new Date(user.created_at), subDays(new Date(), 30))).length;
 
         setMetrics({
-          totalUsers: usersRes.data.length,
-          totalProducts: productsRes.data.length,
-          totalOrders: ordersRes.data.length,
-          totalRevenue,
+          totalUsers: users.length,
+          totalProducts: products.length,
+          totalOrders: orders.length,
+          totalRevenue: Number(totalRevenue.toFixed(2)),
           newCustomers,
-          avgOrderValue: parseFloat(avgOrderValue.toFixed(2)),
+          avgOrderValue: Number(avgOrderValue.toFixed(2)),
         });
 
-        const sortedOrders = [...ordersRes.data]
-          .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate))
+        // ---------------- Recent Orders ----------------
+        const sortedOrders = [...orders]
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
           .slice(0, 5)
-          .map(order => {
-            const user = usersRes.data.find(u => u.id === order.userId);
-            return {
-              ...order,
-              customerName: user ? user.name : 'Unknown',
-              customerEmail: user ? user.email : 'Unknown',
-              createdAt: order.orderDate ? format(new Date(order.orderDate), "MMM dd, yyyy") : 'N/A',
-            };
-          });
+          .map(order => ({
+            ...order,
+            totalAmount: order.total_amount || 0, // Safe default
+            customerName: order.user?.username || "Unknown",
+            customerEmail: order.user?.email || "Unknown",
+            createdAt: order.created_at ? format(new Date(order.created_at), "MMM dd, yyyy") : 'N/A',
+          }));
         setRecentOrders(sortedOrders);
 
+        // ---------------- Monthly Revenue ----------------
         const monthlyRevenueData = Array(12).fill(0);
-        ordersRes.data.forEach(order => {
-          if (order.orderDate) {
-            const month = new Date(order.orderDate).getMonth();
-            monthlyRevenueData[month] += order.totalAmount;
+        orders.forEach(order => {
+          if (order.created_at) {
+            monthlyRevenueData[new Date(order.created_at).getMonth()] += order.total_amount || 0;
           }
         });
         setMonthlyRevenue(monthlyRevenueData);
 
+        // ---------------- Top Products ----------------
         const productSales = {};
-        ordersRes.data.forEach(order => {
+        orders.forEach(order => {
           const items = order.items || [];
-          items.forEach(item => {  
-            const product = productsRes.data.find(p => p.id === item.productId);
+          items.forEach(item => {
+            const product = products.find(p => p.id === item.product.id);
             if (product) {
               productSales[product.id] = productSales[product.id] || {
                 name: product.name,
-                image: product.image || null,
                 count: 0,
-                category: product.category,
+                image: product.image || null,
+                category: product.category || "Unknown",
               };
-              productSales[product.id].count += item.quantity;
+              productSales[product.id].count += item.quantity || 0;
             }
           });
         });
-        
-        const sortedProducts = Object.values(productSales)
-          .sort((a, b) => b.count - a.count)
-          .slice(0, 5);
-        setProductDistribution(sortedProducts);
+        setProductDistribution(Object.values(productSales).sort((a, b) => b.count - a.count).slice(0, 5));
 
+        // ---------------- Order Status ----------------
         const statusCount = {};
-        ordersRes.data.forEach(order => {
+        orders.forEach(order => {
           const status = order.status || 'pending';
           statusCount[status] = (statusCount[status] || 0) + 1;
         });
         setOrderStatusData(Object.entries(statusCount));
 
-        const userOrderCountMap = ordersRes.data.reduce((acc, order) => {
-          acc[order.userId] = (acc[order.userId] || 0) + 1;
+        // ---------------- User Activity ----------------
+        const userOrderCount = orders.reduce((acc, order) => {
+          if (order.user?.id) acc[order.user.id] = (acc[order.user.id] || 0) + 1;
           return acc;
         }, {});
 
-        const userActivityData = usersRes.data
-          .filter(user => !user.isAdmin) 
+        const userActivityData = users
+          .filter(user => user.role !== 'admin')
           .map(user => ({
-            ...user,
-            lastLogin: user.lastLogin || null
+            id: user.id,
+            name: user.username || "Unknown",
+            email: user.email || "Unknown",
+            lastLogin: user.last_login ? format(new Date(user.last_login), "MMM dd, yyyy") : "Never logged in",
+            orders: userOrderCount[user.id] || 0,
           }))
           .sort((a, b) => {
             if (!a.lastLogin && !b.lastLogin) return 0;
             if (!a.lastLogin) return 1;
             if (!b.lastLogin) return -1;
             return new Date(b.lastLogin) - new Date(a.lastLogin);
-          })
-          .map(user => ({
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            lastLogin: user.lastLogin ? format(new Date(user.lastLogin), "MMM dd, yyyy") : 'Never logged in',
-            orders: userOrderCountMap[user.id] || 0,
-          }));
-          
-        setUserActivity(userActivityData);
+          });
 
+        setUserActivity(userActivityData);
         setLoading(false);
       } catch (err) {
-        console.error("Failed to load dashboard data", err);
+        console.error("Failed to load dashboard data:", err);
         setError("Failed to load dashboard data. Please try again later.");
         setLoading(false);
       }
     };
 
     fetchDashboardData();
-  }, [API_BASE]);
+  }, []);
 
+  // ---------------- Helper Functions ----------------
   const getColorClasses = (color) => {
     switch (color) {
-      case 'blue':
-        return {
-          gradient: 'bg-gradient-to-br from-blue-50 to-white',
-          border: 'border-blue-100',
-          bg: 'bg-blue-100',
-          text: 'text-blue-600'
-        };
-      case 'green':
-        return {
-          gradient: 'bg-gradient-to-br from-green-50 to-white',
-          border: 'border-green-100',
-          bg: 'bg-green-100',
-          text: 'text-green-600'
-        };
-      case 'purple':
-        return {
-          gradient: 'bg-gradient-to-br from-purple-50 to-white',
-          border: 'border-purple-100',
-          bg: 'bg-purple-100',
-          text: 'text-purple-600'
-        };
-      case 'amber':
-        return {
-          gradient: 'bg-gradient-to-br from-amber-50 to-white',
-          border: 'border-amber-100',
-          bg: 'bg-amber-100',
-          text: 'text-amber-600'
-        };
-      case 'teal':
-        return {
-          gradient: 'bg-gradient-to-br from-teal-50 to-white',
-          border: 'border-teal-100',
-          bg: 'bg-teal-100',
-          text: 'text-teal-600'
-        };
-      default:
-        return {
-          gradient: 'bg-gradient-to-br from-gray-50 to-white',
-          border: 'border-gray-100',
-          bg: 'bg-gray-100',
-          text: 'text-gray-600'
-        };
+      case 'blue': return { gradient: 'bg-gradient-to-br from-blue-50 to-white', border: 'border-blue-100', bg: 'bg-blue-100', text: 'text-blue-600' };
+      case 'green': return { gradient: 'bg-gradient-to-br from-green-50 to-white', border: 'border-green-100', bg: 'bg-green-100', text: 'text-green-600' };
+      case 'purple': return { gradient: 'bg-gradient-to-br from-purple-50 to-white', border: 'border-purple-100', bg: 'bg-purple-100', text: 'text-purple-600' };
+      case 'amber': return { gradient: 'bg-gradient-to-br from-amber-50 to-white', border: 'border-amber-100', bg: 'bg-amber-100', text: 'text-amber-600' };
+      case 'teal': return { gradient: 'bg-gradient-to-br from-teal-50 to-white', border: 'border-teal-100', bg: 'bg-teal-100', text: 'text-teal-600' };
+      default: return { gradient: 'bg-gradient-to-br from-gray-50 to-white', border: 'border-gray-100', bg: 'bg-gray-100', text: 'text-gray-600' };
     }
   };
 
+  const formatStatus = (status) => {
+    const statusMap = {
+      pending: "Pending",
+      processing: "Processing",
+      shipped: "Shipped",
+      delivered: "Delivered",
+      cancelled: "Cancelled",
+      refunded: "Refunded"
+    };
+    return statusMap[status?.toLowerCase()] || status?.charAt(0).toUpperCase() + status?.slice(1) || "Unknown";
+  };
+
+  // ---------------- Chart Data ----------------
   const revenueData = useMemo(() => ({
-    labels: [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-    ],
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     datasets: [
       {
         label: "Revenue (₹)",
-        data: monthlyRevenue,
+        data: monthlyRevenue.map(r => r || 0),
         backgroundColor: "rgba(99, 102, 241, 0.1)",
         borderColor: "rgba(99, 102, 241, 1)",
         borderWidth: 2,
@@ -222,11 +187,11 @@ const AdminDashboard = () => {
   }), [monthlyRevenue]);
 
   const productData = useMemo(() => ({
-    labels: productDistribution.map(p => p.name),
+    labels: productDistribution.map(p => p.name || "Unknown"),
     datasets: [
       {
         label: "Units Sold",
-        data: productDistribution.map(p => p.count),
+        data: productDistribution.map(p => p.count || 0),
         backgroundColor: [
           "rgba(239, 68, 68, 0.7)",
           "rgba(16, 185, 129, 0.7)",
@@ -241,10 +206,10 @@ const AdminDashboard = () => {
   }), [productDistribution]);
 
   const statusData = useMemo(() => ({
-    labels: orderStatusData.map(s => s[0].toUpperCase()),
+    labels: orderStatusData.map(s => s[0]?.toUpperCase() || "Unknown"),
     datasets: [
       {
-        data: orderStatusData.map(s => s[1]),
+        data: orderStatusData.map(s => s[1] || 0),
         backgroundColor: [
           "rgba(245, 158, 11, 0.7)",
           "rgba(59, 130, 246, 0.7)",
@@ -258,29 +223,14 @@ const AdminDashboard = () => {
     ],
   }), [orderStatusData]);
 
-  const baseChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { 
-        position: "top",
-        labels: {
-          font: {
-            size: 12,
-          }
-        }
-      }
-    }
-  };
-
-  const revenueChartOptions = {
-    ...baseChartOptions,
-    plugins: {
-      ...baseChartOptions.plugins,
-      tooltip: {
-        callbacks: {
-          label: (context) => `₹${context.parsed.y.toLocaleString()}`
-        },
+  // ---------------- Chart Options ----------------
+  const baseChartOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "top", labels: { font: { size: 12 } } } } };
+  const revenueChartOptions = { 
+    ...baseChartOptions, 
+    plugins: { 
+      ...baseChartOptions.plugins, 
+      tooltip: { 
+        callbacks: { label: (context) => `₹${(context.parsed.y || 0).toLocaleString()}` }, 
         backgroundColor: 'rgba(30, 41, 59, 0.9)',
         titleFont: { size: 14 },
         bodyFont: { size: 13 },
@@ -288,83 +238,20 @@ const AdminDashboard = () => {
         displayColors: false,
         borderColor: 'rgba(99, 102, 241, 0.5)',
         borderWidth: 1,
-      }
+      } 
     },
-    interaction: {
-      intersect: false,
-      mode: 'index',
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          callback: (value) => `₹${value.toLocaleString()}`,
-          font: {
-            size: 11,
-          }
-        },
-        grid: {
-          color: 'rgba(0, 0, 0, 0.03)',
-        }
-      },
-      x: {
-        grid: {
-          display: false,
-        },
-        ticks: {
-          font: {
-            size: 11,
-          }
-        }
-      }
+    interaction: { intersect: false, mode: 'index' },
+    scales: { 
+      y: { beginAtZero: true, ticks: { callback: (value) => `₹${(value || 0).toLocaleString()}`, font: { size: 11 } }, grid: { color: 'rgba(0, 0, 0, 0.03)' } },
+      x: { grid: { display: false }, ticks: { font: { size: 11 } } }
     }
   };
+  const barChartOptions = { ...baseChartOptions, scales: { y: { beginAtZero: true, ticks: { callback: (value) => `${value || 0} units`, font: { size: 10 } } }, x: { ticks: { font: { size: 10 } } } }, plugins: { ...baseChartOptions.plugins, tooltip: { callbacks: { label: (context) => `${context.parsed.y || 0} units sold` } } } };
+  const pieChartOptions = { ...baseChartOptions, plugins: { ...baseChartOptions.plugins, tooltip: { callbacks: { label: (context) => `${context.label || 'Unknown'}: ${context.raw || 0} orders` } } } };
 
-  const barChartOptions = {
-    ...baseChartOptions,
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          callback: (value) => `${value} units`,
-          font: {
-            size: 10,
-          }
-        }
-      },
-      x: {
-        ticks: {
-          font: {
-            size: 10,
-          }
-        }
-      }
-    },
-    plugins: {
-      ...baseChartOptions.plugins,
-      tooltip: {
-        callbacks: {
-          label: (context) => `${context.parsed.y} units sold`
-        }
-      }
-    }
-  };
-
-  const pieChartOptions = {
-    ...baseChartOptions,
-    plugins: {
-      ...baseChartOptions.plugins,
-      tooltip: {
-        callbacks: {
-          label: (context) => `${context.label}: ${context.raw} orders`
-        }
-      }
-    }
-  };
-
+  // ---------------- MetricCard Component ----------------
   const MetricCard = ({ title, value, icon, color, subtext }) => {
     const colorClasses = getColorClasses(color);
-    
     return (
       <div className={`p-5 rounded-xl shadow-sm border ${colorClasses.gradient} ${colorClasses.border} transition-all hover:shadow-md`}>
         <div className="flex justify-between items-start">
@@ -373,267 +260,84 @@ const AdminDashboard = () => {
             <p className="text-2xl font-bold text-gray-800">{value}</p>
             {subtext && <div className="mt-1 text-xs text-gray-500">{subtext}</div>}
           </div>
-          <div className={`p-2.5 rounded-lg ${colorClasses.bg} ${colorClasses.text}`}>
-            {icon}
-          </div>
+          <div className={`p-2.5 rounded-lg ${colorClasses.bg} ${colorClasses.text}`}>{icon}</div>
         </div>
       </div>
     );
   };
 
-  if (loading) {
-    return (
-      <div className="max-w-7xl mx-auto p-6 min-h-screen">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/3 mb-8"></div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-32 bg-gray-100 rounded-xl"></div>
-            ))}
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-            <div className="lg:col-span-2 h-80 bg-gray-100 rounded-xl"></div>
-            <div className="h-80 bg-gray-100 rounded-xl"></div>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
-            <div className="h-80 bg-gray-100 rounded-xl"></div>
-            <div className="h-80 bg-gray-100 rounded-xl"></div>
-          </div>
-          
-          <div className="h-96 bg-gray-100 rounded-xl"></div>
-        </div>
-      </div>
-    );
-  }
+  // ---------------- Loading & Error Handling ----------------
+  if (loading) return <div className="max-w-7xl mx-auto p-6 min-h-screen">Loading...</div>;
+  if (error) return <div className="max-w-7xl mx-auto p-6 min-h-screen text-red-500">{error}</div>;
 
-  if (error) {
-    return (
-      <div className="max-w-7xl mx-auto p-6 min-h-screen flex items-center justify-center">
-        <div className="bg-red-50 border border-red-200 rounded-xl p-8 text-center max-w-md">
-          <div className="text-red-500 text-5xl mb-4">⚠️</div>
-          <h3 className="text-xl font-bold text-gray-800 mb-2">Error Loading Dashboard</h3>
-          <p className="text-gray-600 mb-6">{error}</p>
-        </div>
-      </div>
-    );
-  }
-
-  const formatStatus = (status) => {
-    const statusMap = {
-      pending: "Pending",
-      processing: "Processing",
-      shipped: "Shipped",
-      delivered: "Delivered",
-      cancelled: "Cancelled",
-      refunded: "Refunded"
-    };
-    
-    return statusMap[status.toLowerCase()] || status.charAt(0).toUpperCase() + status.slice(1);
-  };
-
+  // ---------------- Main Render ----------------
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 min-h-screen">
-      <div className="mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">Admin Dashboard</h2>
-        <div className="text-sm text-gray-500 mt-1">
-          {format(new Date(), "EEEE, MMMM d, yyyy")}
-        </div>
-      </div>
-
+      {/* Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 mb-8">
-        <MetricCard 
-          title="Total Users" 
-          value={metrics.totalUsers} 
-          icon={<FiUsers size={20} />} 
-          color="blue"
-          subtext={`${metrics.newCustomers} new this month`}
-        />
-        
-        <MetricCard 
-          title="Total Products" 
-          value={metrics.totalProducts} 
-          icon={<FiPackage size={20} />} 
-          color="green"
-        />
-        
-        <MetricCard 
-          title="Total Orders" 
-          value={metrics.totalOrders} 
-          icon={<FiShoppingBag size={17} />} 
-          color="purple"
-          subtext="All time orders"
-        />
-        
-        <MetricCard 
-          title="Total Revenue" 
-          value={`₹${metrics.totalRevenue.toLocaleString()}`} 
-          icon={<FiDollarSign size={12} />} 
-          color="amber"
-        />
-        
-        <MetricCard 
-          title="Avg Order Value" 
-          value={`₹${metrics.avgOrderValue.toLocaleString()}`} 
-          icon={<FiTrendingUp size={15} />} 
-          subtext="Per order average"
-        />
+        <MetricCard title="Total Users" value={metrics.totalUsers} icon={<FiUsers size={20} />} color="blue" subtext={`${metrics.newCustomers} new this month`} />
+        <MetricCard title="Total Products" value={metrics.totalProducts} icon={<FiPackage size={20} />} color="green" />
+        <MetricCard title="Total Orders" value={metrics.totalOrders} icon={<FiShoppingBag size={17} />} color="purple" subtext="All time orders" />
+        <MetricCard title="Total Revenue" value={`₹${(metrics.totalRevenue || 0).toLocaleString()}`} icon={<FiDollarSign size={12} />} color="amber" />
+        <MetricCard title="Avg Order Value" value={`₹${(metrics.avgOrderValue || 0).toLocaleString()}`} icon={<FiTrendingUp size={15} />} subtext="Per order average" color="teal" />
       </div>
 
+      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <div className="lg:col-span-2 bg-white p-5 rounded-xl shadow-sm border">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-700">Monthly Revenue</h3>
-            <div className="flex items-center text-sm bg-gray-50 px-3 py-1 rounded-lg">
-              <div className="w-3 h-3 rounded-full bg-indigo-500 mr-2"></div>
-              <span className="text-gray-600">Current Year</span>
-            </div>
-          </div>
-          <div className="h-72">
-            <Line data={revenueData} options={revenueChartOptions} />
-          </div>
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">Monthly Revenue</h3>
+          <div className="h-72"><Line data={revenueData} options={revenueChartOptions} /></div>
         </div>
-        
         <div className="bg-white p-5 rounded-xl shadow-sm border">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-700">Order Status Distribution</h3>
-            <div className="flex items-center text-sm bg-gray-50 px-3 py-1 rounded-lg">
-              <FiActivity className="mr-2 text-gray-500" />
-              <span className="text-gray-600">Overview</span>
-            </div>
-          </div>
-          <div className="h-72">
-            <Pie data={statusData} options={pieChartOptions} />
-          </div>
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">Order Status Distribution</h3>
+          <div className="h-72"><Pie data={statusData} options={pieChartOptions} /></div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div className="bg-white p-5 rounded-xl shadow-sm border">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-700">Top Selling Products</h3>
-            <div className="flex items-center text-sm bg-gray-50 px-3 py-1 rounded-lg">
-              <FiBox className="mr-2 text-gray-500" />
-              <span className="text-gray-600">By units sold</span>
-            </div>
-          </div>
-          <div className="h-72">
-            <Bar 
-              data={productData} 
-              options={barChartOptions} 
-            />
-          </div>
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">Top Selling Products</h3>
+          <div className="h-72"><Bar data={productData} options={barChartOptions} /></div>
         </div>
-        
-        <div className="bg-white p-5 rounded-xl shadow-sm border">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-700">Recent User Activity</h3>
-            <div className="flex items-center text-sm bg-gray-50 px-3 py-1 rounded-lg">
-              <FiUsers className="mr-2 text-gray-500" />
-              <span className="text-gray-600">Last 30 days</span>
-            </div>
-          </div>
-          <div className="overflow-hidden max-h-[288px] overflow-y-auto custom-scrollbar">
-            <table className="min-w-full">
-              <thead className="bg-gray-50 sticky top-0">
-                <tr>
-                  <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                  <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Active</th>
-                  <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Orders</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {userActivity.slice(0, 5).map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="py-3 px-4">
-                      <div className="font-medium text-gray-900">{user.name}</div>
-                      <div className="text-sm text-gray-500">{user.email}</div>
-                    </td>
-                    <td className="py-3 px-4 text-sm text-gray-700">{user.lastLogin}</td>
-                    <td className="py-3 px-4">
-                      <span className="px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-medium rounded-full inline-flex items-center">
-                        <FiShoppingCart className="mr-1" size={12} />
-                        {user.orders}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {userActivity.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                No user activity found
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
 
-      <div className="bg-white p-5 rounded-xl shadow-sm border">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-gray-700">Recent Orders</h3>
-          <button
-            onClick={() => navigate("/admin/orders")}
-            className="text-indigo-600 hover:text-indigo-800 font-medium flex items-center text-sm transition-colors"
-          >
-            View All Orders
-            <span className="ml-1">→</span>
-          </button>
-        </div>
-        
-        <div className="overflow-x-auto">
+        <div className="bg-white p-5 rounded-xl shadow-sm border">
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">Recent User Activity</h3>
           <table className="min-w-full">
-            <thead className="bg-gray-50 border-b">
-              <tr>
-                <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {recentOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="py-3 px-4 text-sm font-medium text-gray-900">
-                    #{order.id.toString().slice(0, 8)}
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="font-medium text-gray-900">{order.customerName}</div>
-                    <div className="text-sm text-gray-500">{order.customerEmail}</div>
-                  </td>
-                  <td className="py-3 px-4 font-semibold">₹{order.totalAmount.toLocaleString()}</td>
-                  <td className="py-3 px-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize inline-flex items-center ${
-                      order.status === "delivered" 
-                        ? "bg-green-100 text-green-800" 
-                        : order.status === "cancelled" 
-                          ? "bg-red-100 text-red-800" 
-                          : order.status === "shipped"
-                            ? "bg-blue-100 text-blue-800"
-                            : order.status === "processing"
-                              ? "bg-purple-100 text-purple-800"
-                              : "bg-yellow-100 text-yellow-800"
-                    }`}>
-                      {formatStatus(order.status)}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-sm text-gray-600">
-                    {order.createdAt}
-                  </td>
+            <thead><tr>
+              <th>User</th><th>Last Active</th><th>Orders</th>
+            </tr></thead>
+            <tbody>
+              {userActivity.slice(0, 5).map(u => (
+                <tr key={u.id}>
+                  <td>{u.name || 'Unknown'} <div className="text-xs">{u.email || 'Unknown'}</div></td>
+                  <td>{u.lastLogin}</td>
+                  <td>{u.orders}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        
-        {recentOrders.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            No orders found
-          </div>
-        )}
+      </div>
+
+      {/* Recent Orders Table */}
+      <div className="bg-white p-5 rounded-xl shadow-sm border">
+        <h3 className="text-lg font-semibold text-gray-700 mb-2">Recent Orders</h3>
+        <table className="min-w-full">
+          <thead><tr>
+            <th>Order ID</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th>
+          </tr></thead>
+          <tbody>
+            {recentOrders.map(order => (
+              <tr key={order.id}>
+                <td>#{order.id?.toString()?.slice(0,8)}</td>
+                <td>{order.customerName} <div className="text-xs">{order.customerEmail}</div></td>
+                <td>₹{(order.totalAmount || 0).toLocaleString()}</td>
+                <td>{formatStatus(order.status)}</td>
+                <td>{order.createdAt}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

@@ -169,7 +169,7 @@ const hoverColor = "hover:text-blue-600";
               transition={{ delay: 0.2 }}
             >
               <span className={`${textColor} font-medium hidden sm:inline`}>
-                Welcome, {user.name}
+                Welcome, {user.username}
               </span>
               <motion.button 
                 onClick={handleLogout}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import axios from "axios";
+import api from "../../api";
 import ProductCart from "./ProductCart";
 import Footer from "../Footer";
 import Toast from "../../Components/Toast";
@@ -19,15 +19,26 @@ function ProductList() {
     setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
   };
 
+  
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/products?isActive=true");
-      setProducts(res.data);
-      
-      const uniqueCategories = [
-        "All",
-        ...new Set(res.data.map((p) => p.category)),
-      ];
+      const res = await api.get("products/");
+      const list = Array.isArray(res.data) ? res.data : [];
+      const normalized = list
+        .filter(p => p.is_active !== false)
+        .map(p => ({
+          id: p.id,
+          name: p.name,
+          brand: p.brand,
+          price: p.price,
+          original_price: p.original_price,
+          image: p.image,
+          stock: p.stock,
+          category: p.category?.name || "",
+        }));
+      setProducts(normalized);
+
+      const uniqueCategories = ["All", ...new Set(normalized.map(p => p.category).filter(Boolean))];
       setCategories(uniqueCategories);
     } catch (error) {
       console.error("Failed to fetch Product", error);
@@ -51,9 +62,8 @@ function ProductList() {
       result = result.filter(p => p.category === selectedCategory);
     }
     
-    result = result.filter(p => 
-      p.price >= priceRange[0] && p.price <= priceRange[1]
-    );
+    result = result.filter(p => Number(p.price) >= priceRange[0] && Number(p.price) <= priceRange[1]);
+
     
     if (sortOption === "price_asc") {
       result.sort((a, b) => a.price - b.price);
@@ -71,6 +81,10 @@ function ProductList() {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  if (!products.length)
+    return <p className="text-center py-20 text-gray-500">Loading products...</p>;
+
 
   return (
     <div className="relative">

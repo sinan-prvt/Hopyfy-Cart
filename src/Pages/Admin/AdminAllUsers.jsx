@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api";
+import { toast } from "react-toastify";
 
 const AdminAllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -8,199 +9,212 @@ const AdminAllUsers = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(8);
-  const [sortConfig, setSortConfig] = useState({
-    key: "role",
-    direction: "descending",
-  });
-  const [showConfirmation, setShowConfirmation] = useState({
-    show: false,
-    userId: null,
-    isBlocked: false,
-  });
+  const [sortConfig, setSortConfig] = useState({ key: "role", direction: "descending" });
+  const [showConfirmation, setShowConfirmation] = useState({ show: false, userId: null, isBlocked: false });
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
-  
-  const [newUser, setNewUser] = useState({
-    name: "",
-    email: "",
-    role: "user",
-    password: ""
-  });
+  const [newUser, setNewUser] = useState({ name: "", email: "", role: "user", password: "" });
 
-  const fetchUsers = async () => {
+  // ------------------ Fetch Users ------------------
+  // ------------------ Fetch Users ------------------
+const fetchUsers = async () => {
+  try {
+    setLoading(true);
+    const res = await api.get("users/");
+    const data = Array.isArray(res.data) ? res.data : [];
+
+    const normalizeBool = val => {
+      if (typeof val === "boolean") return val;
+      if (typeof val === "string") {
+        const low = val.toLowerCase();
+        return low === "true" || low === "1";
+      }
+      if (typeof val === "number") return val === 1;
+      return false;
+    };
+
+    const mapped = data.map(u => {
+      const isBlockVal = u.isBlock ?? u.is_block ?? u.is_blocked ?? u.blocked;
+      const isBlock = normalizeBool(isBlockVal);
+
+      return {
+        id: u.id,
+        name: u.username || u.email || "Unknown",
+        email: u.email || "",
+        role: u.role || (u.is_superuser ? "admin" : "user"),
+        isBlock,
+        created_at: u.created_at || u.date_joined || null,
+      };
+    });
+
+    setUsers(mapped);
+    setError(null);
+    toast.success("Users loaded successfully!");
+  } catch (err) {
+    setError("Failed to load users. Please try again later.");
+    toast.error("Failed to load users. Please try again!");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+  // ------------------ Toggle Block ------------------
+// ------------------ Toggle Block ------------------
+const toggleBlockUser = async (userId, isCurrentlyBlocked) => {
+  try {
+    const endpoint = isCurrentlyBlocked ? `users/${userId}/unblock_user/` : `users/${userId}/block_user/`;
+    const res = await api.patch(endpoint);
+
+    // Attempt to read server-provided flag (support multiple naming conventions)
+    const resp = res.data ?? {};
+    const newStatus =
+      resp.isBlock ??
+      resp.is_block ??
+      resp.is_blocked ??
+      resp.blocked ??
+      // if server didn't return boolean, fallback to opposite of current
+      !isCurrentlyBlocked;
+
+    setUsers(prev =>
+      prev.map(u => (u.id === userId ? { ...u, isBlock: Boolean(newStatus) } : u))
+    );
+
+    setShowConfirmation({ show: false, userId: null, isBlocked: false });
+    toast.success(newStatus ? "User blocked successfully!" : "User unblocked successfully!");
+  } catch (err) {
+    toast.error("Failed to update user status. Please try again!");
+  }
+};
+
+
+  // ------------------ Add User ------------------
+  const handleNewUserChange = e => {
+    const { name, value } = e.target;
+    setNewUser(prev => ({ ...prev, [name]: value }));
+  };
+
+  const submitNewUser = async () => {
     try {
-      setLoading(true);
-      const res = await axios.get("http://localhost:3000/users");
-      setUsers(res.data);
-      setError(null);
+      const payload = {
+        username: newUser.name.trim(),
+        email: newUser.email.trim(),
+        password: newUser.password,
+        role: newUser.role,
+        is_staff: newUser.role === "admin",
+        is_superuser: newUser.role === "admin",
+      };
+
+      const res = await api.post("admin/users/", payload);
+      const addedUser = {
+        id: res.data.id,
+        name: res.data.username,
+        email: res.data.email,
+        role: res.data.role || "user",  
+        isBlock: res.data.isBlock || false,
+        created_at: res.data.created_at,
+      };
+
+      setUsers(prev => [...prev, addedUser]);
+      setShowAddUserModal(false);
+      setNewUser({ name: "", email: "", role: "user", password: "" });
+      toast.success("User added successfully!");
     } catch (err) {
-      console.error("Failed to fetch users", err);
-      setError("Failed to load users. Please try again later.");
-    } finally {
-      setLoading(false);
+      if (err.response) {
+        toast.error("Failed to add user: " + Object.values(err.response.data).flat().join(", "));
+      } else {
+        toast.error("Failed to add user. Please try again!");
+      }
     }
   };
 
-  const toggleBlockUser = async (userId, isBlocked) => {
+  // ------------------ Edit User ------------------
+  const handleEditClick = user => setEditingUser({ ...user });
+
+  const handleEditChange = e => {
+    const { name, value } = e.target;
+    setEditingUser(prev => ({ ...prev, [name]: value }));
+  };
+
+  const submitEditUser = async () => {
     try {
-      await axios.patch(`http://localhost:3000/users/${userId}`, {
-        isBlock: !isBlocked,
-      });
-      fetchUsers();
+      const payload = {
+        username: editingUser.name,
+        email: editingUser.email,
+        role: editingUser.role,
+        isBlock: editingUser.isBlock,
+      };
+
+      const res = await api.patch(`users/${editingUser.id}/`, payload);
+      setUsers(prev => prev.map(u => u.id === editingUser.id ? { ...u, ...res.data } : u));
+      setEditingUser(null);
+      toast.success("User updated successfully!");
     } catch (err) {
-      console.error("Failed to toggle user block", err);
-      setError("Failed to update user status.");
-    } finally {
-      setShowConfirmation({ show: false, userId: null, isBlocked: false });
+      toast.error("Failed to update user. Please try again!");
     }
   };
 
-  const requestSort = (key) => {
+  // ------------------ Sorting & Pagination ------------------
+  const requestSort = key => {
     let direction = "ascending";
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
-    }
+    if (sortConfig.key === key && sortConfig.direction === "ascending") direction = "descending";
     setSortConfig({ key, direction });
   };
 
   const getSortedUsers = () => {
     const sortableUsers = [...users];
-    
     return sortableUsers.sort((a, b) => {
       if (a.role === "admin" && b.role !== "admin") return -1;
       if (b.role === "admin" && a.role !== "admin") return 1;
-      
-      if (a[sortConfig.key] < b[sortConfig.key]) {
-        return sortConfig.direction === "ascending" ? -1 : 1;
-      }
-      if (a[sortConfig.key] > b[sortConfig.key]) {
-        return sortConfig.direction === "ascending" ? 1 : -1;
-      }
-      
-      return a.id - b.id;
+      if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === "ascending" ? -1 : 1;
+      if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === "ascending" ? 1 : -1;
+      return 0;
     });
   };
 
   const getFilteredUsers = () => {
     const sortedUsers = getSortedUsers();
     if (!searchTerm) return sortedUsers;
-    
     return sortedUsers.filter(
-      (user) =>
+      user =>
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.role.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
 
-  const handleNewUserChange = (e) => {
-    const { name, value } = e.target;
-    setNewUser(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const submitNewUser = async () => {
-    try {
-      setLoading(true);
-      await axios.post("http://localhost:3000/users", newUser);
-      fetchUsers();
-      setShowAddUserModal(false);
-      setNewUser({
-        name: "",
-        email: "",
-        role: "user",
-        password: ""
-      });
-    } catch (err) {
-      console.error("Failed to add user", err);
-      setError("Failed to add new user. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleEditClick = (user) => {
-    setEditingUser({ ...user });
-  };
-
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setEditingUser(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const submitEditUser = async () => {
-    try {
-      setLoading(true);
-      await axios.put(`http://localhost:3000/users/${editingUser.id}`, editingUser);
-      fetchUsers();
-      setEditingUser(null);
-    } catch (err) {
-      console.error("Failed to update user", err);
-      setError("Failed to update user. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = getFilteredUsers().slice(indexOfFirstUser, indexOfLastUser);
   const totalPages = Math.ceil(getFilteredUsers().length / usersPerPage);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = pageNumber => setCurrentPage(pageNumber);
   const nextPage = () => currentPage < totalPages && setCurrentPage(currentPage + 1);
   const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  useEffect(() => { fetchUsers(); }, []);
 
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+  const formatDate = dateString => new Date(dateString).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+  const formatRelativeTime = dateString => {
+    const diffDays = Math.ceil(Math.abs(new Date() - new Date(dateString)) / (1000 * 60 * 60 * 24));
+    return diffDays === 0 ? "today" : diffDays === 1 ? "1 day ago" : `${diffDays} days ago`;
   };
 
-  const formatRelativeTime = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = Math.abs(now - date);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-    
-    if (diffDays === 0) return "today";
-    if (diffDays === 1) return "1 day ago";
-    return `${diffDays} days ago`;
-  };
+  if (loading) return (
+    <div className="flex items-center justify-center h-screen">
+      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+      <span className="ml-4 text-gray-700 text-xl">Loading users...</span>
+    </div>
+  );
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
-        <span className="ml-4 text-gray-700 text-xl">Loading users...</span>
+  if (error) return (
+    <div className="max-w-6xl mx-auto p-6">
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <strong className="font-bold">Error! </strong>
+        <span className="block sm:inline">{error}</span>
+        <button onClick={fetchUsers} className="ml-4 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded">Retry</button>
       </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="max-w-6xl mx-auto p-6">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-          <strong className="font-bold">Error! </strong>
-          <span className="block sm:inline">{error}</span>
-          <button 
-            onClick={fetchUsers} 
-            className="ml-4 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
+    </div>
+  );  
 
   return (
     <div className="min-h-screen text-gray-800">
@@ -400,7 +414,7 @@ const AdminAllUsers = () => {
                           </div>
                           <div>
                             <div className="font-medium">{user.name}</div>
-                            <div className="text-sm text-gray-500">@{user.name.toLowerCase().replace(/\s+/g, '')}</div>
+                            <div className="text-sm text-gray-500">@{(user.name || "").toLowerCase().replace(/\s+/g, '')}</div>
                           </div>
                         </div>
                       </td>
@@ -625,14 +639,14 @@ const AdminAllUsers = () => {
                 </label>
                 <select
                   name="isBlock"
-                  value={editingUser.isBlock}
-                  onChange={(e) => handleEditChange({
-                    target: { name: "isBlock", value: e.target.value === "true" }
-                  })}
+                  value={String(editingUser.isBlock)}
+                  onChange={(e) =>
+                    setEditingUser(prev => ({ ...prev, isBlock: e.target.value === "true" }))
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 >
-                  <option value={false}>Active</option>
-                  <option value={true}>Blocked</option>
+                  <option value="false">Active</option>
+                  <option value="true">Blocked</option>
                 </select>
               </div>
             </div>

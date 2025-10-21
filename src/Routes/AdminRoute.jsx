@@ -6,7 +6,8 @@ const AdminRoute = ({ children }) => {
 
   if (loading) return <div>Loading...</div>;
 
-  if (!user || user.role !== "admin") {
+  // Check Django staff/admin flags
+  if (!user || (!user.is_staff && !user.is_superuser)) {
     return <Navigate to="/login" />;
   }
 

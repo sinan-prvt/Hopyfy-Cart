@@ -1,243 +1,374 @@
-import { createContext, useContext, useState, useEffect, useMemo } from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AuthContext = createContext();
 
+// ---------------------- API Base ----------------------
+const API_BASE = "http://127.0.0.1:8000/api/";
+
+const api = axios.create({
+  baseURL: API_BASE,
+  headers: { "Content-Type": "application/json" },
+});
+
+// ---------------------- Token helpers ----------------------
+const getAccess = () => localStorage.getItem("access");
+const getRefresh = () => localStorage.getItem("refresh");
+const setTokens = ({ access, refresh }) => {
+  if (access) localStorage.setItem("access", access);
+  if (refresh) localStorage.setItem("refresh", refresh);
+};
+const clearTokens = () => {
+  localStorage.removeItem("access");
+  localStorage.removeItem("refresh");
+};
+
+// ---------------------- Axios interceptors ----------------------
+api.interceptors.request.use(
+  (config) => {
+    const token = getAccess();
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+  },
+  (err) => Promise.reject(err)
+);
+
+let isRefreshing = false;
+let refreshSubscribers = [];
+
+function onRefreshed(newToken) {
+  refreshSubscribers.forEach((cb) => cb(newToken));
+  refreshSubscribers = [];
+}
+function addRefreshSubscriber(cb) {
+  refreshSubscribers.push(cb);
+}
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (!error.response) return Promise.reject(error);
+    if (error.response.status !== 401 || originalRequest._retry) return Promise.reject(error);
+    originalRequest._retry = true;
+
+    const refreshToken = getRefresh();
+    if (!refreshToken) {
+      clearTokens();
+      return Promise.reject(error);
+    }
+
+    if (isRefreshing) {
+      return new Promise((resolve, reject) => {
+        addRefreshSubscriber((newToken) => {
+          if (newToken) {
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            resolve(api(originalRequest));
+          } else reject(error);
+        });
+      });
+    }
+
+    isRefreshing = true;
+    try {
+      const res = await axios.post(`${API_BASE}auth/refresh/`, { refresh: refreshToken });
+      const newAccess = res.data.access;
+      setTokens({ access: newAccess });
+      api.defaults.headers.common.Authorization = `Bearer ${newAccess}`;
+      onRefreshed(newAccess);
+      isRefreshing = false;
+      originalRequest.headers.Authorization = `Bearer ${newAccess}`;
+      return api(originalRequest);
+    } catch (err) {
+      isRefreshing = false;
+      onRefreshed(null);
+      clearTokens();
+      toast.error("Session expired — please login again.");
+      return Promise.reject(err);
+    }
+  }
+);
+
+// ---------------------- AuthProvider ----------------------
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const userId = localStorage.getItem("userId");
+  const [cart, setCart] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      if (!userId) {
-        setLoading(false);
-        return;
-      }
+  const requireLogin = () => {
+    if (!user) {
+      return false;
+    }
+    return true;
+  };
 
-      try {
-        const res = await axios.get(`http://localhost:3000/users/${userId}`);
-        setUser(res.data);
-      } catch (error) {
-        console.error("Error fetching user:", error);
-        toast.error("Failed to load user data");
-      }
+  // ---------------------- INIT ----------------------
+useEffect(() => {
+  const initUser = async () => {
+    const access = getAccess();
+    if (!access) {
       setLoading(false);
-    };
-
-    fetchUser();
-  }, [userId]);
-
-  const login = async (email, password) => {
-    try {
-      const res = await axios.get(
-        `http://localhost:3000/users?email=${email}&password=${password}`
-      );
-      if (res.data.length === 1) {
-        const loggedInUser = res.data[0];
-        localStorage.setItem("userId", loggedInUser.id);
-        setUser(loggedInUser);
-        toast.success(`Welcome back, ${loggedInUser.name}!`);
-        return { success: true, user: loggedInUser };
-      } else {
-        toast.error("Invalid email or password");
-        return { success: false, message: "Invalid credentials" };
-      }
-    } catch (error) {
-      toast.error("Login failed. Please try again.");
-      return { success: false, message: "Login failed" };
+      return;
     }
+
+    try {
+      const resUser = await api.get("auth/user/");
+      setUser(resUser.data);
+    } catch (err) {
+      console.error("User load failed", err);
+      clearTokens();
+      setUser(null);
+    }
+    setLoading(false);
   };
 
-  const signup = async (userData) => {
-    try {
-      const res = await axios.post("http://localhost:3000/users", userData);
-      localStorage.setItem("userId", res.data.id);
-      setUser(res.data);
-      toast.success("Account created successfully!");
-      return { success: true, user: res.data };
-    } catch (error) {
-      console.error("Signup error:", error);
-      toast.error("Registration failed. Please try again.");
-      return { success: false, message: "Registration failed" };
+  initUser();
+}, []);
+
+// 2️⃣ Second effect: load cart & wishlist only when user exists
+useEffect(() => {
+  if (user) {
+    (async () => {
+      const [cartData, wishlistData] = await Promise.all([getCart(), getWishlist()]);
+      setCart(cartData);
+      setWishlist(wishlistData);
+    })();
+  }
+}, [user]);
+
+
+// ---------------------- LOGIN ----------------------
+const login = async (email, password) => {
+  try {
+    const res = await api.post("auth/token/", { email, password });
+    const { access, refresh, user: returnedUser } = res.data;
+
+    // Save tokens
+    setTokens({ access, refresh });
+    api.defaults.headers.common.Authorization = `Bearer ${access}`;
+    setUser(returnedUser);
+
+    // Preload user data
+    await Promise.all([getCart(), getWishlist()]);
+    toast.success(`Welcome back, ${returnedUser?.username || "User"}!`);
+    return { success: true, user: returnedUser };
+  } catch (error) {
+    console.error("Login error:", error.response?.data || error.message);
+    if (error.response?.status === 401) {
+      toast.error("Invalid credentials or email not verified");
+    } else {
+      toast.error("Login failed. Try again later");
     }
-  };
+    return { success: false };
+  }
+};
+
+// ---------------------- SIGNUP (Auto-login) ----------------------
+const signup = async ({ username, email, password, confirmPassword }) => {
+  try {
+    // Register user
+    const res = await api.post("auth/register/", {
+      username,
+      email,
+      password,
+      password2: confirmPassword,
+    });
+
+    toast.success("Signup successful! Logging you in...");
+    console.log("Signup response:", res.data);
+
+    // 🔹 Auto-login after signup
+    const loginRes = await login(email, password);
+    if (loginRes.success) {
+      return { success: true, user: loginRes.user };
+    } else {
+      toast.warn("Account created, please login manually");
+      return { success: false };
+    }
+  } catch (err) {
+    console.error("Signup backend error:", err.response?.data);
+    const errors = err.response?.data;
+    if (errors) {
+      Object.entries(errors).forEach(([field, msgs]) => {
+        msgs.forEach((msg) => toast.error(`${field}: ${msg}`));
+      });
+    } else {
+      toast.error("Signup failed");
+    }
+    return { success: false };
+  }
+};
+
+
 
   const logout = () => {
-    localStorage.removeItem("userId");
+    clearTokens();
     setUser(null);
-    toast.info("You've been logged out");
+    setCart([]);
+    setWishlist([]);
+    toast.info("Logged out");
   };
 
-  const addToWishlist = async (product) => {
-    if (!user || !user.id) {
-      toast.warn("Please login to add items to your wishlist");
-      return;
-    }
-
+  // ---------------------- CART ----------------------
+  const getCart = async () => {
+    if (!requireLogin()) return [];
     try {
-      const isAlreadyInWishlist = user?.wishlist?.some(
-        (item) => item.id === product.id
-      );
-      if (isAlreadyInWishlist) {
-        toast.info("Item is already in your wishlist");
-        return;
-      }
-
-      const updatedWishlist = [...(user?.wishlist || []), product];
-
-      await axios.patch(`http://localhost:3000/users/${user.id}`, {
-        wishlist: updatedWishlist,
-      });
-
-      setUser((prev) => ({ ...prev, wishlist: updatedWishlist }));
-      toast.success("Added to wishlist!");
-    } catch (error) {
-      console.error("Error adding to wishlist:", error);
-      toast.error("Failed to add to wishlist");
+      const res = await api.get("cart/");
+      setCart(res.data || []);
+      return res.data;
+    } catch {
+      toast.error("Failed to load cart");
+      return [];
     }
   };
 
-  const removeFromWishlist = async (productId) => {
-    if (!user || !user.id) {
-      toast.warn("Please login to manage your wishlist");
-      return;
-    }
-
+  const addToCart = async (productId, quantity = 1) => {
+    if (!requireLogin()) return { success: false };
     try {
-      const updatedWishlist = user?.wishlist?.filter(
-        (item) => item.id !== productId
-      );
-
-      await axios.patch(`http://localhost:3000/users/${user.id}`, {
-        wishlist: updatedWishlist,
+      const res = await api.post("cart/", { product_id: productId, quantity });
+      setCart((prev) => {
+        const exists = prev.find((c) => c.product.id === res.data.product.id);
+        return exists
+          ? prev.map((c) => (c.product.id === res.data.product.id ? res.data : c))
+          : [...prev, res.data];
       });
-
-      setUser((prev) => ({ ...prev, wishlist: updatedWishlist }));
-      toast.info("Removed from wishlist");
-    } catch (error) {
-      console.error("Error removing from wishlist:", error);
-      toast.error("Failed to remove from wishlist");
-    }
-  };
-
-  const addToCart = async (product) => {
-    if (!user || !user.id) {
-      toast.warn("Please login to add items to your cart");
-      return;
-    }
-
-    const alreadyInCart = user.cart?.some(
-      (item) => item.productId === product.id
-    );
-    if (alreadyInCart) {
-      toast.warn("Item is already in your cart");
-      return;
-    }
-
-    const updatedCart = [
-      ...(user.cart || []),
-      { productId: product.id, quantity: 1 },
-    ];
-
-    try {
-      await axios.patch(`http://localhost:3000/users/${user.id}`, {
-        cart: updatedCart,
-      });
-
-      setUser((prev) => ({ ...prev, cart: updatedCart }));
-      toast.success("Added to cart!");
-    } catch (error) {
-      console.error("Error adding to cart:", error);
+      toast.success("Added to cart");
+      return { success: true };
+    } catch {
       toast.error("Failed to add to cart");
+      return { success: false };
     }
   };
 
-  const moveToCart = async (product) => {
-    if (!user || !user.id || !product) {
-      toast.warn("Please login to move items to cart");
-      return;
-    }
-
-    const alreadyInCart = user.cart?.some(
-      (item) => item.productId === product.id
-    );
-    if (alreadyInCart) {
-      toast.warn("Item is already in your cart");
-      return;
-    }
-
+  const updateQuantity = async (cartItemId, newQuantity) => {
+    if (!requireLogin()) return { success: false };
     try {
-      const updatedWishlist = user.wishlist?.filter(
-        (item) => item.id !== product.id
-      );
-
-      const updatedCart = [
-        ...(user.cart || []),
-        { productId: product.id, quantity: 1 },
-      ];
-
-      await axios.patch(`http://localhost:3000/users/${user.id}`, {
-        wishlist: updatedWishlist,
-        cart: updatedCart,
-      });
-
-      const res = await axios.get(`http://localhost:3000/users/${user.id}`);
-      setUser(res.data);
-      toast.success("Moved to cart!");
-    } catch (error) {
-      console.error("Error moving to cart:", error);
-      toast.error("Failed to move item to cart");
-    }
-  };
-
-  const updateQuantity = async (productId, newQuantity) => {
-    if (!user || !user.id) {
-      toast.warn("Please login to update cart items");
-      return;
-    }
-
-    try {
-      const updatedCart = user.cart.map((item) =>
-        item.productId === productId ? { ...item, quantity: newQuantity } : item
-      );
-
-      await axios.patch(`http://localhost:3000/users/${user.id}`, {
-        cart: updatedCart,
-      });
-
-      setUser((prev) => ({ ...prev, cart: updatedCart }));
+      const res = await api.patch(`cart/${cartItemId}/`, { quantity: newQuantity });
+      setCart((prev) => prev.map((c) => (c.id === cartItemId ? res.data : c)));
       toast.info("Cart updated");
-    } catch (error) {
-      console.error("Failed to update quantity:", error);
+      return { success: true };
+    } catch {
       toast.error("Failed to update cart");
+      return { success: false };
     }
   };
 
+  const removeFromCart = async (cartItemId) => {
+    if (!requireLogin()) return { success: false };
+    try {
+      await api.delete(`cart/${cartItemId}/`);
+      setCart((prev) => prev.filter((c) => c.id !== cartItemId));
+      toast.info("Removed from cart");
+      return { success: true };
+    } catch {
+      toast.error("Failed to remove cart item");
+      return { success: false };
+    }
+  };
+
+  // ---------------------- WISHLIST ----------------------
+  const getWishlist = async () => {
+    if (!requireLogin()) return [];
+    try {
+      const res = await api.get("wishlist/");
+      setWishlist(res.data || []);
+      return res.data;
+    } catch {
+      toast.error("Failed to fetch wishlist");
+      return [];
+    }
+  };
+
+const addToWishlist = async (productId) => {
+  try {
+    const res = await api.post("wishlist/", { product_id: productId });
+    setWishlist([...wishlist, res.data]);
+    toast.success("Added to wishlist!");
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to add wishlist!");
+  }
+};
+
+const removeFromWishlist = async (wishlistId) => {
+  try {
+    await api.delete(`wishlist/${wishlistId}/`);
+    setWishlist((prev) => prev.filter((item) => item.id !== wishlistId));
+    toast.success("Removed from wishlist");
+  } catch (error) {
+    console.error("Failed to remove from wishlist:", error);
+    toast.error("Failed to remove item from wishlist");
+  }
+};
+
+
+  // ---------------------- MOVE TO CART ----------------------
+  const moveToCart = async (productId, quantity = 1) => {
+    if (!requireLogin()) return { success: false };
+    try {
+      const res = await api.post("wishlist/move_to_cart/", { product_id: productId, quantity });
+
+
+      // ✅ Remove from wishlist and update cart safely
+      setWishlist((prev) => prev.filter((w) => w.product.id !== productId));
+      setCart((prev) => {
+        const exists = prev.find((c) => c.product.id === res.data.product.id);
+        return exists
+          ? prev.map((c) => (c.product.id === res.data.product.id ? res.data : c))
+          : [...prev, res.data];
+      });
+
+      toast.success("Moved to cart");
+      return { success: true };
+    } catch {
+      toast.error("Failed to move item");
+      return { success: false };
+    }
+  };
+
+  // ---------------------- CHECKOUT ----------------------
+  const checkout = async (payment_method = "COD") => {
+    if (!requireLogin()) return { success: false };
+    try {
+      const res = await api.post("checkout/", { payment_method });
+      await getCart();
+      toast.success("Order placed successfully!");
+      return { success: true, order: res.data };
+    } catch {
+      toast.error("Checkout failed");
+      return { success: false };
+    }
+  };
+
+  // ---------------------- Context Value ----------------------
   const contextValue = useMemo(
     () => ({
       user,
+      loading,
+      cart,
+      wishlist,
       login,
       signup,
       logout,
-      loading,
-      setUser,
+      getCart,
+      addToCart,
+      updateQuantity,
+      removeFromCart,
+      getWishlist,
       addToWishlist,
       removeFromWishlist,
-      addToCart,
       moveToCart,
-      updateQuantity,
+      checkout,
+      api,
+      setUser,
     }),
-    [user, loading]
+    [user, loading, cart, wishlist]
   );
 
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => useContext(AuthContext);

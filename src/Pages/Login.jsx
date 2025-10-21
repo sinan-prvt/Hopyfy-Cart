@@ -4,6 +4,7 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -27,22 +28,8 @@ const Login = () => {
         className="w-full max-w-md bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100"
       >
         <div className="bg-gradient-to-r from-green-500 to-blue-600 p-6 text-white text-center">
-          <motion.h2 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-3xl font-bold"
-          >
-            Welcome Back
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="mt-2 opacity-90"
-          >
-            Sign in to access your account
-          </motion.p>
+          <motion.h2 className="text-3xl font-bold">Welcome Back</motion.h2>
+          <motion.p className="mt-2 opacity-90">Sign in to access your account</motion.p>
         </div>
 
         <Formik
@@ -52,16 +39,19 @@ const Login = () => {
             setIsSubmitting(true);
             const res = await login(values.email, values.password);
             setIsSubmitting(false);
-            
-            if (res.success) {
-              if (res.user && res.user.role === 'admin') {
-                navigate("/admin/dashboard");
-              } else {
-                navigate("/");
-              }
+
+          if (res.success && res.user) {
+            const loggedUser = res.user;
+
+            console.log(loggedUser); // ✅ Add this temporarily
+
+            if (loggedUser.is_staff || loggedUser.is_superuser) {
+              navigate("/admin/dashboard");
             } else {
-              alert(res.message);
+              navigate("/");
             }
+          }
+
           }}
         >
           {({ touched, errors }) => (
@@ -80,17 +70,11 @@ const Login = () => {
                       : 'border-gray-300'
                   } focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                 />
-                <ErrorMessage 
-                  name="email" 
-                  component="div" 
-                  className="text-red-600 text-sm mt-1 font-medium" 
-                />
+                <ErrorMessage name="email" component="div" className="text-red-600 text-sm mt-1 font-medium" />
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                  Password
-                </label>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
                 <Field 
                   name="password" 
                   type="password" 
@@ -101,31 +85,16 @@ const Login = () => {
                       : 'border-gray-300'
                   } focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                 />
-                <ErrorMessage 
-                  name="password" 
-                  component="div" 
-                  className="text-red-600 text-sm mt-1 font-medium" 
-                />
+                <ErrorMessage name="password" component="div" className="text-red-600 text-sm mt-1 font-medium" />
               </div>
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                    Remember me
-                  </label>
+                  <input id="remember-me" name="remember-me" type="checkbox" className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">Remember me</label>
                 </div>
 
-                <button 
-                  type="button"
-                  onClick={() => navigate("/forgot-password")}
-                  className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors"
-                >
+                <button type="button" onClick={() => navigate("/forgot-password")} className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors">
                   Forgot password?
                 </button>
               </div>
@@ -155,13 +124,9 @@ const Login = () => {
                 )}
               </motion.button>
 
-
               <div className="text-center text-sm text-gray-600 pt-4 border-t border-gray-200">
                 Don't have an account?{" "}
-                <button 
-                  onClick={() => navigate("/signup")} 
-                  className="font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
-                >
+                <button onClick={() => navigate("/signup")} className="font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors">
                   Sign up
                 </button>
               </div>

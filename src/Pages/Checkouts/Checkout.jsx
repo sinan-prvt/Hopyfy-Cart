@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../Contexts/AuthContext";
-import axios from "axios";
 import { motion } from "framer-motion";
 import { CreditCard, Wallet, Truck, CheckCircle } from "lucide-react";
 
 const Checkout = () => {
-  const { user, setUser } = useAuth();
+  const { cart, checkout } = useAuth();
   const [cartItems, setCartItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
@@ -20,37 +19,23 @@ const Checkout = () => {
   const [upiId, setUpiId] = useState("");
 
   useEffect(() => {
-    const fetchCartDetails = async () => {
-      if (user?.cart?.length > 0) {
-        try {
-          const { data: allProducts } = await axios.get("http://localhost:3000/products");
-
-          const detailedCart = user.cart.map((cartItem) => {
-            const product = allProducts.find((p) => p.id === cartItem.productId);
-            if (!product) return null;
-
-            const quantity = Math.max(Number(cartItem.quantity) || 1, 1);
-            const price = Number(product.price) || 0;
-
-            return {
-              ...product,
-              quantity,
-              subtotal: price * quantity,
-            };
-          }).filter(Boolean);
-
-          setCartItems(detailedCart);
-
-          const total = detailedCart.reduce((sum, item) => sum + item.subtotal, 0);
-          setTotalAmount(total);
-        } catch (error) {
-          console.error("Error fetching cart products:", error);
-        }
-      }
-    };
-    fetchCartDetails();
-  }, [user]);
-
+    const detailedCart = (cart || []).map((item) => {
+      const price = Number(item.product?.price) || 0;
+      const quantity = Number(item.quantity) || 1;
+      return {
+        id: item.product?.id,
+        name: item.product?.name,
+        image: item.product?.images || [],
+        price,
+        quantity,
+        subtotal: price * quantity,
+      };
+    });
+    setCartItems(detailedCart);
+    const total = detailedCart.reduce((sum, i) => sum + i.subtotal, 0);
+    setTotalAmount(total);
+  }, [cart]);
+  
   const validateFields = () => {
     if (!name || !address || !phone || !paymentMode) {
       alert("Please fill all required fields.");
@@ -88,51 +73,14 @@ const Checkout = () => {
   };
 
   const handlePlaceOrder = async () => {
-    if (!user || cartItems.length === 0) return;
+    if (cartItems.length === 0) return;
     if (!validateFields()) return;
-    
     setIsPlacingOrder(true);
-
-    const orderData = {
-      userId: user.id,
-      items: cartItems.map(({ id, name, price, quantity }) => ({
-        productId: id,
-        name,
-        price,
-        quantity,
-      })),
-      totalAmount,
-      orderDate: new Date().toISOString(),
-      status: paymentMode === "cod" ? "pending" : "paid",
-      shippingDetails: {
-        name,
-        address,
-        phone,
-      },
-      payment: {
-        method: paymentMode,
-        ...(paymentMode === "card" && {
-          cardLast4: cardNumber.slice(-4),
-        }),
-        ...(paymentMode === "upi" && {
-          upiId: upiId,
-        }),
-      },
-    };
-
-    try {
-      await axios.post("http://localhost:3000/order", orderData);
-      await axios.patch(`http://localhost:3000/users/${user.id}`, { cart: [] });
-
-      setUser((prev) => ({ ...prev, cart: [] }));
-
-      alert("Order placed successfully!");
+    const method = paymentMode === "card" ? "CARD" : paymentMode === "upi" ? "UPI" : "COD";
+    const result = await checkout(method);
+    setIsPlacingOrder(false);
+    if (result?.success) {
       window.location.href = "/my-orders";
-    } catch (err) {
-      console.error("Order placement failed:", err);
-      alert("Failed to place order.");
-    } finally {
-      setIsPlacingOrder(false);
     }
   };
 
@@ -172,7 +120,7 @@ const Checkout = () => {
                     <div className="flex items-center gap-4">
                       {item.image ? (
                         <img 
-                          src={item.image[0]} 
+                          src={Array.isArray(item.image) ? (item.image[0] || "") : item.image} 
                           alt={item.name}
                           className="w-16 h-16 object-cover rounded-lg border border-gray-200"
                         />

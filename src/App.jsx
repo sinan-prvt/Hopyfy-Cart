@@ -1,4 +1,7 @@
 import { Route, Routes, useLocation } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import Login from './Pages/Login';
 import SignUp from './Pages/SignUp';
 import Navbar from './Components/Navbar';
@@ -19,6 +22,8 @@ import PrivacyPolicy from './Pages/Services/PrivacyPolicy';
 import TermsAndConditions from './Pages/Services/TermsAndConditions';
 import ForgotPassword from './Pages/Services/ForgotPassword';
 import SubscribePage from './Pages/Services/SubscribePage';
+import ResetPassword from "./Pages/Services/ResetPassword";
+
 import AdminRoute from './Routes/AdminRoute';
 import AdminDashboard from './Pages/Admin/AdminDashboard';
 import AdminAllOrders from './Pages/Admin/AdminAllOrders';
@@ -27,10 +32,7 @@ import AdminAllProducts from './Pages/Admin/AdminAllProducts';
 import EditProduct from './Pages/Admin/EditProduct';
 import AdminLayout from './Layout/AdminLayout';
 import AddProduct from "./Pages/Admin/AddProduct";
-import Toast from "./Components/Toast";
-import Checkout from './Pages/Checkouts/Checkout';
-import TermsOfService from "./Pages/Services/TermOfServices";
-import CookiesPolicy from "./Pages/Services/CookiesPolicy";
+import Checkout from "./Pages/Checkouts/Checkout";
 
 function App() {
   const location = useLocation();
@@ -39,6 +41,7 @@ function App() {
   return (
     <>
       {!isAdminRoute && <Navbar />}
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -59,10 +62,8 @@ function App() {
         <Route path="/privacypolicy" element={<PrivacyPolicy />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
         <Route path="/subscribe-page" element={<SubscribePage />} />
-        <Route path="/toast" element={<Toast />} />
-        <Route path="/terms-of-services" element={<TermsOfService />} />
-        <Route path="/cookies-policy" element={<CookiesPolicy />} />
 
         <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
           <Route path="dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
@@ -70,9 +71,22 @@ function App() {
           <Route path="users" element={<AdminRoute><AdminAllUsers /></AdminRoute>} />
           <Route path="products" element={<AdminRoute><AdminAllProducts /></AdminRoute>} />
           <Route path="products/edit/:id" element={<AdminRoute><EditProduct /></AdminRoute>} />
-          <Route path="/admin/products/add" element={<AdminRoute><AddProduct /></AdminRoute>} />
+          <Route path="products/add" element={<AdminRoute><AddProduct /></AdminRoute>} />
         </Route>
       </Routes>
+
+      {/* ✅ ToastContainer for all toast messages */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </>
   );
 }
