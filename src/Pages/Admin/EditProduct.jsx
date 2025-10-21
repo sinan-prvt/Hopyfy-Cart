@@ -12,7 +12,6 @@ const EditProduct = () => {
   const [submitError, setSubmitError] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch product and categories
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -24,7 +23,6 @@ const EditProduct = () => {
         const p = productRes.data;
         setCategories(categoryRes.data);
 
-        // ✅ Normalize images for consistent display
         const normalizedImages =
           p.images && p.images.length
             ? p.images.map((img) => {
@@ -80,7 +78,6 @@ const EditProduct = () => {
       .min(1, "At least one image required"),
   });
 
-  // ✅ Handle form submit
   const handleSubmit = async (values, { setSubmitting }) => {
     setSubmitError("");
     try {
@@ -155,7 +152,6 @@ const EditProduct = () => {
             {({ values, setFieldValue, isSubmitting }) => (
               <Form className="p-6 md:p-8 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {/* Left */}
                   <div className="space-y-4">
                     <div>
                       <label className="block mb-1 font-medium">
@@ -226,7 +222,6 @@ const EditProduct = () => {
                     </div>
                   </div>
 
-                  {/* Right */}
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
@@ -269,7 +264,6 @@ const EditProduct = () => {
                       />
                     </div>
 
-                    {/* ✅ Fixed Image Preview Section */}
                     <div>
                       <label className="block mb-1 font-medium">Images *</label>
                       {values.images.map((img, i) => (

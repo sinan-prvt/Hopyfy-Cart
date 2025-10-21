@@ -8,14 +8,12 @@ const Cart = () => {
   const { cart, removeFromCart, updateQuantity } = useAuth();
   const [updatingItem, setUpdatingItem] = useState(null);
 
-  // Helper: get first valid image or fallback
   const getFirstImage = (images) => {
     if (!images || images.length === 0) return "/Images/default-product.png";
     const img = images[0];
     return img?.image || img?.image_url || "/Images/default-product.png";
   };
 
-  // Derived cart details
   const cartDetails = useMemo(
     () =>
       cart.map((item) => ({
@@ -29,13 +27,11 @@ const Cart = () => {
     [cart]
   );
 
-  // Total price
   const total = useMemo(
     () => cartDetails.reduce((acc, item) => acc + item.price * item.quantity, 0),
     [cartDetails]
   );
 
-  // Handlers
   const handleRemove = async (cartItemId) => {
     setUpdatingItem(cartItemId);
     await removeFromCart(cartItemId);
@@ -90,7 +86,7 @@ const Cart = () => {
         <AnimatePresence>
           {cartDetails.map((item, index) => (
             <motion.div
-              key={`${item.id}-${index}`} // unique key
+              key={`${item.id}-${index}`}
               variants={itemVariants}
               initial="hidden"
               animate="visible"

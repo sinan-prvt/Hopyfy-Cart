@@ -15,8 +15,6 @@ const AdminAllUsers = () => {
   const [editingUser, setEditingUser] = useState(null);
   const [newUser, setNewUser] = useState({ name: "", email: "", role: "user", password: "" });
 
-  // ------------------ Fetch Users ------------------
-  // ------------------ Fetch Users ------------------
 const fetchUsers = async () => {
   try {
     setLoading(true);
@@ -59,21 +57,17 @@ const fetchUsers = async () => {
 };
 
 
-  // ------------------ Toggle Block ------------------
-// ------------------ Toggle Block ------------------
 const toggleBlockUser = async (userId, isCurrentlyBlocked) => {
   try {
     const endpoint = isCurrentlyBlocked ? `users/${userId}/unblock_user/` : `users/${userId}/block_user/`;
     const res = await api.patch(endpoint);
 
-    // Attempt to read server-provided flag (support multiple naming conventions)
     const resp = res.data ?? {};
     const newStatus =
       resp.isBlock ??
       resp.is_block ??
       resp.is_blocked ??
       resp.blocked ??
-      // if server didn't return boolean, fallback to opposite of current
       !isCurrentlyBlocked;
 
     setUsers(prev =>
@@ -88,7 +82,6 @@ const toggleBlockUser = async (userId, isCurrentlyBlocked) => {
 };
 
 
-  // ------------------ Add User ------------------
   const handleNewUserChange = e => {
     const { name, value } = e.target;
     setNewUser(prev => ({ ...prev, [name]: value }));
@@ -128,7 +121,6 @@ const toggleBlockUser = async (userId, isCurrentlyBlocked) => {
     }
   };
 
-  // ------------------ Edit User ------------------
   const handleEditClick = user => setEditingUser({ ...user });
 
   const handleEditChange = e => {
@@ -154,7 +146,6 @@ const toggleBlockUser = async (userId, isCurrentlyBlocked) => {
     }
   };
 
-  // ------------------ Sorting & Pagination ------------------
   const requestSort = key => {
     let direction = "ascending";
     if (sortConfig.key === key && sortConfig.direction === "ascending") direction = "descending";

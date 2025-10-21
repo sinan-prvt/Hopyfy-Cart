@@ -43,7 +43,6 @@ const AdminDashboard = () => {
         const products = productsRes.data || [];
         const orders = ordersRes.data || [];
 
-        // ---------------- Metrics ----------------
         const totalRevenue = orders.reduce((sum, o) => sum + Number(o.total_amount || 0), 0);
         const avgOrderValue = orders.length ? totalRevenue / orders.length : 0;
         const newCustomers = users.filter(user => user.created_at && isAfter(new Date(user.created_at), subDays(new Date(), 30))).length;
@@ -57,20 +56,18 @@ const AdminDashboard = () => {
           avgOrderValue: Number(avgOrderValue.toFixed(2)),
         });
 
-        // ---------------- Recent Orders ----------------
         const sortedOrders = [...orders]
           .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
           .slice(0, 5)
           .map(order => ({
             ...order,
-            totalAmount: order.total_amount || 0, // Safe default
+            totalAmount: order.total_amount || 0,
             customerName: order.user?.username || "Unknown",
             customerEmail: order.user?.email || "Unknown",
             createdAt: order.created_at ? format(new Date(order.created_at), "MMM dd, yyyy") : 'N/A',
           }));
         setRecentOrders(sortedOrders);
 
-        // ---------------- Monthly Revenue ----------------
         const monthlyRevenueData = Array(12).fill(0);
         orders.forEach(order => {
           if (order.created_at) {
@@ -79,7 +76,6 @@ const AdminDashboard = () => {
         });
         setMonthlyRevenue(monthlyRevenueData);
 
-        // ---------------- Top Products ----------------
         const productSales = {};
         orders.forEach(order => {
           const items = order.items || [];
@@ -98,7 +94,6 @@ const AdminDashboard = () => {
         });
         setProductDistribution(Object.values(productSales).sort((a, b) => b.count - a.count).slice(0, 5));
 
-        // ---------------- Order Status ----------------
         const statusCount = {};
         orders.forEach(order => {
           const status = order.status || 'pending';
@@ -106,7 +101,6 @@ const AdminDashboard = () => {
         });
         setOrderStatusData(Object.entries(statusCount));
 
-        // ---------------- User Activity ----------------
         const userOrderCount = orders.reduce((acc, order) => {
           if (order.user?.id) acc[order.user.id] = (acc[order.user.id] || 0) + 1;
           return acc;
@@ -140,7 +134,6 @@ const AdminDashboard = () => {
     fetchDashboardData();
   }, []);
 
-  // ---------------- Helper Functions ----------------
   const getColorClasses = (color) => {
     switch (color) {
       case 'blue': return { gradient: 'bg-gradient-to-br from-blue-50 to-white', border: 'border-blue-100', bg: 'bg-blue-100', text: 'text-blue-600' };
@@ -164,7 +157,6 @@ const AdminDashboard = () => {
     return statusMap[status?.toLowerCase()] || status?.charAt(0).toUpperCase() + status?.slice(1) || "Unknown";
   };
 
-  // ---------------- Chart Data ----------------
   const revenueData = useMemo(() => ({
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     datasets: [
@@ -223,7 +215,6 @@ const AdminDashboard = () => {
     ],
   }), [orderStatusData]);
 
-  // ---------------- Chart Options ----------------
   const baseChartOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "top", labels: { font: { size: 12 } } } } };
   const revenueChartOptions = { 
     ...baseChartOptions, 
@@ -249,7 +240,6 @@ const AdminDashboard = () => {
   const barChartOptions = { ...baseChartOptions, scales: { y: { beginAtZero: true, ticks: { callback: (value) => `${value || 0} units`, font: { size: 10 } } }, x: { ticks: { font: { size: 10 } } } }, plugins: { ...baseChartOptions.plugins, tooltip: { callbacks: { label: (context) => `${context.parsed.y || 0} units sold` } } } };
   const pieChartOptions = { ...baseChartOptions, plugins: { ...baseChartOptions.plugins, tooltip: { callbacks: { label: (context) => `${context.label || 'Unknown'}: ${context.raw || 0} orders` } } } };
 
-  // ---------------- MetricCard Component ----------------
   const MetricCard = ({ title, value, icon, color, subtext }) => {
     const colorClasses = getColorClasses(color);
     return (
@@ -266,14 +256,11 @@ const AdminDashboard = () => {
     );
   };
 
-  // ---------------- Loading & Error Handling ----------------
   if (loading) return <div className="max-w-7xl mx-auto p-6 min-h-screen">Loading...</div>;
   if (error) return <div className="max-w-7xl mx-auto p-6 min-h-screen text-red-500">{error}</div>;
 
-  // ---------------- Main Render ----------------
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 min-h-screen">
-      {/* Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 mb-8">
         <MetricCard title="Total Users" value={metrics.totalUsers} icon={<FiUsers size={20} />} color="blue" subtext={`${metrics.newCustomers} new this month`} />
         <MetricCard title="Total Products" value={metrics.totalProducts} icon={<FiPackage size={20} />} color="green" />
@@ -282,7 +269,6 @@ const AdminDashboard = () => {
         <MetricCard title="Avg Order Value" value={`₹${(metrics.avgOrderValue || 0).toLocaleString()}`} icon={<FiTrendingUp size={15} />} subtext="Per order average" color="teal" />
       </div>
 
-      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <div className="lg:col-span-2 bg-white p-5 rounded-xl shadow-sm border">
           <h3 className="text-lg font-semibold text-gray-700 mb-2">Monthly Revenue</h3>
@@ -319,7 +305,6 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Recent Orders Table */}
       <div className="bg-white p-5 rounded-xl shadow-sm border">
         <h3 className="text-lg font-semibold text-gray-700 mb-2">Recent Orders</h3>
         <table className="min-w-full">

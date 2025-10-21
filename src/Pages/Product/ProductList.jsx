@@ -27,7 +27,6 @@ function ProductList() {
       const normalized = list
         .filter(p => p.is_active !== false)
         .map(p => {
-          // normalize image URL
           let firstImage = "";
           if (p.images?.length > 0) {
             const img = p.images[0];
@@ -40,10 +39,10 @@ function ProductList() {
             brand: p.brand,
             price: p.price,
             original_price: p.original_price,
-            image: firstImage, // single image
+            image: firstImage,
             stock: p.stock,
             category: p.category?.name || "",
-            images: p.images || [], // full array for ProductCart
+            images: p.images || [],
           };
         });
 
@@ -113,7 +112,6 @@ function ProductList() {
           <p className="text-gray-600">Discover our premium collection</p>
         </div>
 
-        {/* Filters */}
         <div className="bg-white rounded-xl shadow-md p-6 mb-8">
           <div className="flex flex-col gap-6">
             <div>
@@ -183,7 +181,6 @@ function ProductList() {
           </div>
         </div>
 
-        {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (

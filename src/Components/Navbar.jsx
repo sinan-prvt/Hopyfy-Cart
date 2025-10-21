@@ -48,10 +48,10 @@ const Navbar = () => {
     }
   };
 
-const navBackground = "backdrop-blur-md"; 
-const navShadow = isScrolled ? "shadow-md" : "shadow-sm";
-const textColor = "text-gray-900";
-const hoverColor = "hover:text-blue-600";
+  const navBackground = "backdrop-blur-md"; 
+  const navShadow = isScrolled ? "shadow-md" : "shadow-sm";
+  const textColor = "text-gray-900";
+  const hoverColor = "hover:text-blue-600";
 
 
   return (

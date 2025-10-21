@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { useAuth } from "./AuthContext"; // ✅ import AuthContext
+import { useAuth } from "./AuthContext";
 import api from "../api";
 
 const OrderContext = createContext();
@@ -7,7 +7,7 @@ const OrderContext = createContext();
 export const OrderProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
-  const { user, loading } = useAuth(); // ✅ get user & loading from AuthContext
+  const { user, loading } = useAuth();
 
   const fetchOrders = async () => {
     setLoadingOrders(true);
@@ -22,7 +22,6 @@ export const OrderProvider = ({ children }) => {
     }
   };
 
-  // ✅ Fetch orders only when user is loaded AND logged in
   useEffect(() => {
     if (!loading && user) {
       fetchOrders();

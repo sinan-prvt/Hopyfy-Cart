@@ -14,7 +14,6 @@ const AdminAllProducts = () => {
   const [itemsPerPage] = useState(8);
   const navigate = useNavigate();
 
-  // ✅ Normalize image URLs for correct preview
   const normalizeImage = (img) => {
     if (!img) return "https://via.placeholder.com/100?text=No+Image";
 
@@ -32,7 +31,6 @@ const AdminAllProducts = () => {
     return "https://via.placeholder.com/100?text=No+Image";
   };
 
-  // ✅ Fetch Products
   const fetchProducts = async () => {
     setLoading(true);
     try {
@@ -65,7 +63,6 @@ const AdminAllProducts = () => {
     }
   };
 
-  // ✅ Delete Product
   const handleDelete = async (id) => {
     toast.info(
       <div className="p-4">
@@ -114,7 +111,6 @@ const AdminAllProducts = () => {
     );
   };
 
-  // ✅ Toggle Product Status
   const toggleStatus = async (id, currentStatus) => {
     try {
       const res = await api.patch(`products/${id}/`, {
@@ -143,7 +139,6 @@ const AdminAllProducts = () => {
     fetchProducts();
   }, []);
 
-  // ✅ Filtering
   const filteredProducts = products.filter((product) => {
     const matchesSearch =
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -155,7 +150,6 @@ const AdminAllProducts = () => {
     return matchesSearch && matchesStatus;
   });
 
-  // ✅ Pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
@@ -174,7 +168,6 @@ const AdminAllProducts = () => {
     <div className="max-w-6xl mx-auto p-4 sm:p-6">
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
 
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
@@ -196,7 +189,6 @@ const AdminAllProducts = () => {
         </button>
       </div>
 
-      {/* Filters */}
       <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -243,7 +235,6 @@ const AdminAllProducts = () => {
         </div>
       </div>
 
-      {/* Products Table */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full">
@@ -329,7 +320,6 @@ const AdminAllProducts = () => {
           </table>
         </div>
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="bg-white px-6 py-3 flex items-center justify-between border-t border-gray-200">
             <div className="text-sm text-gray-700">

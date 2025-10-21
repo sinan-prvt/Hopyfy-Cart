@@ -60,10 +60,9 @@ function SignUp() {
               toast.success("Account created and logged in!");
               navigate("/");
             } else if (res.errors) {
-              // Map backend errors to Formik fields
               const formErrors = {};
               Object.entries(res.errors).forEach(([field, messages]) => {
-                if (field === "password2") field = "confirmPassword"; // map Django field to Formik
+                if (field === "password2") field = "confirmPassword";
                 formErrors[field] = messages.join(" ");
               });
               setErrors(formErrors);
@@ -74,7 +73,6 @@ function SignUp() {
         >
           {({ touched, errors }) => (
             <Form className="p-6 space-y-5">
-              {/* Username */}
               <div>
                 <label
                   htmlFor="username"
@@ -98,7 +96,6 @@ function SignUp() {
                 />
               </div>
 
-              {/* Email */}
               <div>
                 <label
                   htmlFor="email"
@@ -123,7 +120,6 @@ function SignUp() {
                 />
               </div>
 
-              {/* Password */}
               <div>
                 <label
                   htmlFor="password"
@@ -149,7 +145,6 @@ function SignUp() {
                 <p className="text-xs text-gray-500 mt-1">Minimum 8 characters</p>
               </div>
 
-              {/* Confirm Password */}
               <div>
                 <label
                   htmlFor="confirmPassword"
@@ -174,7 +169,6 @@ function SignUp() {
                 />
               </div>
 
-              {/* Terms Checkbox */}
               <div className="flex items-center">
                 <Field
                   type="checkbox"
@@ -201,7 +195,6 @@ function SignUp() {
                 className="text-red-600 text-sm mt-1"
               />
 
-              {/* Submit button */}
               <motion.button
                 type="submit"
                 whileTap={{ scale: 0.98 }}

@@ -43,7 +43,7 @@ const Login = () => {
           if (res.success && res.user) {
             const loggedUser = res.user;
 
-            console.log(loggedUser); // ✅ Add this temporarily
+            console.log(loggedUser);
 
             if (loggedUser.is_staff || loggedUser.is_superuser) {
               navigate("/admin/dashboard");

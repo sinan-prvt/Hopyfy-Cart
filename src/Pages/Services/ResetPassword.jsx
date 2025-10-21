@@ -4,7 +4,7 @@
   import { toast } from "react-toastify";
 
   const ResetPassword = () => {
-    const { uid, token } = useParams(); // from /reset-password/:uid/:token
+    const { uid, token } = useParams();
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 

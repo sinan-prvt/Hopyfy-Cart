@@ -21,7 +21,6 @@ const WishlistPage = () => {
     }
   }, [wishlist]);
 
-  // Helper to get first valid image
   const getFirstImage = (images) => {
     if (!images || images.length === 0) return "/placeholder-product.jpg";
     const img = images[0];
@@ -68,7 +67,6 @@ const WishlistPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-10 min-h-[80vh]">
-      {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -15 }}
         animate={{ opacity: 1, y: 0 }}
@@ -83,7 +81,6 @@ const WishlistPage = () => {
         </p>
       </motion.div>
 
-      {/* Empty State */}
       <AnimatePresence>
         {wishlist.length === 0 && showEmptyMessage && (
           <motion.div
@@ -112,7 +109,6 @@ const WishlistPage = () => {
         )}
       </AnimatePresence>
 
-      {/* Wishlist Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
         <AnimatePresence>
           {wishlist.map((item) => (
@@ -126,7 +122,6 @@ const WishlistPage = () => {
               whileHover={{ y: -5 }}
               className="bg-white rounded-xl shadow-md hover:shadow-lg overflow-hidden border border-gray-100 relative group transition-all duration-300"
             >
-              {/* Product Image */}
               <div className="relative">
                 <img
                   src={getFirstImage(item.product.images)}
@@ -134,7 +129,6 @@ const WishlistPage = () => {
                   className="w-full h-56 object-cover cursor-pointer"
                   onClick={() => navigate(`/product/${item.product.id}`)}
                 />
-                {/* Remove Button */}
                 <button
                   onClick={() => handleRemove(item.id)}
                   disabled={removingItems[item.id]}
@@ -147,7 +141,6 @@ const WishlistPage = () => {
                   )}
                 </button>
 
-                {/* Discount Badge */}
                 {item.product.discountPercentage && (
                   <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
                     {item.product.discountPercentage}% OFF
@@ -155,7 +148,6 @@ const WishlistPage = () => {
                 )}
               </div>
 
-              {/* Product Info */}
               <div className="p-4">
                 <h3
                   onClick={() => navigate(`/product/${item.product.id}`)}
@@ -164,7 +156,6 @@ const WishlistPage = () => {
                   {item.product.name}
                 </h3>
 
-                {/* Rating */}
                 <div className="flex items-center gap-1 mb-3">
                   {[...Array(5)].map((_, i) => (
                     <Star
@@ -181,7 +172,6 @@ const WishlistPage = () => {
                   </span>
                 </div>
 
-                {/* Price */}
                 <div className="flex items-center gap-2 mb-4">
                   <span className="text-lg font-bold text-gray-900">
                     ₹{item.product.price.toLocaleString()}
@@ -193,7 +183,6 @@ const WishlistPage = () => {
                   )}
                 </div>
 
-                {/* Move to Cart Button */}
                 <button
                   onClick={() => handleMoveToCart(item)}
                   disabled={movingItems[item.id]}
@@ -214,7 +203,6 @@ const WishlistPage = () => {
         </AnimatePresence>
       </div>
 
-      {/* Continue Shopping Button */}
       {wishlist.length > 0 && (
         <div className="mt-14 text-center">
           <button

@@ -10,7 +10,6 @@ const AddProduct = () => {
   const [categories, setCategories] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // ✅ Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -23,7 +22,6 @@ const AddProduct = () => {
     fetchCategories();
   }, []);
 
-  // ✅ Initial values
   const initialValues = {
     name: "",
     brand: "",
@@ -42,7 +40,6 @@ const AddProduct = () => {
     isActive: true,
   };
 
-  // ✅ Validation schema (same as EditProduct)
   const validationSchema = Yup.object({
     name: Yup.string().required("Product name is required"),
     brand: Yup.string().required("Brand is required"),
@@ -55,7 +52,6 @@ const AddProduct = () => {
       .min(1, "At least one image required"),
   });
 
-  // ✅ Handle Submit
   const handleSubmit = async (values, { resetForm }) => {
     setIsSubmitting(true);
     try {
@@ -128,7 +124,6 @@ const AddProduct = () => {
             {({ values, setFieldValue }) => (
               <Form className="p-6 md:p-8 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {/* Left side */}
                   <div className="space-y-4">
                     <div>
                       <label className="block mb-1 font-medium">
@@ -193,7 +188,6 @@ const AddProduct = () => {
                     </div>
                   </div>
 
-                  {/* Right side */}
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
@@ -236,7 +230,6 @@ const AddProduct = () => {
                       />
                     </div>
 
-                    {/* ✅ Sizes Section */}
                     <div>
                       <label className="block mb-1 font-medium">Sizes</label>
                       {values.sizes.map((size, i) => (
@@ -299,7 +292,6 @@ const AddProduct = () => {
                       />
                     </div>
 
-                    {/* ✅ Image Section */}
                     <div>
                       <label className="block mb-1 font-medium">Images *</label>
                       {values.images.map((img, i) => (

@@ -5,7 +5,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 const AuthContext = createContext();
 
-// ---------------------- API Base ----------------------
 const API_BASE = "http://127.0.0.1:8000/api/";
 
 const api = axios.create({
@@ -13,7 +12,6 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-// ---------------------- Token helpers ----------------------
 const getAccess = () => localStorage.getItem("access");
 const getRefresh = () => localStorage.getItem("refresh");
 const setTokens = ({ access, refresh }) => {
@@ -25,7 +23,6 @@ const clearTokens = () => {
   localStorage.removeItem("refresh");
 };
 
-// ---------------------- Axios interceptors ----------------------
 api.interceptors.request.use(
   (config) => {
     const token = getAccess();
@@ -91,7 +88,6 @@ api.interceptors.response.use(
   }
 );
 
-// ---------------------- AuthProvider ----------------------
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -105,7 +101,6 @@ export const AuthProvider = ({ children }) => {
     return true;
   };
 
-  // ---------------------- INIT ----------------------
 useEffect(() => {
   const initUser = async () => {
     const access = getAccess();
@@ -128,7 +123,6 @@ useEffect(() => {
   initUser();
 }, []);
 
-// 2️⃣ Second effect: load cart & wishlist only when user exists
 useEffect(() => {
   if (user) {
     (async () => {
@@ -140,18 +134,15 @@ useEffect(() => {
 }, [user]);
 
 
-// ---------------------- LOGIN ----------------------
 const login = async (email, password) => {
   try {
     const res = await api.post("auth/token/", { email, password });
     const { access, refresh, user: returnedUser } = res.data;
 
-    // Save tokens
     setTokens({ access, refresh });
     api.defaults.headers.common.Authorization = `Bearer ${access}`;
     setUser(returnedUser);
 
-    // Preload user data
     await Promise.all([getCart(), getWishlist()]);
     toast.success(`Welcome back, ${returnedUser?.username || "User"}!`);
     return { success: true, user: returnedUser };
@@ -166,10 +157,8 @@ const login = async (email, password) => {
   }
 };
 
-// ---------------------- SIGNUP (Auto-login) ----------------------
 const signup = async ({ username, email, password, confirmPassword }) => {
   try {
-    // Register user
     const res = await api.post("auth/register/", {
       username,
       email,
@@ -180,7 +169,6 @@ const signup = async ({ username, email, password, confirmPassword }) => {
     toast.success("Signup successful! Logging you in...");
     console.log("Signup response:", res.data);
 
-    // 🔹 Auto-login after signup
     const loginRes = await login(email, password);
     if (loginRes.success) {
       return { success: true, user: loginRes.user };
@@ -212,7 +200,6 @@ const signup = async ({ username, email, password, confirmPassword }) => {
     toast.info("Logged out");
   };
 
-  // ---------------------- CART ----------------------
   const getCart = async () => {
     if (!requireLogin()) return [];
     try {
@@ -269,7 +256,6 @@ const signup = async ({ username, email, password, confirmPassword }) => {
     }
   };
 
-  // ---------------------- WISHLIST ----------------------
   const getWishlist = async () => {
     if (!requireLogin()) return [];
     try {
@@ -305,14 +291,12 @@ const removeFromWishlist = async (wishlistId) => {
 };
 
 
-  // ---------------------- MOVE TO CART ----------------------
   const moveToCart = async (productId, quantity = 1) => {
     if (!requireLogin()) return { success: false };
     try {
       const res = await api.post("wishlist/move_to_cart/", { product_id: productId, quantity });
 
 
-      // ✅ Remove from wishlist and update cart safely
       setWishlist((prev) => prev.filter((w) => w.product.id !== productId));
       setCart((prev) => {
         const exists = prev.find((c) => c.product.id === res.data.product.id);
@@ -329,7 +313,6 @@ const removeFromWishlist = async (wishlistId) => {
     }
   };
 
-  // ---------------------- CHECKOUT ----------------------
   const checkout = async (payment_method = "COD") => {
     if (!requireLogin()) return { success: false };
     try {
@@ -343,7 +326,6 @@ const removeFromWishlist = async (wishlistId) => {
     }
   };
 
-  // ---------------------- Context Value ----------------------
   const contextValue = useMemo(
     () => ({
       user,

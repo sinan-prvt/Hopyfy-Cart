@@ -136,9 +136,7 @@ const Checkout = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Section: Order Summary & Shipping */}
         <div className="lg:col-span-2">
-          {/* Order Summary */}
           <div className="bg-white rounded-xl shadow-md p-6 mb-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">Order Summary</h2>
             {cartItems.length === 0 ? (
@@ -183,7 +181,6 @@ const Checkout = () => {
             )}
           </div>
 
-          {/* Shipping Information */}
           <div className="bg-white rounded-xl shadow-md p-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">Shipping Information</h2>
             <div className="space-y-4">
@@ -222,12 +219,10 @@ const Checkout = () => {
           </div>
         </div>
 
-        {/* Right Section: Payment */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-xl shadow-md p-6 sticky top-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">Payment Method</h2>
             <div className="space-y-4 mb-8">
-              {/* COD Option */}
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -245,7 +240,6 @@ const Checkout = () => {
                 </div>
               </motion.button>
 
-              {/* Razorpay Option */}
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -264,7 +258,6 @@ const Checkout = () => {
               </motion.button>
             </div>
 
-            {/* Total */}
             <div className="border-t border-gray-200 pt-4">
               <div className="flex justify-between mb-2">
                 <span className="text-gray-600">Subtotal</span>

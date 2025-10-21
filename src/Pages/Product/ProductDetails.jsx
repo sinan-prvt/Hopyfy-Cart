@@ -14,7 +14,6 @@ import {
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// ⭐ Rating display component
 const Stars = ({ rating }) => {
   const full = Math.floor(rating);
   return (
@@ -31,7 +30,6 @@ const Stars = ({ rating }) => {
   );
 };
 
-// 🔔 Small temporary notification
 const MessageToast = ({ type, text }) => {
   if (!text) return null;
   const bgClass =
@@ -148,7 +146,7 @@ const handleWishlistToggle = async () => {
     const wishItem = wishlist?.find((w) => w.product?.id === product.id);
 
     if (wishItem) {
-      await removeFromWishlist(wishItem.id);  // use wishlist item id, NOT product.id
+      await removeFromWishlist(wishItem.id);
       toast.info("Removed from wishlist");
     } else {
       await addToWishlist(product.id);
@@ -228,12 +226,10 @@ const handleWishlistToggle = async () => {
       </div>
     );
 
-  // -------------------- Render Product Page --------------------
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <MessageToast type={showMessage.type} text={showMessage.text} />
 
-      {/* Breadcrumb */}
       <div className="text-sm text-gray-500 mb-6">
         Home / {product.category?.name || product.category} /{" "}
         {product.brand?.name || product.brand} /{" "}
@@ -245,17 +241,14 @@ const handleWishlistToggle = async () => {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-6">
             <div className="relative group">
       <img
-  src={
-    product.images[currentImageIndex].images
-      ? `http://192.168.1.100:8000${product.images[currentImageIndex].images}`
-      : product.images[currentImageIndex].image_url
-  }
-  alt={product.name}
-  className="w-full h-[500px] object-contain bg-gray-50 p-8"
-/>
-
-
-              {/* Wishlist Button */}
+        src={
+          product.images[currentImageIndex].images
+            ? `http://192.168.1.100:8000${product.images[currentImageIndex].images}`
+            : product.images[currentImageIndex].image_url
+        }
+        alt={product.name}
+        className="w-full h-[500px] object-contain bg-gray-50 p-8"
+      />
               <button
                 onClick={handleWishlistToggle}
                 className={`absolute top-4 right-4 rounded-full p-3 shadow-lg transition-all ${
@@ -271,7 +264,6 @@ const handleWishlistToggle = async () => {
                 )}
               </button>
 
-              {/* Image Navigation */}
               {product.images?.length > 1 && (
                 <>
                   <button
@@ -295,7 +287,6 @@ const handleWishlistToggle = async () => {
           </div>
         </div>
 
-        {/* ---------- Right Side: Product Info ---------- */}
         <div className="lg:w-1/2">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -305,7 +296,6 @@ const handleWishlistToggle = async () => {
               {product.brand?.name || product.brand}
             </p>
 
-            {/* Rating */}
             <div className="flex items-center mb-4">
               <Stars rating={averageRating} />
               <span className="ml-2 text-lg font-semibold text-gray-800">
@@ -315,7 +305,6 @@ const handleWishlistToggle = async () => {
               <span className="text-gray-600">{reviews.length} reviews</span>
             </div>
 
-            {/* Price */}
             <div className="mb-8">
               <p className="text-3xl font-bold text-gray-900">
                 ₹{product.price.toLocaleString()}
@@ -327,7 +316,6 @@ const handleWishlistToggle = async () => {
               )}
             </div>
 
-            {/* Sizes */}
             {product.sizes?.length > 0 && (
               <div className="mb-8">
                 <h3 className="font-semibold text-gray-800 text-lg mb-3">
@@ -356,7 +344,6 @@ const handleWishlistToggle = async () => {
               </div>
             )}
 
-            {/* Quantity & Cart */}
             <div className="flex flex-wrap items-center gap-4 mb-8">
               <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
                 <button
@@ -383,7 +370,6 @@ const handleWishlistToggle = async () => {
             </div>
           </div>
 
-          {/* Reviews */}
           <div className="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
             <h3 className="font-semibold text-lg mb-4 text-gray-800">
               Customer Reviews

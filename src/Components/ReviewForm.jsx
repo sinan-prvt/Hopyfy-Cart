@@ -18,7 +18,7 @@ const ReviewForm = ({ productId, onReviewSubmit }) => {
       username: user.name || "Anonymous"
     };
 
-    onReviewSubmit(newReview); // pass the review to ProductDetails
+    onReviewSubmit(newReview);
 
     setRating(0);
     setComment("");

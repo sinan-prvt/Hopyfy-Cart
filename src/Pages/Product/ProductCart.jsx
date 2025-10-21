@@ -1,4 +1,3 @@
-// src/Components/ProductCart.jsx
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -14,7 +13,6 @@ const ProductCart = ({ product, onShowToast }) => {
   const [reviews, setReviews] = useState([]);
   const [averageRating, setAverageRating] = useState(0);
 
-  // Check if product is wishlisted
   useEffect(() => {
     if (user && wishlist?.length > 0) {
       setIsWishlisted(wishlist.some((w) => w.product?.id === product.id));
@@ -23,7 +21,6 @@ const ProductCart = ({ product, onShowToast }) => {
     }
   }, [user, wishlist, product.id]);
 
-  // Fetch reviews from API
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -84,7 +81,6 @@ const ProductCart = ({ product, onShowToast }) => {
     }
   };
 
-  // Get first image URL
   const getImageUrl = (images) => {
     if (!images || images.length === 0) return null;
     const first = images[0];

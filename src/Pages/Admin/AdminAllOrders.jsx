@@ -21,7 +21,6 @@ const AdminAllOrders = () => {
     refunded: { text: "Refunded", icon: <CheckCircle size={16} className="text-green-500" />, color: "bg-gray-100 text-gray-700", badgeColor: "bg-gray-500" }
   };
 
-  // ---------------- Fetch Orders ----------------
   const fetchOrders = useCallback(async () => {
     setLoading(true);
     try {
@@ -31,8 +30,8 @@ const AdminAllOrders = () => {
         created_at: o.created_at,
         totalAmount: Number(o.total_amount) || 0,
         status: (o.status || "pending").toLowerCase(),
-        userName: o.user_username || "",       // updated to match serializer
-        userEmail: o.user_email || "",         // updated to match serializer
+        userName: o.user_username || "",
+        userEmail: o.user_email || "",
         shippingAddress: o.shipping_address || "",
         paymentMode: o.payment_method || "",
         items: (o.items || []).map((i, idx) => ({
@@ -40,7 +39,7 @@ const AdminAllOrders = () => {
           name: i.product?.name || "",
           quantity: i.quantity,
           price: Number(i.price) || 0,
-          size: i.size || "",   // added size
+          size: i.size || "",
         })),
       }));
       setOrders(mapped);
@@ -53,7 +52,6 @@ const AdminAllOrders = () => {
     }
   }, []);
 
-  // ---------------- Fetch Valid Statuses ----------------
   const fetchStatuses = useCallback(async () => {
     try {
       const { data } = await api.get("admin/orders/statuses/");
@@ -69,7 +67,6 @@ const AdminAllOrders = () => {
     fetchStatuses();
   }, [fetchOrders, fetchStatuses]);
 
-  // ---------------- Update Order Status ----------------
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       await api.patch(`admin/orders/${orderId}/`, { status: newStatus });
@@ -90,7 +87,6 @@ const AdminAllOrders = () => {
     setSortConfig({ key, direction });
   };
 
-  // ---------------- Memoized Filtered & Sorted Orders ----------------
   const filteredOrders = useMemo(() => {
     return orders.filter(order => {
       const matchesSearch =
@@ -127,7 +123,6 @@ const AdminAllOrders = () => {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      {/* ---------------- Header with Search & Filter ---------------- */}
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
         <h1 className="text-2xl font-bold text-gray-800">Order Management</h1>
         <div className="flex flex-col sm:flex-row gap-3">
@@ -162,7 +157,6 @@ const AdminAllOrders = () => {
         </div>
       </div>
 
-      {/* ---------------- Orders Table ---------------- */}
       <div className="bg-white rounded-xl shadow-md overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full">
@@ -280,7 +274,6 @@ const AdminAllOrders = () => {
         </div>
       </div>
 
-      {/* ---------------- Pagination ---------------- */}
       <div className="mt-4 flex justify-between items-center">
         <div className="text-sm text-gray-500">Showing {sortedOrders.length} of {orders.length} orders</div>
         <div className="flex space-x-2">

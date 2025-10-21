@@ -4,14 +4,12 @@ import { motion } from "framer-motion";
 const Wishlist = () => {
   const { user, wishlist, removeFromWishlist, moveToCart } = useAuth();
 
-  // Helper to get first valid image
   const getFirstImage = (images) => {
     if (!images || images.length === 0) return "/placeholder-product.jpg";
     const img = images[0];
     return img?.image || img?.image_url || "/placeholder-product.jpg";
   };
 
-  // Not logged in
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center text-center p-10">
@@ -34,7 +32,6 @@ const Wishlist = () => {
     );
   }
 
-  // Empty wishlist
   if (!wishlist || wishlist.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center text-center p-10">
@@ -76,11 +73,10 @@ const Wishlist = () => {
     );
   }
 
-  // Render wishlist items
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4">
       {wishlist.map((item) => {
-        const product = item.product; // wishlist item contains product
+        const product = item.product;
         return (
           <div
             key={item.id}
