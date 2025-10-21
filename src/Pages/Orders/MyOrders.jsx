@@ -9,26 +9,14 @@ const MyOrders = () => {
   const [previousOrders, setPreviousOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // -------------------------
-  // 🖼 Image URL Handler
-  // -------------------------
-const getImageUrl = (item) => {
-  const product = item.product || item; // use nested product if exists
-  const images = product.images || product.image || [];
-  if (!images) return "/placeholder-product.jpg";
-  if (Array.isArray(images) && images.length > 0) {
+  const getImageUrl = (item) => {
+    const product = item.product || item;
+    const images = product.images || [];
+    if (!images || images.length === 0) return "/placeholder-product.jpg";
     const first = images[0];
-    if (typeof first === "object" && first.url) return first.url;
-    return first;
-  }
-  if (typeof images === "object" && images.url) return images.url;
-  if (typeof images === "string") return images;
-  return "/placeholder-product.jpg";
-};
+    return first.images || first.image_url || "/placeholder-product.jpg";
+  };
 
-  // -------------------------
-  // 📦 Fetch Orders
-  // -------------------------
   useEffect(() => {
     const fetchOrders = async () => {
       setIsLoading(true);
@@ -44,9 +32,6 @@ const getImageUrl = (item) => {
     fetchOrders();
   }, [user]);
 
-  // -------------------------
-  // 🏷 Order Status Badge
-  // -------------------------
   const StatusBadge = ({ status }) => {
     const map = {
       pending: { icon: <Clock size={16} />, color: "bg-yellow-100 text-yellow-800", label: "Pending" },
@@ -64,9 +49,6 @@ const getImageUrl = (item) => {
     );
   };
 
-  // -------------------------
-  // ⏳ Loading Screen
-  // -------------------------
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -75,12 +57,8 @@ const getImageUrl = (item) => {
     );
   }
 
-  // -------------------------
-  // 🧾 Order History UI
-  // -------------------------
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 md:px-6">
-      {/* Header */}
       <div className="flex items-center gap-3 mb-10">
         <ShoppingBag size={32} className="text-blue-600" />
         <h1 className="text-3xl font-bold text-gray-900 tracking-tight">My Orders</h1>
@@ -95,11 +73,11 @@ const getImageUrl = (item) => {
         <div className="space-y-6">
           <AnimatePresence>
             {previousOrders
-              .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate))
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
               .map((order, idx) => {
-                // Calculate total from items if API doesn't provide totalAmount
-                const orderTotal = order.items?.reduce((sum, item) => {
-                  const price = Number(item.price ?? 0);
+                const items = order.items || [];
+                const orderTotal = order.total_amount ?? items.reduce((sum, item) => {
+                  const price = Number(item.product?.price ?? item.price ?? 0);
                   const qty = Number(item.quantity ?? 1);
                   return sum + price * qty;
                 }, 0);
@@ -113,37 +91,60 @@ const getImageUrl = (item) => {
                     transition={{ duration: 0.3 }}
                     className="border border-gray-100 rounded-xl overflow-hidden hover:shadow-md transition-shadow"
                   >
+                    {/* Order Header */}
                     <div className="bg-gray-50 px-6 py-4 flex justify-between items-center">
                       <div>
                         <p className="font-semibold text-gray-900">Order #{order.id || idx + 1}</p>
                         <p className="text-sm text-gray-500">{new Date(order.created_at).toLocaleString()}</p>
+                        <p className="text-sm text-gray-500">Payment: {order.payment_method}</p>
                       </div>
                       <StatusBadge status={order.status} />
                     </div>
 
+                    {/* Order Items */}
                     <div className="p-6">
-                      <ul className="space-y-3 mb-4">
-                        {order.items.map((item, i) => (
-                          <li key={i} className="flex justify-between items-center">
-                            <div className="flex items-center gap-3">
-                              <img
-                                src={getImageUrl(item)}
-                                alt={item.name}
-                                className="w-12 h-12 object-cover rounded-lg border border-gray-200"
-                              />
-                              <span className="text-gray-700">{item.name}</span>
-                            </div>
-                            <span className="text-gray-900 font-medium">
-                              ₹{Number(item.price * item.quantity ?? 0).toLocaleString()}
-                            </span>
-                          </li>
-                        ))}
+                      <ul className="space-y-4 mb-4">
+                        {items.map((item, i) => {
+                          const product = item.product || {};
+                          const name = product.name ?? item.name ?? "Product";
+                          const price = Number(product.price ?? item.price ?? 0);
+                          const qty = Number(item.quantity ?? 1);
+                          const size = item.size ?? "";
+                          const color = product.color ?? "";
+                          const brand = product.brand ?? "";
+                          const material = product.material ?? "";
+
+                          return (
+                            <li key={i} className="flex justify-between items-center border-b pb-3">
+                              <div className="flex items-center gap-3">
+                                <img
+                                  src={getImageUrl(item)}
+                                  alt={name}
+                                  className="w-16 h-16 object-cover rounded-lg border border-gray-200"
+                                />
+                                <div>
+                                  <p className="text-gray-700 font-medium">{name}</p>
+                                  <p className="text-sm text-gray-500">
+                                    {brand && `Brand: ${brand} • `}
+                                    {size && `Size: ${size} • `}
+                                    {color && `Color: ${color} • `}
+                                    {material && `Material: ${material}`}
+                                  </p>
+                                </div>
+                              </div>
+                              <span className="text-gray-900 font-medium">
+                                ₹{(price * qty).toLocaleString()}
+                              </span>
+                            </li>
+                          );
+                        })}
                       </ul>
 
+                      {/* Order Total */}
                       <div className="flex justify-between border-t pt-4">
                         <div className="text-gray-700 font-medium">Order Total</div>
                         <p className="text-2xl font-bold text-gray-900">
-                          ₹{Number(order.totalAmount ?? orderTotal).toLocaleString()}
+                          ₹{Number(orderTotal).toLocaleString()}
                         </p>
                       </div>
                     </div>

@@ -8,6 +8,13 @@ const Cart = () => {
   const { cart, removeFromCart, updateQuantity } = useAuth();
   const [updatingItem, setUpdatingItem] = useState(null);
 
+  // Helper: get first valid image or fallback
+  const getFirstImage = (images) => {
+    if (!images || images.length === 0) return "/Images/default-product.png";
+    const img = images[0];
+    return img?.image || img?.image_url || "/Images/default-product.png";
+  };
+
   // Derived cart details
   const cartDetails = useMemo(
     () =>
@@ -16,7 +23,7 @@ const Cart = () => {
         name: item.product?.name || "Unnamed Product",
         price: item.product?.price || 0,
         quantity: item.quantity,
-        image: item.product?.images?.[0] || "/Images/default-product.png",
+        image: getFirstImage(item.product?.images),
         stock: item.product?.stock || 0,
       })),
     [cart]

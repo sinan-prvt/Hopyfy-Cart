@@ -4,6 +4,13 @@ import { motion } from "framer-motion";
 const Wishlist = () => {
   const { user, wishlist, removeFromWishlist, moveToCart } = useAuth();
 
+  // Helper to get first valid image
+  const getFirstImage = (images) => {
+    if (!images || images.length === 0) return "/placeholder-product.jpg";
+    const img = images[0];
+    return img?.image || img?.image_url || "/placeholder-product.jpg";
+  };
+
   // Not logged in
   if (!user) {
     return (
@@ -79,11 +86,11 @@ const Wishlist = () => {
             key={item.id}
             className="border rounded shadow p-4 relative bg-white"
           >
-            {product.images?.[0] ? (
+            {getFirstImage(product.images) ? (
               <img
-                src={product.images[0]}
+                src={getFirstImage(product.images)}
                 alt={product.name}
-                className="w-full h-40 object-cover rounded"
+                className="w-full h-40 object-cover rounded cursor-pointer"
               />
             ) : (
               <div className="w-full h-40 bg-gray-200 rounded flex items-center justify-center">
@@ -97,7 +104,6 @@ const Wishlist = () => {
             <button
               className="absolute top-2 right-2 bg-red-100 text-red-600 px-2 py-1 rounded text-sm hover:bg-red-200"
               onClick={() => removeFromWishlist(item.id)}
-            
             >
               Remove
             </button>

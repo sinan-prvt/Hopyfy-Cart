@@ -19,23 +19,34 @@ function ProductList() {
     setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
   };
 
-  
   const fetchProducts = async () => {
     try {
       const res = await api.get("products/");
       const list = Array.isArray(res.data) ? res.data : [];
+
       const normalized = list
         .filter(p => p.is_active !== false)
-        .map(p => ({
-          id: p.id,
-          name: p.name,
-          brand: p.brand,
-          price: p.price,
-          original_price: p.original_price,
-          image: p.image,
-          stock: p.stock,
-          category: p.category?.name || "",
-        }));
+        .map(p => {
+          // normalize image URL
+          let firstImage = "";
+          if (p.images?.length > 0) {
+            const img = p.images[0];
+            firstImage = img.image || img.image_url || "";
+          }
+
+          return {
+            id: p.id,
+            name: p.name,
+            brand: p.brand,
+            price: p.price,
+            original_price: p.original_price,
+            image: firstImage, // single image
+            stock: p.stock,
+            category: p.category?.name || "",
+            images: p.images || [], // full array for ProductCart
+          };
+        });
+
       setProducts(normalized);
 
       const uniqueCategories = ["All", ...new Set(normalized.map(p => p.category).filter(Boolean))];
@@ -48,7 +59,7 @@ function ProductList() {
 
   const processedProducts = useMemo(() => {
     let result = [...products];
-    
+
     if (searchTerm) {
       const term = searchTerm.toLowerCase().trim();
       result = result.filter(p => 
@@ -57,20 +68,19 @@ function ProductList() {
         (p.category?.toLowerCase()?.includes(term))
       );
     }
-    
+
     if (selectedCategory !== "All") {
       result = result.filter(p => p.category === selectedCategory);
     }
-    
+
     result = result.filter(p => Number(p.price) >= priceRange[0] && Number(p.price) <= priceRange[1]);
 
-    
     if (sortOption === "price_asc") {
       result.sort((a, b) => a.price - b.price);
     } else if (sortOption === "price_desc") {
       result.sort((a, b) => b.price - a.price);
     }
-    
+
     return result;
   }, [products, searchTerm, selectedCategory, priceRange, sortOption]);
 
@@ -84,7 +94,6 @@ function ProductList() {
 
   if (!products.length)
     return <p className="text-center py-20 text-gray-500">Loading products...</p>;
-
 
   return (
     <div className="relative">
@@ -104,6 +113,7 @@ function ProductList() {
           <p className="text-gray-600">Discover our premium collection</p>
         </div>
 
+        {/* Filters */}
         <div className="bg-white rounded-xl shadow-md p-6 mb-8">
           <div className="flex flex-col gap-6">
             <div>
@@ -173,6 +183,7 @@ function ProductList() {
           </div>
         </div>
 
+        {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
@@ -184,14 +195,12 @@ function ProductList() {
             ))
           ) : (
             <div className="col-span-full text-center py-12">
-              <h3 className="text-xl font-semibold text-gray-700">No products found</h3>
-              <p className="text-gray-500 mt-2">
-                Try adjusting your filters
-              </p>
+              <h3 className="text-gray-500">No products found.</h3>
             </div>
           )}
         </div>
       </div>
+
       <Footer />
     </div>
   );

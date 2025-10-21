@@ -2,37 +2,34 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ShoppingCart, Star, Heart } from "lucide-react";
+import { ShoppingCart, Heart, Star } from "lucide-react";
 import { useAuth } from "../../Contexts/AuthContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 const ProductCart = ({ product, onShowToast }) => {
-  const { user, wishlist, addToCart, moveToCart, addToWishlist, removeFromWishlist, api } = useAuth();
-
+  const { user, wishlist, addToCart, moveToCart, addToWishlist, removeFromWishlist } = useAuth();
   const [isHovered, setIsHovered] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [averageRating, setAverageRating] = useState(0);
 
-  // ---------------------- Check if product is wishlisted ----------------------
+  // Check if product is wishlisted
   useEffect(() => {
     if (user && wishlist?.length > 0) {
-      const found = wishlist.some((w) => w.product?.id === product.id);
-      setIsWishlisted(found);
+      setIsWishlisted(wishlist.some((w) => w.product?.id === product.id));
     } else {
       setIsWishlisted(false);
     }
   }, [user, wishlist, product.id]);
 
-  // ---------------------- Fetch reviews from Django API ----------------------
+  // Fetch reviews from API
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await api.get(`reviews/?product=${product.id}`);
-        const data = Array.isArray(res.data) ? res.data : [];
-        setReviews(data);
+        const res = await fetch(`http://127.0.0.1:8000/api/reviews/?product=${product.id}`);
+        const data = await res.json();
+        setReviews(Array.isArray(data) ? data : []);
 
         const avg = data.length
           ? (data.reduce((acc, r) => acc + (r.rating || 0), 0) / data.length).toFixed(1)
@@ -44,73 +41,58 @@ const ProductCart = ({ product, onShowToast }) => {
         setAverageRating(0);
       }
     };
-
     fetchReviews();
-  }, [product.id, api]);
+  }, [product.id]);
 
-  // ---------------------- Add to cart / Move from wishlist ----------------------
- const handleAddToCart = async (e) => {
-  e.preventDefault();
-  try {
-    const wishItem = wishlist?.find((w) => w.product?.id === product.id);
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+    try {
+      const wishItem = wishlist?.find((w) => w.product?.id === product.id);
 
-    if (wishItem) {
-      await moveToCart(wishItem.product.id, 1); // ✅ fixed: use wishItem instead of item
-    } else {
-      await addToCart(product.id, 1);
+      if (wishItem) {
+        await moveToCart(wishItem.product.id, 1);
+      } else {
+        await addToCart(product.id, 1);
+      }
+
+      onShowToast?.("Added to cart!", "success");
+    } catch (err) {
+      console.error(err);
+      onShowToast?.("Failed to add to cart", "error");
+    }
+  };
+
+  const handleWishlistToggle = async () => {
+    if (!user) {
+      toast.warn("Please login first!");
+      return;
     }
 
-    onShowToast?.("Added to cart!", "success");
-  } catch (err) {
-    console.error(err);
-    onShowToast?.("Failed to add to cart", "error");
-  }
-};
+    try {
+      const wishItem = wishlist?.find((w) => w.product?.id === product.id);
 
-
-  // ---------------------- Wishlist toggle ----------------------
-const handleWishlistToggle = async () => {
-  if (!user) {
-    toast.warn("Please login first!");
-    return;
-  }
-
-  try {
-    // Find wishlist item corresponding to this product
-    const wishItem = wishlist?.find((w) => w.product?.id === product.id);
-
-    if (wishItem) {
-      await removeFromWishlist(wishItem.id);  // use wishlist item id, NOT product.id
-      toast.info("Removed from wishlist");
-    } else {
-      await addToWishlist(product.id);
-      toast.success("Added to wishlist");
+      if (wishItem) {
+        await removeFromWishlist(wishItem.id);
+        toast.info("Removed from wishlist");
+      } else {
+        await addToWishlist(product.id);
+        toast.success("Added to wishlist");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update wishlist");
     }
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to update wishlist");
-  }
-};
+  };
 
-  // ---------------------- Get valid image URL ----------------------
+  // Get first image URL
   const getImageUrl = (images) => {
-    if (!images) return null;
-
-    if (Array.isArray(images)) {
-      const first = images[0];
-      return typeof first === "object" ? first.image || first.url : first;
-    }
-
-    if (typeof images === "object") {
-      return images.image || images.url;
-    }
-
-    return images;
+    if (!images || images.length === 0) return null;
+    const first = images[0];
+    return first?.image || first?.image_url || first;
   };
 
   const imageUrl = getImageUrl(product.images);
 
-  // ---------------------- Render ----------------------
   return (
     <motion.div
       className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col relative"
@@ -118,7 +100,6 @@ const handleWishlistToggle = async () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
-      {/* ❤️ Wishlist button */}
       <button
         onClick={handleWishlistToggle}
         className="absolute top-3 right-3 z-10 bg-white rounded-full p-2 shadow-md hover:bg-red-50 transition-colors"
@@ -127,7 +108,6 @@ const handleWishlistToggle = async () => {
         <Heart size={18} className={isWishlisted ? "text-red-500 fill-current" : "text-gray-500"} />
       </button>
 
-      {/* 🖼️ Product image */}
       <Link to={`/product/${product.id}`} className="flex-grow relative block">
         {imageUrl ? (
           <motion.img
@@ -158,7 +138,6 @@ const handleWishlistToggle = async () => {
         )}
       </Link>
 
-      {/* 📦 Product info */}
       <div className="p-4 flex flex-col flex-grow">
         <div className="flex justify-between items-start mb-2">
           <div className="w-4/5">
@@ -170,7 +149,6 @@ const handleWishlistToggle = async () => {
             <p className="text-xs text-gray-500 truncate">{product.brand}</p>
           </div>
 
-          {/* ⭐ Rating */}
           <div className="flex items-center gap-1 bg-yellow-100 text-yellow-800 px-1.5 py-1 rounded text-xs">
             <Star size={12} fill="currentColor" />
             <span>{averageRating}</span>
@@ -190,7 +168,6 @@ const handleWishlistToggle = async () => {
               )}
             </div>
 
-            {/* 🛒 Add to cart button */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -207,7 +184,6 @@ const handleWishlistToggle = async () => {
             </motion.button>
           </div>
 
-          {/* 💬 Review snippet */}
           {reviews.length > 0 && (
             <p className="text-xs text-gray-500 mt-1 line-clamp-2 italic">
               “{reviews[0].comment || "No review comment"}”

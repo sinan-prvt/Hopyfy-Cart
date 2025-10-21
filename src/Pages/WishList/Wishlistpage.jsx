@@ -21,6 +21,13 @@ const WishlistPage = () => {
     }
   }, [wishlist]);
 
+  // Helper to get first valid image
+  const getFirstImage = (images) => {
+    if (!images || images.length === 0) return "/placeholder-product.jpg";
+    const img = images[0];
+    return img?.image || img?.image_url || "/placeholder-product.jpg";
+  };
+
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] bg-gray-50">
@@ -122,7 +129,7 @@ const WishlistPage = () => {
               {/* Product Image */}
               <div className="relative">
                 <img
-                  src={item.product.images?.[0] || "/placeholder-product.jpg"}
+                  src={getFirstImage(item.product.images)}
                   alt={item.product.name}
                   className="w-full h-56 object-cover cursor-pointer"
                   onClick={() => navigate(`/product/${item.product.id}`)}
@@ -223,4 +230,3 @@ const WishlistPage = () => {
 };
 
 export default WishlistPage;
-  

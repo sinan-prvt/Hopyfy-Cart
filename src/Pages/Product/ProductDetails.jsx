@@ -74,7 +74,6 @@ const ProductDetails = () => {
   const [sizeError, setSizeError] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
-  // -------------------- Fetch Product --------------------
   const fetchProduct = async () => {
     try {
       setLoadingProduct(true);
@@ -89,7 +88,6 @@ const ProductDetails = () => {
     }
   };
 
-  // -------------------- Fetch Reviews --------------------
   const fetchReviews = async () => {
     try {
       setLoadingReviews(true);
@@ -124,7 +122,6 @@ const ProductDetails = () => {
     setTimeout(() => setShowMessage({ type: "", text: "" }), duration);
   };
 
-  // -------------------- Add to Cart --------------------
   const handleAddToCart = async () => {
     if (!user) return showTempMessage("error", "Please log in first!");
     if (product?.sizes?.length && !selectedSize) {
@@ -141,7 +138,6 @@ const ProductDetails = () => {
     }
   };
 
-  // -------------------- Wishlist Toggle --------------------
 const handleWishlistToggle = async () => {
   if (!user) {
     toast.warn("Please login first!");
@@ -149,7 +145,6 @@ const handleWishlistToggle = async () => {
   }
 
   try {
-    // Find wishlist item corresponding to this product
     const wishItem = wishlist?.find((w) => w.product?.id === product.id);
 
     if (wishItem) {
@@ -165,7 +160,6 @@ const handleWishlistToggle = async () => {
   }
 };
 
-  // -------------------- Review Submit --------------------
   const addReview = async (newReview) => {
     if (!user) return showTempMessage("error", "Please log in to submit a review");
 
@@ -199,7 +193,6 @@ const handleWishlistToggle = async () => {
     }
   };
 
-  // -------------------- Size / Image / Review Toggles --------------------
   const handleSizeSelect = (size) => {
     setSelectedSize(size);
     setSizeError(false);
@@ -214,7 +207,6 @@ const handleWishlistToggle = async () => {
     );
   const toggleReviews = () => setShowAllReviews((prev) => !prev);
 
-  // -------------------- Loading / Error UI --------------------
   if (loadingProduct)
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -249,15 +241,19 @@ const handleWishlistToggle = async () => {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* ---------- Left Side: Product Images ---------- */}
         <div className="lg:w-1/2">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-6">
             <div className="relative group">
-              <img
-                src={product.images?.[currentImageIndex] || "/default.jpg"}
-                alt={product.name}
-                className="w-full h-[500px] object-contain bg-gray-50 p-8"
-              />
+      <img
+  src={
+    product.images[currentImageIndex].images
+      ? `http://192.168.1.100:8000${product.images[currentImageIndex].images}`
+      : product.images[currentImageIndex].image_url
+  }
+  alt={product.name}
+  className="w-full h-[500px] object-contain bg-gray-50 p-8"
+/>
+
 
               {/* Wishlist Button */}
               <button
