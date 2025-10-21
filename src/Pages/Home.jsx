@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import api from "../api";
 import { useAuth } from '../Contexts/AuthContext';
 import Footer from './Footer';
-import { ChevronLeft, ChevronRight, ArrowRight, Star, Heart, ShoppingCart, Truck, Shield, Headphones, RefreshCw } from 'lucide-react'; 
+import { ChevronLeft, ChevronRight, ArrowRight, Star, Heart, ShoppingCart } from 'lucide-react'; 
 
 const Home = () => {
   const navigate = useNavigate();
@@ -41,9 +41,10 @@ const Home = () => {
           price: p.price,
           originalPrice: p.original_price,
           discountPercentage: p.discount_percentage,
-          image: p.images,
+          image: p.images?.[0]?.image_url || "https://via.placeholder.com/300",
           category: p.category?.name || "",
           isActive: p.is_active !== false,
+          rating: p.reviews?.[0]?.rating || 4.5,
         }));
         const filtered = normalized.filter((p) => p.isActive !== false);
         setProducts(filtered.slice(0, 8));
@@ -89,6 +90,7 @@ const Home = () => {
       rating: 5
     }
   ];
+
 
   return (
     <div className="overflow-hidden bg-white">
@@ -175,62 +177,60 @@ const Home = () => {
             <p className="text-gray-500">No products found.</p>
           </div>
         ) : (
-          <div className="relative">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {products.map(product => (
-                <div
-                  key={product.id}
-                  className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 group relative overflow-hidden"
-                >
-                  <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
-                    <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md hover:bg-red-50 text-gray-500 hover:text-red-500 transition-colors">
-                      <Heart className="w-5 h-5" />
-                    </button>
-                    {product.discountPercentage > 0 && (
-                      <div className="bg-red-500 text-white text-xs font-bold py-1 px-2 rounded">
-                        -{product.discountPercentage}%
-                      </div>
-                    )}
-                  </div>
-                  
-                  <Link to={`/product/${product.id}`} className="block">
-                    <div className="relative overflow-hidden rounded-lg mb-4 h-60">
-                      <img
-                        src={product.image?.[0] || "https://via.placeholder.com/300"}
-                        alt={product.name}
-                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <span className="text-xs font-medium bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                            {product.category}
-                          </span>
-                          <h3 className="text-lg font-semibold mt-2 line-clamp-1">{product.name}</h3>
-                        </div>
-                        <div className="flex items-center bg-yellow-50 px-2 py-1 rounded">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                          <span className="text-sm font-medium ml-1">{product.rating || '4.5'}</span>
-                        </div>
-                      </div>
-                      <div className="mt-2 flex justify-between items-center">
-                        <p className="font-bold text-lg text-gray-900">₹{product.price}</p>
-                        {product.originalPrice && (
-                          <p className="text-sm text-gray-500 line-through">₹{product.originalPrice}</p>
-                        )}
-                      </div>
-                    </div>
-                  </Link>
-                  
-                  <button className="mt-4 w-full py-3 bg-gradient-to-r bg-blue-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-all flex items-center justify-center gap-2">
-                    <ShoppingCart size={18} />
-                    Add to Cart
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {products.map(product => (
+              <div
+                key={product.id}
+                className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 group relative overflow-hidden"
+              >
+                <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
+                  <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md hover:bg-red-50 text-gray-500 hover:text-red-500 transition-colors">
+                    <Heart className="w-5 h-5" />
                   </button>
+                  {product.discountPercentage > 0 && (
+                    <div className="bg-red-500 text-white text-xs font-bold py-1 px-2 rounded">
+                      -{product.discountPercentage}%
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
+                
+                <Link to={`/product/${product.id}`} className="block">
+                  <div className="relative overflow-hidden rounded-lg mb-4 h-60">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <span className="text-xs font-medium bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                          {product.category}
+                        </span>
+                        <h3 className="text-lg font-semibold mt-2 line-clamp-1">{product.name}</h3>
+                      </div>
+                      <div className="flex items-center bg-yellow-50 px-2 py-1 rounded">
+                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        <span className="text-sm font-medium ml-1">{product.rating}</span>
+                      </div>
+                    </div>
+                    <div className="mt-2 flex justify-between items-center">
+                      <p className="font-bold text-lg text-gray-900">₹{product.price}</p>
+                      {product.originalPrice && (
+                        <p className="text-sm text-gray-500 line-through">₹{product.originalPrice}</p>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+                
+                <button className="mt-4 w-full py-3 bg-gradient-to-r bg-blue-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-all flex items-center justify-center gap-2">
+                  <ShoppingCart size={18} />
+                  Add to Cart
+                </button>
+              </div>
+            ))}
           </div>
         )}
       </div>

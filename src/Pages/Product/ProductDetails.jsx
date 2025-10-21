@@ -50,7 +50,6 @@ const ProductDetails = () => {
   const navigate = useNavigate();
   const {
     user,
-    setUser,
     addToCart,
     wishlist,
     addToWishlist,
@@ -65,7 +64,7 @@ const ProductDetails = () => {
   const [averageRating, setAverageRating] = useState(0);
   const [loadingReviews, setLoadingReviews] = useState(true);
   const [showAllReviews, setShowAllReviews] = useState(false);
-
+  const [reviewSort, setReviewSort] = useState("recent");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showMessage, setShowMessage] = useState({ type: "", text: "" });
   const [selectedSize, setSelectedSize] = useState(null);
@@ -136,27 +135,27 @@ const ProductDetails = () => {
     }
   };
 
-const handleWishlistToggle = async () => {
-  if (!user) {
-    toast.warn("Please login first!");
-    return;
-  }
-
-  try {
-    const wishItem = wishlist?.find((w) => w.product?.id === product.id);
-
-    if (wishItem) {
-      await removeFromWishlist(wishItem.id);
-      toast.info("Removed from wishlist");
-    } else {
-      await addToWishlist(product.id);
-      toast.success("Added to wishlist");
+  const handleWishlistToggle = async () => {
+    if (!user) {
+      toast.warn("Please login first!");
+      return;
     }
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to update wishlist");
-  }
-};
+
+    try {
+      const wishItem = wishlist?.find((w) => w.product?.id === product.id);
+
+      if (wishItem) {
+        await removeFromWishlist(wishItem.id);
+        toast.info("Removed from wishlist");
+      } else {
+        await addToWishlist(product.id);
+        toast.success("Added to wishlist");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update wishlist");
+    }
+  };
 
   const addReview = async (newReview) => {
     if (!user) return showTempMessage("error", "Please log in to submit a review");
@@ -205,6 +204,15 @@ const handleWishlistToggle = async () => {
     );
   const toggleReviews = () => setShowAllReviews((prev) => !prev);
 
+  const handleSortChange = (e) => setReviewSort(e.target.value);
+
+  const sortedReviews = [...reviews];
+  if (reviewSort === "most_reviewed") {
+    sortedReviews.sort((a, b) => b.rating - a.rating);
+  } else {
+    sortedReviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+  }
+
   if (loadingProduct)
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -240,15 +248,15 @@ const handleWishlistToggle = async () => {
         <div className="lg:w-1/2">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-6">
             <div className="relative group">
-      <img
-        src={
-          product.images[currentImageIndex].images
-            ? `http://192.168.1.100:8000${product.images[currentImageIndex].images}`
-            : product.images[currentImageIndex].image_url
-        }
-        alt={product.name}
-        className="w-full h-[500px] object-contain bg-gray-50 p-8"
-      />
+              <img
+                src={
+                  product.images[currentImageIndex].images
+                    ? `http://192.168.1.100:8000${product.images[currentImageIndex].images}`
+                    : product.images[currentImageIndex].image_url
+                }
+                alt={product.name}
+                className="w-full h-[500px] object-contain bg-gray-50 p-8"
+              />
               <button
                 onClick={handleWishlistToggle}
                 className={`absolute top-4 right-4 rounded-full p-3 shadow-lg transition-all ${
@@ -295,6 +303,12 @@ const handleWishlistToggle = async () => {
             <p className="text-gray-500 mb-3">
               {product.brand?.name || product.brand}
             </p>
+
+            {product.description && (
+              <p className="text-gray-700 mb-4 whitespace-pre-line">
+                {product.description}
+              </p>
+            )}
 
             <div className="flex items-center mb-4">
               <Stars rating={averageRating} />
@@ -371,9 +385,22 @@ const handleWishlistToggle = async () => {
           </div>
 
           <div className="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-            <h3 className="font-semibold text-lg mb-4 text-gray-800">
-              Customer Reviews
-            </h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-semibold text-lg text-gray-800">
+                Customer Reviews
+              </h3>
+              <div>
+                <label className="mr-2 text-gray-600 text-sm">Sort By:</label>
+                <select
+                  value={reviewSort}
+                  onChange={handleSortChange}
+                  className="border border-gray-300 rounded-md p-1 text-sm"
+                >
+                  <option value="recent">Most Recent</option>
+                  <option value="most_reviewed">Most Reviewed</option>
+                </select>
+              </div>
+            </div>
 
             {loadingReviews ? (
               <p className="text-gray-500">Loading reviews...</p>
@@ -386,7 +413,7 @@ const handleWishlistToggle = async () => {
                 )}
 
                 <div className="mt-4 space-y-4">
-                  {(showAllReviews ? reviews : reviews.slice(0, 3)).map((r) => (
+                  {(showAllReviews ? sortedReviews : sortedReviews.slice(0, 3)).map((r) => (
                     <div key={r.id} className="border rounded-lg p-4">
                       <div className="flex justify-between items-center mb-2">
                         <span className="font-medium">{r.username}</span>

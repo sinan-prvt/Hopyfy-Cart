@@ -43,6 +43,7 @@ function ProductList() {
             stock: p.stock,
             category: p.category?.name || "",
             images: p.images || [],
+            review_count: p.reviews?.length || 0,
           };
         });
 
@@ -61,10 +62,11 @@ function ProductList() {
 
     if (searchTerm) {
       const term = searchTerm.toLowerCase().trim();
-      result = result.filter(p => 
-        (p.name?.toLowerCase()?.includes(term)) ||
-        (p.brand?.toLowerCase()?.includes(term)) ||
-        (p.category?.toLowerCase()?.includes(term))
+      result = result.filter(
+        p =>
+          (p.name?.toLowerCase()?.includes(term)) ||
+          (p.brand?.toLowerCase()?.includes(term)) ||
+          (p.category?.toLowerCase()?.includes(term))
       );
     }
 
@@ -72,12 +74,16 @@ function ProductList() {
       result = result.filter(p => p.category === selectedCategory);
     }
 
-    result = result.filter(p => Number(p.price) >= priceRange[0] && Number(p.price) <= priceRange[1]);
+    result = result.filter(
+      p => Number(p.price) >= priceRange[0] && Number(p.price) <= priceRange[1]
+    );
 
     if (sortOption === "price_asc") {
       result.sort((a, b) => a.price - b.price);
     } else if (sortOption === "price_desc") {
       result.sort((a, b) => b.price - a.price);
+    } else if (sortOption === "most_reviewed") {
+      result.sort((a, b) => b.review_count - a.review_count);
     }
 
     return result;
@@ -98,10 +104,10 @@ function ProductList() {
     <div className="relative">
       {toast.show && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
-          <Toast 
-            message={toast.message} 
-            type={toast.type} 
-            onClose={() => setToast({ show: false, message: "", type: "" })} 
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast({ show: false, message: "", type: "" })}
           />
         </div>
       )}
@@ -175,6 +181,7 @@ function ProductList() {
                   <option value="default">Default</option>
                   <option value="price_asc">Price: Low to High</option>
                   <option value="price_desc">Price: High to Low</option>
+                  <option value="most_reviewed">Most Reviewed</option>
                 </select>
               </div>
             </div>
@@ -184,10 +191,10 @@ function ProductList() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
-              <ProductCart 
-                key={product.id} 
-                product={product} 
-                onShowToast={showToast} 
+              <ProductCart
+                key={product.id}
+                product={product}
+                onShowToast={showToast}
               />
             ))
           ) : (
