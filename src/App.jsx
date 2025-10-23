@@ -33,6 +33,8 @@ import EditProduct from './Pages/Admin/EditProduct';
 import AdminLayout from './Layout/AdminLayout';
 import AddProduct from "./Pages/Admin/AddProduct";
 import Checkout from "./Pages/Checkouts/Checkout";
+import TermsOfService from "./Pages/Services/TermOfServices";
+import CookiesPolicy from "./Pages/Services/CookiesPolicy";
 
 function App() {
   const location = useLocation();
@@ -61,6 +63,8 @@ function App() {
         <Route path="/returns" element={<Returns />} />
         <Route path="/privacypolicy" element={<PrivacyPolicy />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+        <Route path="/terms-of-services" element={<TermsOfService />} />
+        <Route path="/cookies-policy" element={<CookiesPolicy />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
         <Route path="/subscribe-page" element={<SubscribePage />} />
